@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Button, TextField } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-
+import LoadingButton from 'components/Buttons/index';
 import useRouter from 'utils/useRouter';
 import { useCreateTenantHook } from 'hooks/apis/Tenants';
 
@@ -85,7 +85,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
-  const { mutate: CreateTenantRequest, isError } = useCreateTenantHook();
+  const {
+    mutate: CreateTenantRequest,
+    isError,
+    isLoading
+  } = useCreateTenantHook();
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -301,15 +305,11 @@ const LoginForm = props => {
           </Grid>{' '}
         </Grid>
       </div>
-      <Button
-        className={classes.submitButton}
-        color="secondary"
-        disabled={!formState.isValid}
-        size="large"
-        type="submit"
-        variant="contained">
-        Create
-      </Button>
+      <LoadingButton
+        formState={formState}
+        title="Create"
+        isLoading={isLoading}
+      />
     </form>
   );
 };

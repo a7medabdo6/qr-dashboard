@@ -43,3 +43,6 @@ a {
     margin-right: 0px !important;
   }
 }
+body iframe {
+  display: none !important;
+}

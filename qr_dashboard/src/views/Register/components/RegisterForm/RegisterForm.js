@@ -13,6 +13,8 @@ import {
   Link,
   Avatar
 } from '@material-ui/core';
+import LoadingButton from 'components/Buttons/index';
+
 import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
 import gradients from 'utils/gradients';
 import Select from 'components/MultiSelect/index';
@@ -104,13 +106,13 @@ const useStyles = makeStyles(theme => ({
 
 const RegisterForm = props => {
   const { className, ...rest } = props;
-  const { mutate: CreateUserApi } = useCreateUserHook();
+  const { mutate: CreateUserApi, isLoading } = useCreateUserHook();
   const classes = useStyles();
   const { history } = useRouter();
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [selectedBranches, setSelectedBranches] = React.useState([]);
   const [logo, setLogo] = useState(null);
-  const { isLoading, data } = useGetAllBranchesHook();
+  const {  data } = useGetAllBranchesHook();
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { allbranches } = useSelector(state => state.Branches);
@@ -293,15 +295,12 @@ const RegisterForm = props => {
             )}
           </div>
         </div>
-        <Button
-          className={classes.submitButton}
-          color="secondary"
-          disabled={!formState.isValid}
-          size="large"
-          type="submit"
-          variant="contained">
-          Create account
-        </Button>
+
+        <LoadingButton
+          formState={formState}
+          title="Create"
+          isLoading={isLoading}
+        />
       </form>
     </div>
   );
