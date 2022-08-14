@@ -32,7 +32,7 @@ const store = configureStore();
 
 const App = () => {
   const { t, i18n } = useTranslation();
-  console.log('test7');
+  console.log('test8');
   return (
     <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
