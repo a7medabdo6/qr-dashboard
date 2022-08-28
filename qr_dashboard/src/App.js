@@ -26,6 +26,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import './assets/scss/prismjs.css';
 
 import './assets/scss/index.css';
+import './assets/scss/rtl.scss';
 
 const history = createBrowserHistory();
 const store = configureStore();

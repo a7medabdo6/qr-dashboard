@@ -123,17 +123,10 @@ const RealTime = props => {
   ];
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <Card {...rest} className={`${clsx(classes.root, className)} m-rtl-card`}>
       <CardHeader
         action={
-          <Typography
-            color="inherit"
-            gutterBottom
-            variant="h3"
-          >
+          <Typography color="inherit" gutterBottom variant="h3">
             {data[data.length - 1] === 0
               ? data[data.length - 2]
               : data[data.length - 1]}
@@ -145,19 +138,16 @@ const RealTime = props => {
         titleTypographyProps={{ color: 'inherit' }}
       />
       <CardContent className={classes.content}>
-        <Chart
-          data={data}
-          labels={labels}
-        />
+        <Chart data={data} labels={labels} />
         <List>
           {pages.map(page => (
             <ListItem
               classes={{ divider: classes.itemDivider }}
               divider
-              key={page.pathname}
-            >
+              key={page.pathname}>
               <ListItemText
                 primary={page.pathname}
+                className="m-rtl-text"
                 primaryTypographyProps={{ color: 'inherit', variant: 'body1' }}
               />
               <Typography color="inherit">{page.views}</Typography>
@@ -165,7 +155,7 @@ const RealTime = props => {
           ))}
         </List>
       </CardContent>
-      <CardActions className={classes.actions}>
+      {/* <CardActions className={classes.actions}>
         <Button
           color="inherit"
           component={RouterLink}
@@ -176,7 +166,7 @@ const RealTime = props => {
           See all
           <ArrowForwardIcon className={classes.arrowForwardIcon} />
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

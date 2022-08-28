@@ -106,15 +106,21 @@ const NavigationListItem = props => {
     return (
       <ListItem
         {...rest}
-        className={clsx(classes.item, className)}
+        className={`${clsx(classes.item, className)} m-rtl `}
         disableGutters>
         <Button className={classes.button} onClick={handleToggle} style={style}>
           {Icon && <Icon className={classes.icon} />}
           {title}
           {open ? (
-            <ExpandLessIcon className={classes.expandIcon} color="inherit" />
+            <ExpandLessIcon
+              className={`${classes.expandIcon} m-rtl`}
+              color="inherit"
+            />
           ) : (
-            <ExpandMoreIcon className={classes.expandIcon} color="inherit" />
+            <ExpandMoreIcon
+              className={`${classes.expandIcon} m-rtl`}
+              color="inherit"
+            />
           )}
         </Button>
         <Collapse in={open}>{children}</Collapse>
@@ -124,7 +130,7 @@ const NavigationListItem = props => {
     return (
       <ListItem
         {...rest}
-        className={clsx(classes.itemLeaf, className)}
+        className={`${clsx(classes.itemLeaf, className)} m-rtl`}
         disableGutters>
         <Button
           activeClassName={classes.active}

@@ -1,0 +1,26 @@
+.rtl {
+  $myColor: red;
+
+  h1 {
+    color: $myColor;
+  }
+  svg {
+    margin-right: 0px;
+    margin-left: 8px;
+  }
+  svg.m-rtl {
+    margin-right: auto;
+    margin-left: 0px;
+  }
+  .m-rtl span {
+    margin-right: auto;
+    margin-left: 0px;
+  }
+  .m-rtl-card div span {
+    margin-left: 0px;
+    margin-right: 8px;
+  }
+  .m-rtl-text {
+    text-align: right;
+  }
+}
