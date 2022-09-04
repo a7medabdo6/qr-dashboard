@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
     display: 'flex',
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(6, 2)
   },
@@ -82,25 +82,19 @@ const Register = () => {
   const classes = useStyles();
 
   return (
-    <Page
-      className={classes.root}
-      title="Register"
-    >
+    <Page className={classes.root} title="Register">
       <Card className={classes.card}>
         <CardContent className={classes.content}>
           <PersonAddIcon className={classes.icon} />
-          <Typography
-            gutterBottom
-            variant="h3"
-          >
-            Sign up
+          <Typography gutterBottom variant="h3">
+            Create User
           </Typography>
           <Typography variant="subtitle2">
-            Sign up on the internal platform
+            Create User on the internal platform
           </Typography>
           <RegisterForm className={classes.registerForm} />
           <Divider className={classes.divider} />
-          <Link
+          {/* <Link
             align="center"
             color="secondary"
             component={RouterLink}
@@ -109,9 +103,9 @@ const Register = () => {
             variant="subtitle2"
           >
             Have an account?
-          </Link>
+          </Link> */}
         </CardContent>
-        <CardMedia
+        {/* <CardMedia
           className={classes.media}
           image="/images/auth.png"
           title="Cover"
@@ -144,7 +138,7 @@ const Register = () => {
               </Typography>
             </div>
           </div>
-        </CardMedia>
+        </CardMedia> */}
       </Card>
     </Page>
   );

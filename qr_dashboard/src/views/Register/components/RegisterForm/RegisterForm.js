@@ -12,22 +12,18 @@ import {
   Typography,
   Link
 } from '@material-ui/core';
-
+import Select from 'components/MultiSelect/index';
 import useRouter from 'utils/useRouter';
+import { useCreateUserHook } from 'hooks/apis/Auth';
 
 const schema = {
-  firstName: {
+  name: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
       maximum: 32
     }
   },
-  lastName: {
-    presence: { allowEmpty: false, message: 'is required' },
-    length: {
-      maximum: 32
-    }
-  },
+
   email: {
     presence: { allowEmpty: false, message: 'is required' },
     email: true,
@@ -41,7 +37,16 @@ const schema = {
       maximum: 128
     }
   },
-  policy: {
+  // role: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  mobile: {
+    presence: { allowEmpty: false, message: 'is required' }
+  },
+  // branches: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  is_active: {
     presence: { allowEmpty: false, message: 'is required' },
     checked: true
   }
@@ -73,9 +78,10 @@ const useStyles = makeStyles(theme => ({
 
 const RegisterForm = props => {
   const { className, ...rest } = props;
-
+  const { mutate: CreateUserApi } = useCreateUserHook();
   const classes = useStyles();
   const { history } = useRouter();
+  const [selectedFile, setSelectedFile] = React.useState(null);
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -83,7 +89,9 @@ const RegisterForm = props => {
     touched: {},
     errors: {}
   });
-
+  const handleFileSelect = event => {
+    setSelectedFile(event.target.files[0]);
+  };
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
@@ -115,7 +123,16 @@ const RegisterForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    history.push('/');
+
+    const formData = new FormData();
+    formData.append('avatar', selectedFile);
+    formData.append('email', formState.values.email);
+    formData.append('name', formState.values.name);
+    formData.append('password', formState.values.password);
+    // formData.append('branches', [0]);
+    formData.append('role', 1);
+    formData.append('mobile', formState.values.mobile);
+    CreateUserApi(formData);
   };
 
   const hasError = field =>
@@ -124,38 +141,33 @@ const RegisterForm = props => {
   return (
     <form
       {...rest}
+      enctype="multipart/form-data"
       className={clsx(classes.root, className)}
-      onSubmit={handleSubmit}
-    >
+      onSubmit={handleSubmit}>
       <div className={classes.fields}>
         <TextField
-          error={hasError('firstName')}
-          helperText={
-            hasError('firstName') ? formState.errors.firstName[0] : null
-          }
-          label="First name"
-          name="firstName"
-          onChange={handleChange}
-          value={formState.values.firstName || ''}
+          type="file"
+          fullWidth
+          onChange={handleFileSelect}
+          // value={formState.values.name || ''}
           variant="outlined"
         />
         <TextField
-          error={hasError('lastName')}
-          helperText={
-            hasError('lastName') ? formState.errors.lastName[0] : null
-          }
-          label="Last name"
-          name="lastName"
+          error={hasError('name')}
+          helperText={hasError('name') ? formState.errors.name[0] : null}
+          label=" Name"
+          fullWidth
+          name="name"
           onChange={handleChange}
-          value={formState.values.lastName || ''}
+          value={formState.values.name || ''}
           variant="outlined"
         />
         <TextField
           error={hasError('email')}
-          fullWidth
           helperText={hasError('email') ? formState.errors.email[0] : null}
-          label="Email address"
+          label="Email"
           name="email"
+          fullWidth
           onChange={handleChange}
           value={formState.values.email || ''}
           variant="outlined"
@@ -166,37 +178,49 @@ const RegisterForm = props => {
           helperText={
             hasError('password') ? formState.errors.password[0] : null
           }
-          label="Password"
+          label="password "
           name="password"
-          onChange={handleChange}
           type="password"
+          onChange={handleChange}
           value={formState.values.password || ''}
           variant="outlined"
         />
+        <div
+          style={{
+            border: '1px solid #00000029',
+            borderRadius: '5px',
+            margin: ' 0px 8px',
+            padding: '5px'
+          }}>
+          {/* <Select /> */}
+        </div>
+        <TextField
+          error={hasError('mobile')}
+          fullWidth
+          helperText={hasError('mobile') ? formState.errors.mobile[0] : null}
+          label="mobile"
+          name="mobile"
+          onChange={handleChange}
+          type="number"
+          value={formState.values.mobile || ''}
+          variant="outlined"
+        />
+
         <div>
           <div className={classes.policy}>
-            <Checkbox
-              checked={formState.values.policy || false}
-              className={classes.policyCheckbox}
-              color="primary"
-              name="policy"
-              onChange={handleChange}
-            />
             <Typography
               color="textSecondary"
-              variant="body1"
-            >
-              I have read the{' '}
-              <Link
-                color="secondary"
-                component={RouterLink}
-                to="#"
-                underline="always"
-                variant="h6"
-              >
-                Terms and Conditions
-              </Link>
+              style={{ marginInline: '10px' }}
+              variant="body1">
+              Is Active?
             </Typography>
+            <Checkbox
+              checked={formState.values.is_active || false}
+              className={classes.policyCheckbox}
+              color="primary"
+              name="is_active"
+              onChange={handleChange}
+            />
           </div>
           {hasError('policy') && (
             <FormHelperText error>{formState.errors.policy[0]}</FormHelperText>
@@ -209,8 +233,7 @@ const RegisterForm = props => {
         disabled={!formState.isValid}
         size="large"
         type="submit"
-        variant="contained"
-      >
+        variant="contained">
         Create account
       </Button>
     </form>

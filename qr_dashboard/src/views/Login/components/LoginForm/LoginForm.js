@@ -3,19 +3,23 @@ import React, { useState, useEffect } from 'react';
 import validate from 'validate.js';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import { Button, TextField } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
 
 import useRouter from 'utils/useRouter';
-import { login } from 'actions';
+import { useLoginApi } from 'hooks/apis/Auth';
 
 const schema = {
   email: {
-    presence: { allowEmpty: false, message: 'is required' },
-    email: true
+    presence: { allowEmpty: false, message: 'is required' }
+    //email: true
   },
   password: {
+    presence: { allowEmpty: false, message: 'is required' }
+  },
+  busniess: {
     presence: { allowEmpty: false, message: 'is required' }
   }
 };
@@ -43,6 +47,8 @@ const LoginForm = props => {
   const classes = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
+  const { UserInfo } = useSelector(state => state.UserInfo);
+  const { mutate: LoginApi } = useLoginApi();
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -83,7 +89,11 @@ const LoginForm = props => {
   const handleSubmit = async event => {
     event.preventDefault();
     // dispatch(login());
-    router.history.push('/');
+    // localStorage.setItem('token', '555555555555' );
+    //  router.history.push('/');
+
+    const result = await LoginApi({ password: 'a7med.abdo323' });
+    console.log(result, 'result');
   };
 
   const hasError = field =>
@@ -93,9 +103,21 @@ const LoginForm = props => {
     <form
       {...rest}
       className={clsx(classes.root, className)}
-      onSubmit={handleSubmit}
-    >
+      onSubmit={handleSubmit}>
       <div className={classes.fields}>
+        <TextField
+          error={hasError('busniess')}
+          fullWidth
+          helperText={
+            hasError('busniess') ? formState.errors.busniess[0] : null
+          }
+          label="Busniess Name"
+          name="busniess"
+          onChange={handleChange}
+          value={formState.values.busniess || ''}
+          variant="outlined"
+        />
+        {console.log(UserInfo, 'UserInfo')}
         <TextField
           error={hasError('email')}
           fullWidth
@@ -126,8 +148,7 @@ const LoginForm = props => {
         disabled={!formState.isValid}
         size="large"
         type="submit"
-        variant="contained"
-      >
+        variant="contained">
         Sign in
       </Button>
     </form>

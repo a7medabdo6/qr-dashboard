@@ -16,7 +16,7 @@ export default {
   secondary: {
     contrastText: white,
     dark: colors.blue[900],
-    main: colors.blue['A400'],
+    main: 'rgb(220, 0, 78)',
     light: colors.blue['A400']
   },
   error: {

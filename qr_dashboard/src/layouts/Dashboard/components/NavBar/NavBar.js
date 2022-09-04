@@ -14,12 +14,15 @@ import navigationConfig from './navigationConfig';
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
-    overflowY: 'auto'
+    overflowY: 'auto',
+    position: 'fixed',
+    top: '64px'
   },
   content: {
     padding: theme.spacing(2),
     backgroundColor: theme.palette.primary.main,
-    color: 'white !important'
+    color: 'white !important',
+    height: '100vh'
   },
   profile: {
     display: 'flex',
@@ -60,21 +63,21 @@ const NavBar = props => {
   const navbarContent = (
     <div className={classes.content}>
       <div className={classes.profile}>
-        <Avatar
+        {/* <Avatar
           alt="Person"
           className={classes.avatar}
           component={RouterLink}
           src={session.user.avatar}
           to="/profile/1/timeline"
-        />
+        /> */}
         <Typography
           className={classes.name}
           style={{ color: 'white' }}
           variant="h4">
-          {session.user.first_name} {session.user.last_name}
+          {session?.user?.first_name} {session?.user?.last_name}
         </Typography>
         <Typography style={{ color: 'white' }} variant="body2">
-          {session.user.bio}
+          {session?.user?.bio}
         </Typography>
       </div>
       <Divider className={classes.divider} />

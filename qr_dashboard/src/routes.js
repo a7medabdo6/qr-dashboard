@@ -61,6 +61,21 @@ export const Authroutes = [
 ];
 
 export const DashboardUser = [
+  {
+    path: '/auth',
+    component: AuthEditLayout,
+    routes: [
+      {
+        path: '/auth/login',
+        exact: true,
+        component: lazy(() => import('views/Login'))
+      },
+
+      {
+        component: () => <Redirect to="/errors/error-404" />
+      }
+    ]
+  },
   // {
   //   path: '/SuperuserLayout',
   //   component: SuperuserLayout,
@@ -94,6 +109,11 @@ export const DashboardUser = [
     route: '*',
     component: DashboardLayout,
     routes: [
+      {
+        path: '/user/register',
+        exact: true,
+        component: lazy(() => import('views/Register'))
+      },
       {
         path: '/calendar',
         exact: true,
@@ -193,6 +213,36 @@ export const DashboardUser = [
         path: '/projects/create',
         exact: true,
         component: lazy(() => import('views/ProjectCreate'))
+      },
+      {
+        path: '/users',
+        exact: true,
+        component: lazy(() => import('views/users'))
+      },
+      {
+        path: '/users/create',
+        exact: true,
+        component: lazy(() => import('views/Register/index'))
+      },
+      {
+        path: '/users/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/users/UserEdit'))
+      },
+      {
+        path: '/tenants',
+        exact: true,
+        component: lazy(() => import('views/tenants'))
+      },
+      {
+        path: '/tenants/create',
+        exact: true,
+        component: lazy(() => import('views/tenants/TenantCreate'))
+      },
+      {
+        path: '/tenants/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/tenants/TenantEdit'))
       },
       {
         path: '/branches',

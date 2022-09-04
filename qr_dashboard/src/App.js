@@ -2,15 +2,15 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import MomentUtils from '@date-io/moment';
-import { Provider as StoreProvider } from 'react-redux';
 import { ThemeProvider } from '@material-ui/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { renderRoutes } from 'react-router-config';
 import Protected from './protected';
 import theme from './theme';
-import { configureStore } from './store';
 import { Authroutes } from './routes';
 import { useTranslation } from 'react-i18next';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import Toast from 'components/SnackBar/Success';
 
 import {
   ScrollReset,
@@ -29,26 +29,27 @@ import './assets/scss/index.css';
 import './assets/scss/rtl.scss';
 
 const history = createBrowserHistory();
-const store = configureStore();
 
 const App = () => {
   const { t, i18n } = useTranslation();
   console.log('test8');
+  const queryClient = new QueryClient();
   return (
-    <StoreProvider store={store}>
+    <QueryClientProvider client={queryClient} contextSharing={true}>
       <ThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
-          <h1>{t('Welcome')}</h1>
+          {/* <h1>{t('Welcome')}</h1> */}
           <Router history={history}>
             <ScrollReset />
             <GoogleAnalytics />
             <CookiesNotification />
             {renderRoutes(Authroutes)}
-            <Protected isLoggedIn={true} userType="super" />
+            <Protected userType="super" />
           </Router>
+          <Toast />
         </MuiPickersUtilsProvider>
       </ThemeProvider>
-    </StoreProvider>
+    </QueryClientProvider>
   );
 };
 

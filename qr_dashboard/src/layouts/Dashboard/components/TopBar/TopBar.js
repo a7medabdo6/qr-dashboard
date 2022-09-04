@@ -40,10 +40,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { logout } from 'actions';
+// import { Logout } from 'hooks/apis/Auth';
 const options = ['en', 'ar'];
 const useStyles = makeStyles(theme => ({
   root: {
-    boxShadow: 'none'
+    boxShadow: 'none',
+    position: 'fixed'
   },
   flexGrow: {
     flexGrow: 1
@@ -144,6 +146,10 @@ const TopBar = props => {
   }, []);
 
   const handleLogout = () => {
+    // history.push('/auth/login');
+    console.log('logout');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     history.push('/auth/login');
     // dispatch(logout());
   };
@@ -181,7 +187,11 @@ const TopBar = props => {
   ];
 
   return (
-    <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
+    <AppBar
+      {...rest}
+      className={clsx(classes.root, className)}
+      style={{ position: 'fixed' }}
+      color="primary">
       <Toolbar>
         <RouterLink to="/">
           <img alt="Logo" src="/images/logos/logo--white.svg" />

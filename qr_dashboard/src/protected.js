@@ -9,7 +9,6 @@ import { renderRoutes } from 'react-router-config';
 import { Redirect } from 'react-router-dom';
 
 import theme from './theme';
-import { configureStore } from './store';
 import { Authroutes, DashboardUser } from './routes';
 import { useTranslation } from 'react-i18next';
 
@@ -29,14 +28,15 @@ import './assets/scss/prismjs.css';
 import './assets/scss/index.css';
 
 const history = createBrowserHistory();
-const store = configureStore();
 
 const Protected = ({ isLoggedIn, userType }) => {
   const pathname = window.location.pathname.split('/')[1];
+  const user = JSON.parse(localStorage.getItem('user'));
+
   console.log(pathname);
   const { t, i18n } = useTranslation();
   // & (userType == 'super') & (pathname == 'SuperuserLayout')
-  if (isLoggedIn) {
+  if (user) {
     return <div>{renderRoutes(DashboardUser)}</div>;
   }
   return <Redirect to="/auth/login" />;
