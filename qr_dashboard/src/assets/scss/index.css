@@ -34,7 +34,9 @@ a {
   line-height: 1.5;
   font-size: 14px;
 }
-
+.logo-image {
+  width: 150px;
+}
 @media only screen and (max-width: 1000px) {
   main.margin-main {
     margin-left: 0px !important;

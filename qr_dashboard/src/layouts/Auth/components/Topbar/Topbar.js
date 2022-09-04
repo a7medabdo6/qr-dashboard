@@ -17,16 +17,13 @@ const Topbar = props => {
   const classes = useStyles();
 
   return (
-    <AppBar
-      {...rest}
-      className={clsx(classes.root, className)}
-      color="primary"
-    >
+    <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
       <Toolbar>
         <RouterLink to="/">
           <img
             alt="Logo"
-            src="/images/logos/logo--white.svg"
+            className="logo-image"
+            src="https://dms-test.onpixie.com/static/media/logo.21ca2e5b.svg"
           />
         </RouterLink>
       </Toolbar>

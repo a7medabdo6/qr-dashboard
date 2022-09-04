@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     maxWidth: '100%',
-    width: 100,
+    width: 150,
     display: 'flex',
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing(2),
@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     padding: theme.spacing(1),
-    display:"flex",
+    display: 'flex',
     [theme.breakpoints.down('sm')]: {
       flexBasis: '50%'
     }
@@ -92,49 +92,53 @@ const ProjectCard = props => {
             {/* {getInitials(project?.client_name)} */}
             {project?.client_name}
           </Avatar>
-          <div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginInline: '5px'
+            }}>
             <Link
               color="textPrimary"
               component={RouterLink}
               noWrap
               to="#"
               variant="h5">
-              {project?.title}
+              {project?.client_name}
             </Link>
             <Typography variant="body2">
-              by{' '}
               <Link
                 color="textPrimary"
                 component={RouterLink}
-                to="/management/customers/1"
+                to="#"
                 variant="h6">
-                {project?.client_name}
+                {project?.schema_name}
               </Link>
             </Typography>
           </div>
         </div>
-        <div className={classes.stats}>
+        {/* <div className={classes.stats}>
           <Typography variant="h6">
             {project?.currency}
             {project?.price}
           </Typography>
           <Typography variant="body2"> {project?.schema_name}</Typography>
-        </div>
+        </div> */}
         <div className={classes.stats}>
           <Typography variant="h6">{project?.max_groups}</Typography>
-          <Typography variant="body2">max groups</Typography>
+          <Typography variant="body2">Max groups</Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
             {moment(project?.subscribedfrom).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2">Project started</Typography>
+          <Typography variant="body2">Subscribed From</Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
             {moment(project?.subscribedTo).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2">Project deadline</Typography>
+          <Typography variant="body2">Subscribed To</Typography>
         </div>
         <div className={classes.stats}>
           <Typography
@@ -144,9 +148,9 @@ const ProjectCard = props => {
                 : statusColors['In progress']
             }}
             variant="h6">
-            {project?.is_active ? 'Active' : 'In progress'}
+            {project?.is_active ? 'Active' : 'Disabled'}
           </Typography>
-          <Typography variant="body2">Project status</Typography>
+          <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
           <Link component={RouterLink} to={`/tenants/edit/${project?.id}`}>
@@ -161,9 +165,9 @@ const ProjectCard = props => {
 
           {project?.is_active && (
             <Button
-              style={{ marginInline: '5px' }}
+              style={{ marginInline: '5px', width: '100px' }}
               size="small"
-              variant="contained"
+              variant="outlined"
               onClick={onActivateHandle}
               color="primary">
               Disable
@@ -172,7 +176,7 @@ const ProjectCard = props => {
           )}
           {!project?.is_active && (
             <Button
-              style={{ marginInline: '5px' }}
+              style={{ marginInline: '5px', width: '100px' }}
               size="small"
               variant="contained"
               onClick={onActivateHandle}

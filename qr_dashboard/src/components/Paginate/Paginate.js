@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -65,8 +65,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Paginate = props => {
-
-  
   const {
     pageCount,
     pageRangeDisplayed,
@@ -82,10 +80,10 @@ const Paginate = props => {
   useEffect(() => {
     // Fetch items from another resources.
     const endOffset = itemOffset + itemsPerPage;
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`,projects);
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`, projects);
     setCurrentItems(projects.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(projects.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage,projects]);
+  }, [itemOffset, itemsPerPage, projects]);
   const classes = useStyles();
 
   return (
@@ -99,7 +97,7 @@ const Paginate = props => {
       disabledClassName={classes.disabled}
       marginPagesDisplayed={2}
       nextClassName={classes.next}
-      nextLabel="next"
+      nextLabel={pageCount > 1 ? 'next' : ''}
       nextLinkClassName={classes.nextLink}
       onPageChange={onPageChange}
       pageClassName={classes.page}
@@ -107,7 +105,7 @@ const Paginate = props => {
       pageLinkClassName={classes.pageLink}
       pageRangeDisplayed={pageRangeDisplayed}
       previousClassName={classes.previous}
-      previousLabel="previous"
+      previousLabel={pageCount > 1 ? 'previous' : ''}
       previousLinkClassName={classes.previousLink}
       subContainerClassName="pages pagination"
       {...rest}

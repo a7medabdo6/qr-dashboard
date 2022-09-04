@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     padding: theme.spacing(1),
+    display: 'flex',
     [theme.breakpoints.down('sm')]: {
       flexBasis: '50%'
     }
@@ -146,7 +147,7 @@ const ProjectCard = props => {
             variant="h6">
             {project?.is_active ? 'Active' : 'In progress'}
           </Typography>
-          <Typography variant="body2">Project status</Typography>
+          <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
           <Link component={RouterLink} to={`/users/edit/${project?.id}`}>
@@ -161,9 +162,9 @@ const ProjectCard = props => {
 
           {project?.is_active && (
             <Button
-              style={{ marginInline: '5px' }}
+              style={{ marginInline: '5px', width: '100px' }}
               size="small"
-              variant="contained"
+              variant="outlined"
               onClick={onActivateHandle}
               color="primary">
               Disable
@@ -172,7 +173,7 @@ const ProjectCard = props => {
           )}
           {!project?.is_active && (
             <Button
-              style={{ marginInline: '5px' }}
+              style={{ marginInline: '5px', width: '100px' }}
               size="small"
               variant="contained"
               onClick={onActivateHandle}

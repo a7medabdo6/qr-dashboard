@@ -13,13 +13,13 @@ import useRouter from 'utils/useRouter';
 import { useCreateTenantHook } from 'hooks/apis/Tenants';
 
 const schema = {
-  email: {
-    presence: { allowEmpty: false, message: 'is required' }
-    //email: true
-  },
-  password: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
+  // email: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  //   //email: true
+  // },
+  // password: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
   busisness_name: {
     presence: { allowEmpty: false, message: 'is required' }
   },
@@ -165,7 +165,7 @@ const LoginForm = props => {
               variant="outlined"
             />
           </Grid>{' '}
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               error={hasError('email')}
               fullWidth
@@ -176,8 +176,8 @@ const LoginForm = props => {
               value={formState.values.email || ''}
               variant="outlined"
             />
-          </Grid>
-          <Grid item xs={6}>
+          </Grid> */}
+          {/* <Grid item xs={6}>
             <TextField
               error={hasError('password')}
               fullWidth
@@ -190,7 +190,7 @@ const LoginForm = props => {
               value={formState.values.password || ''}
               variant="outlined"
             />
-          </Grid>{' '}
+          </Grid>{' '} */}
           <Grid item xs={6}>
             <TextField
               error={hasError('client_name_en')}

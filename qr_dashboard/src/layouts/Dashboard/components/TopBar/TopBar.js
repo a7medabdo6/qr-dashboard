@@ -125,7 +125,9 @@ const TopBar = props => {
 
     console.log(i18n.language);
     document.body.dir = i18n.language == 'ar' ? 'rtl' : 'ltr';
-    return i18n.language == 'ar' ? document.body.classList.add('rtl') : null;
+    return i18n.language == 'ar'
+      ? document.body.classList.add('rtl')
+      : document.body.classList.remove('rtl');
   };
   useEffect(() => {
     let mounted = true;
@@ -194,11 +196,15 @@ const TopBar = props => {
       color="primary">
       <Toolbar>
         <RouterLink to="/">
-          <img alt="Logo" src="/images/logos/logo--white.svg" />
+          <img
+            alt="Logo"
+            className="logo-image"
+            src="https://dms-test.onpixie.com/static/media/logo.21ca2e5b.svg"
+          />
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden smDown>
-          <div className={classes.search} ref={searchRef}>
+          {/* <div className={classes.search} ref={searchRef}>
             <SearchIcon className={classes.searchIcon} />
             <Input
               className={classes.searchInput}
@@ -207,7 +213,7 @@ const TopBar = props => {
               placeholder="Search people &amp; places"
               value={searchValue}
             />
-          </div>
+          </div> */}
           <Popper
             anchorEl={searchRef.current}
             className={classes.searchPopper}

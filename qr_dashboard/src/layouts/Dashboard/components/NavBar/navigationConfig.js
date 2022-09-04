@@ -47,19 +47,19 @@ export default [
         ]
       },
       {
-        title: 'Tenants',
+        title: 'Subscribtions',
         href: '/tenants',
-        icon: FolderIcon,
-        children: [
-          {
-            title: 'All Tenants',
-            href: '/tenants'
-          },
-          {
-            title: 'Create',
-            href: '/tenants/create'
-          }
-        ]
+        icon: FolderIcon
+        // children: [
+        //   {
+        //     title: 'All Tenants',
+        //     href: '/tenants'
+        //   },
+        //   {
+        //     title: 'Create',
+        //     href: '/tenants/create'
+        //   }
+        // ]
       },
       // {
       //   title: 'Management',
@@ -252,11 +252,11 @@ export default [
           {
             title: 'users',
             href: '/users'
-          },
-          {
-            title: 'Create',
-            href: '/users/create'
           }
+          // {
+          //   title: 'Create',
+          //   href: '/users/create'
+          // }
           // {
           //   title: 'General',
           //   href: '/settings/general'

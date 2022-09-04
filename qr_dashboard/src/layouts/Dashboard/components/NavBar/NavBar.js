@@ -62,14 +62,14 @@ const NavBar = props => {
 
   const navbarContent = (
     <div className={classes.content}>
-      <div className={classes.profile}>
-        {/* <Avatar
+      {/* <div className={classes.profile}>
+        <Avatar
           alt="Person"
           className={classes.avatar}
           component={RouterLink}
           src={session.user.avatar}
           to="/profile/1/timeline"
-        /> */}
+        />
         <Typography
           className={classes.name}
           style={{ color: 'white' }}
@@ -79,8 +79,9 @@ const NavBar = props => {
         <Typography style={{ color: 'white' }} variant="body2">
           {session?.user?.bio}
         </Typography>
-      </div>
+      </div> 
       <Divider className={classes.divider} />
+      */}
       <nav className={classes.navigation}>
         {navigationConfig.map(list => (
           <Navigation

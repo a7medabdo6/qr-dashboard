@@ -86,6 +86,7 @@ const ProjectManagementList = () => {
             </>
           ))}
       </div>
+
       <div className={classes.paginate}>
         <Paginate
           pageCount={pageCount}

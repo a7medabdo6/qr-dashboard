@@ -64,10 +64,10 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 'auto'
   },
   active: {
-    color: theme.palette.primary.main,
+    color: 'rgb(251, 140, 0)',
     fontWeight: theme.typography.fontWeightMedium,
     '& $icon': {
-      color: theme.palette.primary.main
+      color: 'rgb(251, 140, 0)'
     }
   }
 }));
