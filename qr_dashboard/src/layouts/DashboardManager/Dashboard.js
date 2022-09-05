@@ -31,7 +31,9 @@ const useStyles = makeStyles(() => ({
   },
   content: {
     overflowY: 'auto',
-    flex: '1 1 auto'
+    flex: '1 1 auto',
+    marginLeft: '245px',
+    marginTop: '64px'
   }
 }));
 
@@ -61,7 +63,7 @@ const Dashboard = props => {
           onMobileClose={handleNavBarMobileClose}
           openMobile={openNavBarMobile}
         />
-        <main className={classes.content}>
+        <main className={[`${classes.content} margin-main`]}>
           <Suspense fallback={<LinearProgress />}>
             {renderRoutes(route.routes)}
           </Suspense>

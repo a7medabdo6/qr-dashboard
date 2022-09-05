@@ -191,7 +191,7 @@ const LoginForm = props => {
               variant="outlined"
             />
           </Grid>{' '}
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               error={hasError('email')}
               fullWidth
@@ -202,8 +202,8 @@ const LoginForm = props => {
               value={formState.values.email}
               variant="outlined"
             />
-          </Grid>
-          <Grid item xs={6}>
+          </Grid> */}
+          {/* <Grid item xs={6}>
             <TextField
               error={hasError('password')}
               fullWidth
@@ -216,7 +216,7 @@ const LoginForm = props => {
               value={formState.values.password}
               variant="outlined"
             />
-          </Grid>{' '}
+          </Grid>{' '} */}
           <Grid item xs={6}>
             <TextField
               error={hasError('client_name_en')}

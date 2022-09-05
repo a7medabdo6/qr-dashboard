@@ -5,9 +5,11 @@ import { api } from '../../../axios';
 import useRouter from 'utils/useRouter';
 import { ToastShow } from 'store/Global/Slice';
 
-import { UserInfo, UsersList } from 'store/Auth/Slice';
-const getAllUsers = async data => {
-  return await api.get('auth/users/');
+import { UserInfo } from 'store/Auth/Slice';
+import { GroupsList } from 'store/Groups/Slice';
+
+const getAllGroups = async data => {
+  return await api.get('branches/groups/');
 };
 const postrequest = async data => {
   console.log(data, 'datttt');
@@ -24,8 +26,8 @@ const postrequest = async data => {
     }
   );
 };
-const postCreateUserrequest = async data => {
-  return await api.post('auth/users/', data);
+const postCreateGrouprequest = async data => {
+  return await api.post('branches/groups/', data);
 };
 const ActivateUser = async data => {
   return await api.patch(`auth/users/${data.id}/`, data);
@@ -63,17 +65,21 @@ const useLoginApi = data => {
   });
 };
 
-const useCreateUserHook = () => {
+const useCreateGroupHook = () => {
+  const QueryClient = useQueryClient();
+
   const dispatch = useDispatch();
   const router = useRouter();
-  return useMutation(postCreateUserrequest, {
+  return useMutation(postCreateGrouprequest, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
         headers: res.headers,
         data: res.data
       };
-      dispatch(ToastShow('User Created Successfuly'));
+      QueryClient.invalidateQueries('allgroups');
+
+      dispatch(ToastShow('Group Created Successfuly'));
     },
     onError: err => {
       console.log(err);
@@ -83,10 +89,10 @@ const useCreateUserHook = () => {
   });
 };
 
-const useGetAllUsersHook = () => {
+const useGetAllGroupsHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  return useQuery('allusers', getAllUsers, {
+  return useQuery('allgroups', getAllGroups, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -94,7 +100,7 @@ const useGetAllUsersHook = () => {
         data: res.data
       };
       // console.log(result);
-      dispatch(UsersList(result.data.results));
+      dispatch(GroupsList(result.data.results));
       // console.log(result.data, 'result.data');
 
       // return result.data;
@@ -158,8 +164,8 @@ const useDeleteUserHook = () => {
 };
 export {
   useLoginApi,
-  useCreateUserHook,
-  useGetAllUsersHook,
+  useCreateGroupHook,
+  useGetAllGroupsHook,
   useActivateUserHook,
   useDeleteUserHook
 };

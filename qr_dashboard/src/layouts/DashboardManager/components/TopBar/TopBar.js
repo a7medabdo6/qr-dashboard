@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -13,6 +15,7 @@ import {
   Toolbar,
   Hidden,
   Input,
+  TextField,
   colors,
   Popper,
   Paper,
@@ -31,11 +34,18 @@ import SearchIcon from '@material-ui/icons/Search';
 import axios from 'utils/axios';
 import useRouter from 'utils/useRouter';
 import { NotificationsPopover } from 'components';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import { logout } from 'actions';
-
+// import { Logout } from 'hooks/apis/Auth';
+const options = ['en', 'ar'];
 const useStyles = makeStyles(theme => ({
   root: {
-    boxShadow: 'none'
+    boxShadow: 'none',
+    position: 'fixed'
   },
   flexGrow: {
     flexGrow: 1
@@ -105,7 +115,20 @@ const TopBar = props => {
   const [searchValue, setSearchValue] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [openNotifications, setOpenNotifications] = useState(false);
+  const [option, setoption] = useState('en');
+  const { t, i18n } = useTranslation();
 
+  const handleLangChnage = lang => {
+    console.log(lang);
+    setoption(lang.target.value);
+    i18n.changeLanguage(lang.target.value);
+
+    console.log(i18n.language);
+    document.body.dir = i18n.language == 'ar' ? 'rtl' : 'ltr';
+    return i18n.language == 'ar'
+      ? document.body.classList.add('rtl')
+      : document.body.classList.remove('rtl');
+  };
   useEffect(() => {
     let mounted = true;
 
@@ -125,6 +148,10 @@ const TopBar = props => {
   }, []);
 
   const handleLogout = () => {
+    // history.push('/auth/login');
+    console.log('logout');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     history.push('/auth/login');
     // dispatch(logout());
   };
@@ -162,7 +189,11 @@ const TopBar = props => {
   ];
 
   return (
-    <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
+    <AppBar
+      {...rest}
+      className={clsx(classes.root, className)}
+      style={{ position: 'fixed' }}
+      color="primary">
       <Toolbar>
         <RouterLink to="/">
           <img
@@ -208,6 +239,21 @@ const TopBar = props => {
           </Popper>
         </Hidden>
         <Hidden mdDown>
+          <FormControl style={{ marginInline: '10px' }}>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={option}
+              style={{
+                width: '50px',
+                backgroundColor: 'white',
+                borderRadius: '5px'
+              }}
+              onChange={handleLangChnage}>
+              <MenuItem value={'en'}>en</MenuItem>
+              <MenuItem value={'ar'}>ar</MenuItem>
+            </Select>
+          </FormControl>
           <IconButton
             className={classes.notificationsButton}
             color="inherit"

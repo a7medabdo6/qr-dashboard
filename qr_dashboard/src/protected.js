@@ -9,7 +9,7 @@ import { renderRoutes } from 'react-router-config';
 import { Redirect } from 'react-router-dom';
 
 import theme from './theme';
-import { Authroutes, DashboardUser } from './routes';
+import { Authroutes, DashboardUser, DashboardManager } from './routes';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -36,10 +36,19 @@ const Protected = ({ isLoggedIn, userType }) => {
   console.log(pathname);
   const { t, i18n } = useTranslation();
   // & (userType == 'super') & (pathname == 'SuperuserLayout')
-  if (user) {
-    return <div>{renderRoutes(DashboardUser)}</div>;
+
+  switch (user?.role) {
+    case 1:
+      return <div>{renderRoutes(DashboardUser)}</div>;
+
+    case 2:
+      return <div>{renderRoutes(DashboardManager)}</div>;
+
+    default:
+      return <Redirect to="/auth/login" />;
+
+      break;
   }
-  return <Redirect to="/auth/login" />;
 };
 
 export default Protected;

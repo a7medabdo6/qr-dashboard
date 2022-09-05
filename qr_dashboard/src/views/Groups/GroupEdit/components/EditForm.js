@@ -8,33 +8,35 @@ import { makeStyles } from '@material-ui/styles';
 import { Button, TextField } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-
+import { useParams } from 'react-router-dom';
 import useRouter from 'utils/useRouter';
-import { useCreateTenantHook } from 'hooks/apis/Tenants';
+import {
+  useCreateTenantHook,
+  useGetOneTenantHook,
+  useActivateTenantHook
+} from 'hooks/apis/Tenants';
 
 const schema = {
-  email: {
-    presence: { allowEmpty: false, message: 'is required' }
-    //email: true
-  },
-  password: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-  busisness_name: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-
-  // client_name: {
+  // email: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  //   //email: true
+  // },
+  // password: {
   //   presence: { allowEmpty: false, message: 'is required' }
   // },
-  client_name_en: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-  client_name_ar: {
-    // email: true,
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-
+  // busisness_name: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  // // client_name: {
+  // //   presence: { allowEmpty: false, message: 'is required' }
+  // // },
+  // client_name_en: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  // client_name_ar: {
+  //   // email: true,
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
   // logo: {
   //   presence: { allowEmpty: false, message: 'is required' }
   // },
@@ -47,18 +49,18 @@ const schema = {
   // is_active: {
   //   presence: { allowEmpty: false, message: 'is required' }
   // },
-  subscribedfrom: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-  subscribedTo: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-  max_branches: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-  max_groups: {
-    presence: { allowEmpty: false, message: 'is required' }
-  }
+  // subscribedfrom: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  // subscribedTo: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  // max_branches: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // },
+  // max_groups: {
+  //   presence: { allowEmpty: false, message: 'is required' }
+  // }
   // max_products: {
   //   presence: { allowEmpty: false, message: 'is required' }
   // }
@@ -85,7 +87,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
-  const { mutate: CreateTenantRequest, isError } = useCreateTenantHook();
+  let { id } = useParams();
+
+  const { data, isLoading } = useGetOneTenantHook(id);
+  console.log(data, 'iid');
+  const { mutate: UpdateTenantRequest, isError } = useActivateTenantHook();
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -99,7 +105,22 @@ const LoginForm = props => {
     touched: {},
     errors: {}
   });
-
+  useEffect(() => {
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        email: data?.data?.email,
+        busisness_name: data?.data?.busisness_name,
+        password: data?.data?.password,
+        client_name_en: data?.data?.client_name_en,
+        client_name_ar: data?.data?.client_name_ar,
+        subscribedfrom: data?.data?.subscribedfrom,
+        subscribedTo: data?.data?.subscribedTo,
+        max_branches: data?.data?.max_branches,
+        max_groups: data?.data?.max_groups
+      }
+    }));
+  }, [data]);
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
@@ -133,7 +154,10 @@ const LoginForm = props => {
     event.preventDefault();
 
     console.log(formState.values);
-    const result = await CreateTenantRequest(formState.values);
+    const result = await UpdateTenantRequest({
+      ...formState.values,
+      id: data.data.id
+    });
     if (!isError) {
       console.log('done');
     }
@@ -141,7 +165,9 @@ const LoginForm = props => {
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-
+  if (isLoading) {
+    return <div>Loading ....</div>;
+  }
   return (
     <form
       {...rest}
@@ -161,7 +187,7 @@ const LoginForm = props => {
               label="busisness Name"
               name="busisness_name"
               onChange={handleChange}
-              value={formState.values.busisness_name || ''}
+              value={formState.values.busisness_name}
               variant="outlined"
             />
           </Grid>{' '}
@@ -173,7 +199,7 @@ const LoginForm = props => {
               label="Email address"
               name="email"
               onChange={handleChange}
-              value={formState.values.email || ''}
+              value={formState.values.email}
               variant="outlined"
             />
           </Grid>
@@ -187,7 +213,7 @@ const LoginForm = props => {
               label=" password"
               name="password"
               onChange={handleChange}
-              value={formState.values.password || ''}
+              value={formState.values.password}
               variant="outlined"
             />
           </Grid>{' '}
@@ -203,7 +229,7 @@ const LoginForm = props => {
               label=" client_name_en"
               name="client_name_en"
               onChange={handleChange}
-              value={formState.values.client_name_en || ''}
+              value={formState.values.client_name_en}
               variant="outlined"
             />
           </Grid>{' '}
@@ -219,7 +245,7 @@ const LoginForm = props => {
               label=" client_name_ar"
               name="client_name_ar"
               onChange={handleChange}
-              value={formState.values.client_name_ar || ''}
+              value={formState.values.client_name_ar}
               variant="outlined"
             />
           </Grid>{' '}
@@ -235,7 +261,7 @@ const LoginForm = props => {
               label=" subscribedfrom"
               name="subscribedfrom"
               onChange={handleChange}
-              value={formState.values.subscribedfrom || ''}
+              value={formState.values.subscribedfrom}
               variant="outlined"
               id="date"
               type="date"
@@ -257,7 +283,7 @@ const LoginForm = props => {
               label=" subscribedTo"
               name="subscribedTo"
               onChange={handleChange}
-              value={formState.values.subscribedTo || ''}
+              value={formState.values.subscribedTo}
               variant="outlined"
               id="date"
               type="date"
@@ -280,7 +306,7 @@ const LoginForm = props => {
               name="max_branches"
               type="number"
               onChange={handleChange}
-              value={formState.values.max_branches || ''}
+              value={formState.values.max_branches}
               variant="outlined"
             />
           </Grid>{' '}
@@ -295,7 +321,7 @@ const LoginForm = props => {
               name="max_groups"
               type="number"
               onChange={handleChange}
-              value={formState.values.max_groups || ''}
+              value={formState.values.max_groups}
               variant="outlined"
             />
           </Grid>{' '}
@@ -308,7 +334,7 @@ const LoginForm = props => {
         size="large"
         type="submit"
         variant="contained">
-        Create
+        Update
       </Button>
     </form>
   );

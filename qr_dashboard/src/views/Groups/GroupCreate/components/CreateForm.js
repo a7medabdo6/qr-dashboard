@@ -5,27 +5,33 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField, Checkbox, Typography } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 
 import useRouter from 'utils/useRouter';
-import { useLoginApi } from 'hooks/apis/Auth';
+import { useCreateGroupHook } from 'hooks/apis/Groups';
 
 const schema = {
-  email: {
+  title: {
     presence: { allowEmpty: false, message: 'is required' }
     //email: true
   },
-  password: {
+  title_ar: {
     presence: { allowEmpty: false, message: 'is required' }
   },
-  busniess: {
-    presence: { allowEmpty: false, message: 'is required' }
+
+  active: {
+    // presence: { allowEmpty: true, message: 'is required' },
+    // checked: true
   }
 };
 
 const useStyles = makeStyles(theme => ({
   root: {},
+  loginForm: {
+    marginTop: theme.spacing(3)
+  },
   fields: {
     margin: theme.spacing(-1),
     display: 'flex',
@@ -42,17 +48,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
+  const { mutate: CreateGroupRequest, isError } = useCreateGroupHook();
   const { className, ...rest } = props;
 
   const classes = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
   const { UserInfo } = useSelector(state => state.UserInfo);
-  const { mutate: LoginApi } = useLoginApi();
 
   const [formState, setFormState] = useState({
     isValid: false,
-    values: {},
+    values: { active: false },
     touched: {},
     errors: {}
   });
@@ -88,11 +94,9 @@ const LoginForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    // dispatch(login());
-    // localStorage.setItem('token', '555555555555' );
-    //  router.history.push('/');
 
-    const result = await LoginApi({ ...formState.values });
+    console.log(formState.values);
+    const result = await CreateGroupRequest(formState.values);
   };
 
   const hasError = field =>
@@ -104,42 +108,50 @@ const LoginForm = props => {
       className={clsx(classes.root, className)}
       onSubmit={handleSubmit}>
       <div className={classes.fields}>
-        <TextField
-          error={hasError('busniess')}
-          fullWidth
-          helperText={
-            hasError('busniess') ? formState.errors.busniess[0] : null
-          }
-          label="Busniess Name"
-          name="busniess"
-          onChange={handleChange}
-          value={formState.values.busniess || ''}
-          variant="outlined"
-        />
-        {console.log(UserInfo, 'UserInfo')}
-        <TextField
-          error={hasError('email')}
-          fullWidth
-          helperText={hasError('email') ? formState.errors.email[0] : null}
-          label="Email address"
-          name="email"
-          onChange={handleChange}
-          value={formState.values.email || ''}
-          variant="outlined"
-        />
-        <TextField
-          error={hasError('password')}
-          fullWidth
-          helperText={
-            hasError('password') ? formState.errors.password[0] : null
-          }
-          label="Password"
-          name="password"
-          onChange={handleChange}
-          type="password"
-          value={formState.values.password || ''}
-          variant="outlined"
-        />
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <TextField
+              error={hasError('title')}
+              fullWidth
+              helperText={hasError('title') ? formState.errors.title[0] : null}
+              label="title (en)"
+              name="title"
+              onChange={handleChange}
+              value={formState.values.title || ''}
+              variant="outlined"
+            />
+          </Grid>{' '}
+          <Grid item xs={6}>
+            <TextField
+              error={hasError('title_ar')}
+              fullWidth
+              helperText={
+                hasError('title_ar') ? formState.errors.title_ar[0] : null
+              }
+              label="title (ar)"
+              name="title_ar"
+              onChange={handleChange}
+              value={formState.values.title_ar || ''}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Typography
+              color="textSecondary"
+              style={{ marginInline: '10px' }}
+              variant="body1">
+              Is Active?
+            </Typography>
+            <Checkbox
+              checked={formState.values.active || false}
+              className={classes.policyCheckbox}
+              color="primary"
+              name="active"
+              type="checkbox"
+              onChange={handleChange}
+            />
+          </Grid>{' '}
+        </Grid>
       </div>
       <Button
         className={classes.submitButton}
@@ -148,7 +160,7 @@ const LoginForm = props => {
         size="large"
         type="submit"
         variant="contained">
-        Sign in
+        Create
       </Button>
     </form>
   );

@@ -49,7 +49,7 @@ const ProjectCreate = () => {
   return (
     <Page className={classes.root} title="Tenant Edit">
       <Header />
-      <TenantEdit />
+      {/* <TenantEdit /> */}
     </Page>
   );
 };
