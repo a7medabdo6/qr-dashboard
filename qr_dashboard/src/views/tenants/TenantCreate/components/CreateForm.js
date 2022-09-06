@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField, Avatar } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 
@@ -20,7 +20,7 @@ const schema = {
   password: {
     presence: { allowEmpty: false, message: 'is required' }
   },
-  busisness_name: {
+  business_name: {
     presence: { allowEmpty: false, message: 'is required' }
   },
 
@@ -66,21 +66,30 @@ const schema = {
 
 const useStyles = makeStyles(theme => ({
   root: {},
-  loginForm: {
-    marginTop: theme.spacing(3)
-  },
+  loginForm: {},
   fields: {
-    margin: theme.spacing(-1),
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      flexGrow: 1,
-      margin: theme.spacing(1)
-    }
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    '& > *': {}
   },
   submitButton: {
     marginTop: theme.spacing(2),
     width: '100%'
+  },
+  avatar: {
+    marginTop: theme.spacing(1.5),
+    alignSelf: 'center',
+    textAlign: '-webkit-center'
+  },
+  large: {
+    [theme.breakpoints.up('sm')]: {
+      height: `275px`,
+      width: `275px`
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: `75px`,
+      width: `75px`
+    }
   }
 }));
 
@@ -92,6 +101,9 @@ const LoginForm = props => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { UserInfo } = useSelector(state => state.UserInfo);
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [logo, setLogo] = useState(null);
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -131,12 +143,31 @@ const LoginForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-
-    console.log(formState.values);
-    const result = await CreateTenantRequest(formState.values);
+    const formData = new FormData();
+    formData.append('logo', logo);
+    formData.append('busisness_name', formState.values.business_name);
+    formData.append('client_name_ar', formState.values.client_name_ar);
+    formData.append('client_name_en', formState.values.client_name_en);
+    formData.append('email', formState.values.email);
+    formData.append('max_branches', formState.values.max_branches);
+    formData.append('max_groups', formState.values.max_groups);
+    formData.append('password', formState.values.password);
+    formData.append('subscribedTo', formState.values.subscribedTo);
+    formData.append('subscribedfrom', formState.values.subscribedfrom);
+    console.log(formData);
+    const result = await CreateTenantRequest(formData);
     if (!isError) {
       console.log('done');
     }
+  };
+
+  const handleFileSelect = event => {
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    setLogo(event.target.files[0]);
+    reader.onload = function() {
+      setSelectedFile(reader.result);
+    };
   };
 
   const hasError = field =>
@@ -147,158 +178,186 @@ const LoginForm = props => {
       {...rest}
       className={clsx(classes.root, className)}
       onSubmit={handleSubmit}>
-      <div className={classes.fields}>
-        <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('busisness_name')}
-              fullWidth
-              helperText={
-                hasError('busisness_name')
-                  ? formState.errors.busisness_name[0]
-                  : null
-              }
-              label="busisness Name"
-              name="busisness_name"
-              onChange={handleChange}
-              value={formState.values.busisness_name || ''}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('email')}
-              fullWidth
-              helperText={hasError('email') ? formState.errors.email[0] : null}
-              label="Email address"
-              name="email"
-              onChange={handleChange}
-              value={formState.values.email || ''}
-              variant="outlined"
-            />
+      <div>
+        <Grid container direction="row">
+          <Grid container item xs={6} spacing={3} direction="column">
+            <Grid item>
+              <TextField
+                error={hasError('business_name')}
+                fullWidth
+                helperText={
+                  hasError('business_name')
+                    ? formState.errors.business_name[0]
+                    : null
+                }
+                label="Business Name"
+                name="business_name"
+                onChange={handleChange}
+                value={formState.values.business_name || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('email')}
+                fullWidth
+                helperText={
+                  hasError('email') ? formState.errors.email[0] : null
+                }
+                label="Email address"
+                name="email"
+                onChange={handleChange}
+                value={formState.values.email || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('password')}
+                fullWidth
+                helperText={
+                  hasError('password') ? formState.errors.password[0] : null
+                }
+                label=" password"
+                name="password"
+                onChange={handleChange}
+                value={formState.values.password || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('client_name_en')}
+                fullWidth
+                helperText={
+                  hasError('client_name_en')
+                    ? formState.errors.client_name_en[0]
+                    : null
+                }
+                label=" client_name_en"
+                name="client_name_en"
+                onChange={handleChange}
+                value={formState.values.client_name_en || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('client_name_ar')}
+                fullWidth
+                helperText={
+                  hasError('client_name_ar')
+                    ? formState.errors.client_name_ar[0]
+                    : null
+                }
+                label=" client_name_ar"
+                name="client_name_ar"
+                onChange={handleChange}
+                value={formState.values.client_name_ar || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('subscribedfrom')}
+                fullWidth
+                helperText={
+                  hasError('subscribedfrom')
+                    ? formState.errors.subscribedfrom[0]
+                    : null
+                }
+                label=" subscribedfrom"
+                name="subscribedfrom"
+                onChange={handleChange}
+                value={formState.values.subscribedfrom || ''}
+                variant="outlined"
+                id="date"
+                type="date"
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('subscribedTo')}
+                fullWidth
+                helperText={
+                  hasError('subscribedTo')
+                    ? formState.errors.subscribedTo[0]
+                    : null
+                }
+                label=" subscribedTo"
+                name="subscribedTo"
+                onChange={handleChange}
+                value={formState.values.subscribedTo || ''}
+                variant="outlined"
+                id="date"
+                type="date"
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('password')}
-              fullWidth
-              helperText={
-                hasError('password') ? formState.errors.password[0] : null
-              }
-              label=" password"
-              name="password"
-              onChange={handleChange}
-              value={formState.values.password || ''}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('client_name_en')}
-              fullWidth
-              helperText={
-                hasError('client_name_en')
-                  ? formState.errors.client_name_en[0]
-                  : null
-              }
-              label=" client_name_en"
-              name="client_name_en"
-              onChange={handleChange}
-              value={formState.values.client_name_en || ''}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('client_name_ar')}
-              fullWidth
-              helperText={
-                hasError('client_name_ar')
-                  ? formState.errors.client_name_ar[0]
-                  : null
-              }
-              label=" client_name_ar"
-              name="client_name_ar"
-              onChange={handleChange}
-              value={formState.values.client_name_ar || ''}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('subscribedfrom')}
-              fullWidth
-              helperText={
-                hasError('subscribedfrom')
-                  ? formState.errors.subscribedfrom[0]
-                  : null
-              }
-              label=" subscribedfrom"
-              name="subscribedfrom"
-              onChange={handleChange}
-              value={formState.values.subscribedfrom || ''}
-              variant="outlined"
-              id="date"
-              type="date"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('subscribedTo')}
-              fullWidth
-              helperText={
-                hasError('subscribedTo')
-                  ? formState.errors.subscribedTo[0]
-                  : null
-              }
-              label=" subscribedTo"
-              name="subscribedTo"
-              onChange={handleChange}
-              value={formState.values.subscribedTo || ''}
-              variant="outlined"
-              id="date"
-              type="date"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('max_branches')}
-              fullWidth
-              helperText={
-                hasError('max_branches')
-                  ? formState.errors.max_branches[0]
-                  : null
-              }
-              label=" max branches"
-              name="max_branches"
-              type="number"
-              onChange={handleChange}
-              value={formState.values.max_branches || ''}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('max_groups')}
-              fullWidth
-              helperText={
-                hasError('max_groups') ? formState.errors.max_groups[0] : null
-              }
-              label=" max groups"
-              name="max_groups"
-              type="number"
-              onChange={handleChange}
-              value={formState.values.max_groups || ''}
-              variant="outlined"
-            />
-          </Grid>{' '}
+          <Grid
+            container
+            item
+            xs={6}
+            spacing={3}
+            direction="column"
+            className={classes.fields}>
+            <Grid item className={classes.avatar}>
+              <Avatar
+                alt="avatar"
+                src={selectedFile}
+                className={classes.large}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                type="file"
+                fullWidth
+                onChange={handleFileSelect}
+                // value={formState.values.name || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('max_branches')}
+                fullWidth
+                helperText={
+                  hasError('max_branches')
+                    ? formState.errors.max_branches[0]
+                    : null
+                }
+                label=" max branches"
+                name="max_branches"
+                type="number"
+                onChange={handleChange}
+                value={formState.values.max_branches || ''}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                error={hasError('max_groups')}
+                fullWidth
+                helperText={
+                  hasError('max_groups') ? formState.errors.max_groups[0] : null
+                }
+                label=" max groups"
+                name="max_groups"
+                type="number"
+                onChange={handleChange}
+                value={formState.values.max_groups || ''}
+                variant="outlined"
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </div>
       <Button
