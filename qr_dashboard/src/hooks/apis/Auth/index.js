@@ -30,6 +30,13 @@ const postCreateUserrequest = async data => {
 const ActivateUser = async data => {
   return await api.patch(`auth/users/${data.id}/`, data);
 };
+const getOneUser = async ({ queryKey }) => {
+  return await api.get(`auth/users/${queryKey[1]}`);
+};
+const UpdateSingleUser = async data => {
+  const id = data.get('id');
+  return await api.patch(`auth/users/${id}/`, data);
+};
 const DeleteUser = async data => {
   return await api.delete(`auth/users/${data.id}`);
 };
@@ -73,7 +80,7 @@ const useCreateUserHook = () => {
         headers: res.headers,
         data: res.data
       };
-      dispatch(ToastShow('User Created Successfuly'));
+      dispatch(ToastShow('User Created Successfully'));
     },
     onError: err => {
       console.log(err);
@@ -120,7 +127,7 @@ const useActivateUserHook = () => {
       QueryClient.invalidateQueries('allusers');
       console.log(result);
       // dispatch(TenantList(result.data.results));
-      dispatch(ToastShow('user updated Successfuly'));
+      dispatch(ToastShow('user updated Successfully'));
       // console.log(result.data, 'result.data');
 
       return result.data;
@@ -129,6 +136,36 @@ const useActivateUserHook = () => {
       console.log(err, 'err');
       //   dispatch(errorAtLogin(err.response.data.detail));
       //  return err;
+    }
+  });
+};
+const useGetOneUserHook = id => {
+  return useQuery(['allUsers', id], getOneUser, {
+    onSuccess: res => {
+      return res.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
+    }
+  });
+};
+const useUpdateSingleUserHook = () => {
+  const dispatch = useDispatch();
+  const QueryClient = useQueryClient();
+  return useMutation(UpdateSingleUser, {
+    onSuccess: res => {
+      const result = {
+        status: res.status + '-' + res.statusText,
+        headers: res.headers,
+        data: res.data
+      };
+      QueryClient.invalidateQueries('allusers');
+      console.log(result);
+      dispatch(ToastShow('User updated Successfully'));
+      return result.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
     }
   });
 };
@@ -145,7 +182,7 @@ const useDeleteUserHook = () => {
       };
       QueryClient.invalidateQueries('allusers');
 
-      dispatch(ToastShow('user Deleted Successfuly'));
+      dispatch(ToastShow('user Deleted Successfully'));
 
       return result.data;
     },
@@ -161,5 +198,7 @@ export {
   useCreateUserHook,
   useGetAllUsersHook,
   useActivateUserHook,
+  useGetOneUserHook,
+  useUpdateSingleUserHook,
   useDeleteUserHook
 };
