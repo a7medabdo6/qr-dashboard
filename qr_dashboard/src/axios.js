@@ -4,8 +4,8 @@ const user = JSON.parse(localStorage.getItem('user'));
 export const api = axios.create({
   baseURL: 'https://onpixie.net/',
   headers: {
-    Authorization: `Bearer ${JSON.parse(token)}`
-    // BusisnessName: user ? user.tenant.busisness_name : null
+    Authorization: `Bearer ${JSON.parse(token)}`,
+    BusisnessName: user ? user.tenant.busisness_name : ''
   }
   // .. other options
 });
