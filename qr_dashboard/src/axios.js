@@ -5,7 +5,7 @@ export const api = axios.create({
   baseURL: 'https://onpixie.net/',
   headers: {
     Authorization: `Bearer ${JSON.parse(token)}`
-    // BusisnessName: user ? user.tenant.busisness_name : null
+    // BusisnessName: user ? user.tenant.busisness_name : ''
   }
   // .. other options
 });
