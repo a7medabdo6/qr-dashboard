@@ -84,18 +84,34 @@ const useStyles = makeStyles(theme => ({
     textAlign: '-webkit-center'
   },
   large: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('xs')]: {
       height: `275px`,
       width: `275px`
     },
-    [theme.breakpoints.down('sm')]: {
-      height: `75px`,
-      width: `75px`
+    [theme.breakpoints.down('xs')]: {
+      height: `150px`,
+      width: `150px`
+    }
+  },
+  LargeView: {
+    [theme.breakpoints.up('xs')]: {
+      display: 'flex'
+    },
+    [theme.breakpoints.down('xs')]: {
+      display: 'none'
+    }
+  },
+  SmallView: {
+    [theme.breakpoints.up('xs')]: {
+      display: 'none'
+    },
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex'
     }
   }
 }));
 
-const LoginForm = props => {
+const EditForm = props => {
   let { id } = useParams();
 
   const { data, isLoading } = useGetOneTenantHook(id);
@@ -198,159 +214,298 @@ const LoginForm = props => {
       {...rest}
       className={clsx(classes.root, className)}
       onSubmit={handleSubmit}>
-      <div>
-        <Grid container direction="row">
-          <Grid container item xs={6} spacing={3} direction="column">
-            <Grid item>
-              <TextField
-                error={hasError('business_name')}
-                fullWidth
-                helperText={
-                  hasError('business_name')
-                    ? formState.errors.business_name[0]
-                    : null
-                }
-                label="Business Name"
-                name="business_name"
-                onChange={handleChange}
-                value={formState.values.busisness_name || ''}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                error={hasError('client_name_en')}
-                fullWidth
-                helperText={
-                  hasError('client_name_en')
-                    ? formState.errors.client_name_en[0]
-                    : null
-                }
-                label=" client_name_en"
-                name="client_name_en"
-                onChange={handleChange}
-                value={formState.values.client_name_en || ''}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                error={hasError('client_name_ar')}
-                fullWidth
-                helperText={
-                  hasError('client_name_ar')
-                    ? formState.errors.client_name_ar[0]
-                    : null
-                }
-                label=" client_name_ar"
-                name="client_name_ar"
-                onChange={handleChange}
-                value={formState.values.client_name_ar || ''}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                error={hasError('subscribedfrom')}
-                fullWidth
-                helperText={
-                  hasError('subscribedfrom')
-                    ? formState.errors.subscribedfrom[0]
-                    : null
-                }
-                label=" subscribedfrom"
-                name="subscribedfrom"
-                onChange={handleChange}
-                value={formState.values.subscribedfrom || ''}
-                variant="outlined"
-                id="date"
-                type="date"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                error={hasError('subscribedTo')}
-                fullWidth
-                helperText={
-                  hasError('subscribedTo')
-                    ? formState.errors.subscribedTo[0]
-                    : null
-                }
-                label=" subscribedTo"
-                name="subscribedTo"
-                onChange={handleChange}
-                value={formState.values.subscribedTo || ''}
-                variant="outlined"
-                id="date"
-                type="date"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                error={hasError('max_groups')}
-                fullWidth
-                helperText={
-                  hasError('max_groups') ? formState.errors.max_groups[0] : null
-                }
-                label=" max groups"
-                name="max_groups"
-                type="number"
-                onChange={handleChange}
-                value={formState.values.max_groups || ''}
-                variant="outlined"
-              />
-            </Grid>
+      <Grid container direction="row" className={classes.LargeView}>
+        <Grid container item xs={6} spacing={3} direction="column">
+          <Grid item>
+            <TextField
+              error={hasError('business_name')}
+              fullWidth
+              helperText={
+                hasError('business_name')
+                  ? formState.errors.business_name[0]
+                  : null
+              }
+              label="Business Name"
+              name="business_name"
+              onChange={handleChange}
+              value={formState.values.busisness_name || ''}
+              variant="outlined"
+            />
           </Grid>
-          <Grid
-            container
-            item
-            xs={6}
-            spacing={3}
-            direction="column"
-            className={classes.fields}>
-            <Grid item className={classes.avatar}>
-              <Avatar
-                alt="avatar"
-                src={selectedFile || formState.values.logo}
-                className={classes.large}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                type="file"
-                fullWidth
-                onChange={handleFileSelect}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                error={hasError('max_branches')}
-                fullWidth
-                helperText={
-                  hasError('max_branches')
-                    ? formState.errors.max_branches[0]
-                    : null
-                }
-                label=" max branches"
-                name="max_branches"
-                type="number"
-                onChange={handleChange}
-                value={formState.values.max_branches || ''}
-                variant="outlined"
-              />
-            </Grid>
+          <Grid item>
+            <TextField
+              error={hasError('client_name_en')}
+              fullWidth
+              helperText={
+                hasError('client_name_en')
+                  ? formState.errors.client_name_en[0]
+                  : null
+              }
+              label=" client_name_en"
+              name="client_name_en"
+              onChange={handleChange}
+              value={formState.values.client_name_en || ''}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              error={hasError('client_name_ar')}
+              fullWidth
+              helperText={
+                hasError('client_name_ar')
+                  ? formState.errors.client_name_ar[0]
+                  : null
+              }
+              label=" client_name_ar"
+              name="client_name_ar"
+              onChange={handleChange}
+              value={formState.values.client_name_ar || ''}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              error={hasError('subscribedfrom')}
+              fullWidth
+              helperText={
+                hasError('subscribedfrom')
+                  ? formState.errors.subscribedfrom[0]
+                  : null
+              }
+              label=" subscribedfrom"
+              name="subscribedfrom"
+              onChange={handleChange}
+              value={formState.values.subscribedfrom || ''}
+              variant="outlined"
+              id="date"
+              type="date"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              error={hasError('subscribedTo')}
+              fullWidth
+              helperText={
+                hasError('subscribedTo')
+                  ? formState.errors.subscribedTo[0]
+                  : null
+              }
+              label=" subscribedTo"
+              name="subscribedTo"
+              onChange={handleChange}
+              value={formState.values.subscribedTo || ''}
+              variant="outlined"
+              id="date"
+              type="date"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              error={hasError('max_groups')}
+              fullWidth
+              helperText={
+                hasError('max_groups') ? formState.errors.max_groups[0] : null
+              }
+              label=" max groups"
+              name="max_groups"
+              type="number"
+              onChange={handleChange}
+              value={formState.values.max_groups || ''}
+              variant="outlined"
+            />
           </Grid>
         </Grid>
-      </div>
+        <Grid
+          container
+          item
+          xs={6}
+          spacing={3}
+          direction="column"
+          className={classes.fields}>
+          <Grid item className={classes.avatar}>
+            <Avatar
+              alt="avatar"
+              src={selectedFile || formState.values.logo}
+              className={classes.large}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              type="file"
+              fullWidth
+              onChange={handleFileSelect}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              error={hasError('max_branches')}
+              fullWidth
+              helperText={
+                hasError('max_branches')
+                  ? formState.errors.max_branches[0]
+                  : null
+              }
+              label=" max branches"
+              name="max_branches"
+              type="number"
+              onChange={handleChange}
+              value={formState.values.max_branches || ''}
+              variant="outlined"
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        direction="column"
+        spacing={3}
+        className={classes.SmallView}>
+        <Grid item className={classes.avatar}>
+          <Avatar
+            alt="avatar"
+            src={selectedFile || formState.values.logo}
+            className={classes.large}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            type="file"
+            fullWidth
+            onChange={handleFileSelect}
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('business_name')}
+            fullWidth
+            helperText={
+              hasError('business_name')
+                ? formState.errors.business_name[0]
+                : null
+            }
+            label="Business Name"
+            name="business_name"
+            onChange={handleChange}
+            value={formState.values.busisness_name || ''}
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('client_name_en')}
+            fullWidth
+            helperText={
+              hasError('client_name_en')
+                ? formState.errors.client_name_en[0]
+                : null
+            }
+            label=" client_name_en"
+            name="client_name_en"
+            onChange={handleChange}
+            value={formState.values.client_name_en || ''}
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('client_name_ar')}
+            fullWidth
+            helperText={
+              hasError('client_name_ar')
+                ? formState.errors.client_name_ar[0]
+                : null
+            }
+            label=" client_name_ar"
+            name="client_name_ar"
+            onChange={handleChange}
+            value={formState.values.client_name_ar || ''}
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('subscribedfrom')}
+            fullWidth
+            helperText={
+              hasError('subscribedfrom')
+                ? formState.errors.subscribedfrom[0]
+                : null
+            }
+            label=" subscribedfrom"
+            name="subscribedfrom"
+            onChange={handleChange}
+            value={formState.values.subscribedfrom || ''}
+            variant="outlined"
+            id="date"
+            type="date"
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('subscribedTo')}
+            fullWidth
+            helperText={
+              hasError('subscribedTo') ? formState.errors.subscribedTo[0] : null
+            }
+            label=" subscribedTo"
+            name="subscribedTo"
+            onChange={handleChange}
+            value={formState.values.subscribedTo || ''}
+            variant="outlined"
+            id="date"
+            type="date"
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('max_groups')}
+            fullWidth
+            helperText={
+              hasError('max_groups') ? formState.errors.max_groups[0] : null
+            }
+            label=" max groups"
+            name="max_groups"
+            type="number"
+            onChange={handleChange}
+            value={formState.values.max_groups || ''}
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            error={hasError('max_branches')}
+            fullWidth
+            helperText={
+              hasError('max_branches') ? formState.errors.max_branches[0] : null
+            }
+            label=" max branches"
+            name="max_branches"
+            type="number"
+            onChange={handleChange}
+            value={formState.values.max_branches || ''}
+            variant="outlined"
+          />
+        </Grid>
+      </Grid>
       <Button
         className={classes.submitButton}
         color="secondary"
@@ -364,8 +519,8 @@ const LoginForm = props => {
   );
 };
 
-LoginForm.propTypes = {
+EditForm.propTypes = {
   className: PropTypes.string
 };
 
-export default LoginForm;
+export default EditForm;
