@@ -4,7 +4,7 @@ import { Button } from '@material-ui/core';
 import { Page } from 'components';
 
 import { Header, General } from './components';
-import TenantEdit from './components/EditForm';
+import TenantCreate from './components/CreateForm';
 const useStyles = makeStyles(theme => ({
   root: {
     width: theme.breakpoints.values.lg,
@@ -47,9 +47,9 @@ const ProjectCreate = () => {
     canHire: ''
   });
   return (
-    <Page className={classes.root} title="Tenant Edit">
+    <Page className={classes.root} title="Branch Createe">
       <Header />
-      <TenantEdit />
+      <TenantCreate />
     </Page>
   );
 };
