@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   // user: null,
-  allgroups: null
+  allbranches: []
 };
 
-export const groupsSlice = createSlice({
-  name: 'groups',
+export const branchesSlice = createSlice({
+  name: 'branches',
   initialState,
   reducers: {
     // UserInfo: (state, action) => {
@@ -16,17 +16,17 @@ export const groupsSlice = createSlice({
     //   // immutable state based off those changes
     //   state.user = action.payload;
     // },
-    GroupsList: (state, action) => {
+    BranchesList: (state, action) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
-      state.allgroups = action.payload;
+      state.allbranches = action.payload;
     }
   }
 });
 
 // Action creators are generated for each case reducer function
-export const { GroupsList } = groupsSlice.actions;
+export const { BranchesList } = branchesSlice.actions;
 
-export default groupsSlice.reducer;
+export default branchesSlice.reducer;

@@ -22,16 +22,16 @@ const Header = props => {
             Management
           </Typography>
           <Typography component="h1" variant="h3">
-            Groups
+            Branches
           </Typography>
         </Grid>
         <Grid item>
           <Button
             color="primary"
             component={RouterLink}
-            to="/groups/create"
+            to="/branches/create"
             variant="contained">
-            Add group
+            Add Branch
           </Button>
         </Grid>
       </Grid>
