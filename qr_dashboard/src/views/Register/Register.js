@@ -10,9 +10,6 @@ import {
   Link,
   Avatar
 } from '@material-ui/core';
-import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
-
-import gradients from 'utils/gradients';
 import { Page } from 'components';
 import { RegisterForm } from './components';
 
@@ -51,18 +48,6 @@ const useStyles = makeStyles(theme => ({
       display: 'none'
     }
   },
-  icon: {
-    backgroundImage: gradients.orange,
-    color: theme.palette.white,
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
-    position: 'absolute',
-    top: -32,
-    left: theme.spacing(3),
-    height: 64,
-    width: 64,
-    fontSize: 32
-  },
   registerForm: {
     marginTop: theme.spacing(3)
   },
@@ -82,18 +67,11 @@ const Register = () => {
   const classes = useStyles();
 
   return (
-    <Page className={classes.root} title="Register">
+    <Page className={classes.root} title="User Register">
       <Card className={classes.card}>
         <CardContent className={classes.content}>
-          <PersonAddIcon className={classes.icon} />
-          <Typography gutterBottom variant="h3">
-            Create User
-          </Typography>
-          <Typography variant="subtitle2">
-            Create User on the internal platform
-          </Typography>
           <RegisterForm className={classes.registerForm} />
-          <Divider className={classes.divider} />
+          {/*<Divider className={classes.divider} />*/}
           {/* <Link
             align="center"
             color="secondary"
