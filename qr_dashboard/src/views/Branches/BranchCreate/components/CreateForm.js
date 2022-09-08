@@ -5,61 +5,28 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { Button, TextField, Typography, Checkbox } from '@material-ui/core';
+import { Button, TextField, Checkbox, Typography } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { useParams } from 'react-router-dom';
+
 import useRouter from 'utils/useRouter';
-import { useGetOneGroupHook, useActivateGroupHook } from 'hooks/apis/Groups';
+import { useCreateBranchHook, useGetAllGroupsHook } from 'hooks/apis/Branches';
 
 const schema = {
-  // email: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  //   //email: true
-  // },
-  // password: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // busisness_name: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // // client_name: {
-  // //   presence: { allowEmpty: false, message: 'is required' }
-  // // },
-  // client_name_en: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // client_name_ar: {
-  //   // email: true,
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // logo: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // schema_name: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // note: {
-  //   presence: { allowEmpty: true, message: 'is required' }
-  // },
-  // is_active: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // subscribedfrom: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // subscribedTo: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // max_branches: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // },
-  // max_groups: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // }
-  // max_products: {
-  //   presence: { allowEmpty: false, message: 'is required' }
-  // }
+  title: {
+    presence: { allowEmpty: false, message: 'is required' }
+    //email: true
+  },
+  title_ar: {
+    presence: { allowEmpty: false, message: 'is required' }
+  },
+  group: {
+    presence: { allowEmpty: false, message: 'is required' }
+  },
+  active: {
+    // presence: { allowEmpty: true, message: 'is required' },
+    // checked: true
+  }
 };
 
 const useStyles = makeStyles(theme => ({
@@ -83,32 +50,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
-  let { id } = useParams();
-
-  const { data, isLoading } = useGetOneGroupHook(id);
-  console.log(data, 'iid');
-  const { mutate: UpdateGroupRequest, isError } = useActivateGroupHook();
+  const { mutate: CreateBranchRequest, isError } = useCreateBranchHook();
+  const { allgroups } = useSelector(state => state.Groups);
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { UserInfo } = useSelector(state => state.UserInfo);
 
   const [formState, setFormState] = useState({
     isValid: false,
-    values: {},
+    values: { active: false },
     touched: {},
     errors: {}
   });
 
-  useEffect(() => {
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        title: data?.data?.title,
-        title_ar: data?.data?.title_ar,
-        active: data?.data?.active
-      }
-    }));
-  }, [data]);
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
@@ -142,20 +99,12 @@ const LoginForm = props => {
     event.preventDefault();
 
     console.log(formState.values);
-    const result = await UpdateGroupRequest({
-      ...formState.values,
-      id: data.data.id
-    });
-    if (!isError) {
-      console.log('done');
-    }
+    const result = await CreateBranchRequest(formState.values);
   };
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  if (isLoading) {
-    return <div>Loading ....</div>;
-  }
+
   return (
     <form
       {...rest}
@@ -190,6 +139,29 @@ const LoginForm = props => {
             />
           </Grid>
           <Grid item xs={6}>
+            <TextField
+              fullWidth
+              label="Select Group"
+              name="group"
+              error={hasError('group')}
+              helperText={hasError('group') ? formState.errors.group[0] : null}
+              onChange={handleChange}
+              select
+              // eslint-disable-next-line react/jsx-sort-props
+              SelectProps={{ native: true }}
+              value={formState.values.group || ''}
+              variant="outlined">
+              <option key={0} value={0}>
+                Select Group
+              </option>
+              {allgroups?.map(option => (
+                <option key={option.id} value={option.id}>
+                  {option.title}
+                </option>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={6}>
             <Typography
               color="textSecondary"
               style={{ marginInline: '10px' }}
@@ -214,7 +186,7 @@ const LoginForm = props => {
         size="large"
         type="submit"
         variant="contained">
-        Update
+        Create
       </Button>
     </form>
   );

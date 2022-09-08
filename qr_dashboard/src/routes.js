@@ -244,16 +244,16 @@ export const DashboardUser = [
         exact: true,
         component: lazy(() => import('views/tenants/TenantEdit'))
       },
-      {
-        path: '/branches',
-        exact: true,
-        component: lazy(() => import('views/BranchList'))
-      },
-      {
-        path: '/branch/create',
-        exact: true,
-        component: lazy(() => import('views/BranchList/BranchCreate'))
-      },
+      // {
+      //   path: '/branches',
+      //   exact: true,
+      //   component: lazy(() => import('views/BranchList'))
+      // },
+      // {
+      //   path: '/branch/create',
+      //   exact: true,
+      //   component: lazy(() => import('views/BranchList/BranchCreate'))
+      // },
       {
         path: '/menu',
         exact: true,
@@ -522,6 +522,21 @@ export const DashboardManager = [
         component: lazy(() => import('views/Groups/GroupEdit'))
       },
       {
+        path: '/branches',
+        exact: true,
+        component: lazy(() => import('views/Branches'))
+      },
+      {
+        path: '/branches/create',
+        exact: true,
+        component: lazy(() => import('views/Branches/BranchCreate'))
+      },
+      {
+        path: '/branches/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/Branches/GroupEdit'))
+      },
+      {
         path: '/users',
         exact: true,
         component: lazy(() => import('views/users'))
@@ -537,16 +552,16 @@ export const DashboardManager = [
         component: lazy(() => import('views/users/UserEdit'))
       },
 
-      {
-        path: '/branches',
-        exact: true,
-        component: lazy(() => import('views/BranchList'))
-      },
-      {
-        path: '/branch/create',
-        exact: true,
-        component: lazy(() => import('views/BranchList/BranchCreate'))
-      },
+      // {
+      //   path: '/branches',
+      //   exact: true,
+      //   component: lazy(() => import('views/BranchList'))
+      // },
+      // {
+      //   path: '/branch/create',
+      //   exact: true,
+      //   component: lazy(() => import('views/BranchList/BranchCreate'))
+      // },
       {
         path: '/menu',
         exact: true,

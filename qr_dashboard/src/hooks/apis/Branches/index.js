@@ -7,15 +7,16 @@ import { ToastShow } from 'store/Global/Slice';
 
 import { UserInfo } from 'store/Auth/Slice';
 import { GroupsList } from 'store/Groups/Slice';
+import { BranchesList } from 'store/Branches/Slice';
 
-const getAllGroups = async data => {
-  return await api.get('branches/groups/');
+const getAllBranches = async data => {
+  return await api.get('branches/');
 };
 const getOneGroup = async ({ queryKey }) => {
-  return await api.get(`branches/groups/${queryKey[1]}`);
+  return await api.get(`branches/${queryKey[1]}`);
 };
-const postCreateGrouprequest = async data => {
-  return await api.post('branches/groups/', data);
+const postCreateBranchrequest = async data => {
+  return await api.post('branches/', data);
 };
 const ActivateGroup = async data => {
   return await api.patch(`branches/groups/${data.id}/`, data);
@@ -24,21 +25,21 @@ const DeleteGroup = async data => {
   return await api.delete(`branches/groups/${data.id}`);
 };
 
-const useCreateGroupHook = () => {
+const useCreateBranchHook = () => {
   const QueryClient = useQueryClient();
 
   const dispatch = useDispatch();
   const router = useRouter();
-  return useMutation(postCreateGrouprequest, {
+  return useMutation(postCreateBranchrequest, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
         headers: res.headers,
         data: res.data
       };
-      QueryClient.invalidateQueries('allgroups');
+      QueryClient.invalidateQueries('allbranches');
 
-      dispatch(ToastShow('Group Created Successfuly'));
+      dispatch(ToastShow('Branch Created Successfuly'));
     },
     onError: err => {
       console.log(err);
@@ -48,10 +49,10 @@ const useCreateGroupHook = () => {
   });
 };
 
-const useGetAllGroupsHook = () => {
+const useGetAllBranchesHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  return useQuery('allgroups', getAllGroups, {
+  return useQuery('allbranches', getAllBranches, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -59,7 +60,7 @@ const useGetAllGroupsHook = () => {
         data: res.data
       };
       // console.log(result);
-      dispatch(GroupsList(result.data.results));
+      dispatch(BranchesList(result.data.results));
       // console.log(result.data, 'result.data');
 
       // return result.data;
@@ -106,7 +107,7 @@ const useActivateGroupHook = () => {
         headers: res.headers,
         data: res.data
       };
-      QueryClient.invalidateQueries('allgroups');
+      QueryClient.invalidateQueries('allbranches');
       console.log(result);
       // dispatch(TenantList(result.data.results));
       dispatch(ToastShow('group updated Successfuly'));
@@ -132,7 +133,7 @@ const useDeleteGroupHook = () => {
         headers: res.headers,
         data: res.data
       };
-      QueryClient.invalidateQueries('allgroups');
+      QueryClient.invalidateQueries('allbranches');
 
       dispatch(ToastShow('group Deleted Successfuly'));
 
@@ -146,8 +147,8 @@ const useDeleteGroupHook = () => {
   });
 };
 export {
-  useCreateGroupHook,
-  useGetAllGroupsHook,
+  useCreateBranchHook,
+  useGetAllBranchesHook,
   useActivateGroupHook,
   useDeleteGroupHook,
   useGetOneGroupHook
