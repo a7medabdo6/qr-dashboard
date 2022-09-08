@@ -260,6 +260,7 @@ const TopBar = props => {
             onClick={handleNotificationsOpen}
             ref={notificationsRef}>
             <Badge
+              overlap="rectangular"
               badgeContent={notifications.length}
               classes={{ badge: classes.notificationsBadge }}
               variant="dot">

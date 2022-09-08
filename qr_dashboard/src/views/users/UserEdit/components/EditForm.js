@@ -1,20 +1,21 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import validate from 'validate.js';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { Button, TextField } from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
-import { useParams } from 'react-router-dom';
-import useRouter from 'utils/useRouter';
 import {
-  useCreateTenantHook,
-  useGetOneTenantHook,
-  useActivateTenantHook
-} from 'hooks/apis/Tenants';
+  Button,
+  Checkbox,
+  FormHelperText,
+  TextField,
+  Typography,
+  Link,
+  Avatar
+} from '@material-ui/core';
+import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
+import gradients from 'utils/gradients';
+import { useParams } from 'react-router-dom';
+import { useGetOneUserHook, useUpdateSingleUserHook } from 'hooks/apis/Auth';
 
 const schema = {
   // email: {
@@ -68,9 +69,6 @@ const schema = {
 
 const useStyles = makeStyles(theme => ({
   root: {},
-  loginForm: {
-    marginTop: theme.spacing(3)
-  },
   fields: {
     margin: theme.spacing(-1),
     display: 'flex',
@@ -80,24 +78,52 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1)
     }
   },
+  policy: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  policyCheckbox: {
+    marginLeft: '-14px'
+  },
   submitButton: {
     marginTop: theme.spacing(2),
     width: '100%'
+  },
+  icon: {
+    backgroundImage: gradients.orange,
+    color: theme.palette.white,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    position: 'absolute',
+    top: -32,
+    left: theme.spacing(3),
+    height: 64,
+    width: 64,
+    fontSize: 32
+  },
+  avatar: {
+    color: theme.palette.white,
+    borderRadius: theme.shape.borderRadius,
+    position: 'absolute',
+    top: -32,
+    left: theme.spacing(3),
+    height: 64,
+    width: 64,
+    fontSize: 32
   }
 }));
 
-const LoginForm = props => {
+const EditForm = props => {
   let { id } = useParams();
 
-  const { data, isLoading } = useGetOneTenantHook(id);
-  console.log(data, 'iid');
-  const { mutate: UpdateTenantRequest, isError } = useActivateTenantHook();
+  const { data, isLoading } = useGetOneUserHook(id);
+  const { mutate: UpdateUserRequest, isError } = useUpdateSingleUserHook();
   const { className, ...rest } = props;
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [logo, setLogo] = useState(null);
+
   const classes = useStyles();
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { UserInfo } = useSelector(state => state.UserInfo);
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -105,25 +131,22 @@ const LoginForm = props => {
     touched: {},
     errors: {}
   });
+
   useEffect(() => {
     setFormState(formState => ({
       ...formState,
       values: {
+        name: data?.data?.name,
+        avatar: data?.data?.avatar,
         email: data?.data?.email,
-        busisness_name: data?.data?.busisness_name,
-        password: data?.data?.password,
-        client_name_en: data?.data?.client_name_en,
-        client_name_ar: data?.data?.client_name_ar,
-        subscribedfrom: data?.data?.subscribedfrom,
-        subscribedTo: data?.data?.subscribedTo,
-        max_branches: data?.data?.max_branches,
-        max_groups: data?.data?.max_groups
+        mobile: data?.data?.mobile,
+        is_active: data?.data?.is_active
       }
     }));
   }, [data]);
+
   useEffect(() => {
     const errors = validate(formState.values, schema);
-
     setFormState(formState => ({
       ...formState,
       isValid: errors ? false : true,
@@ -150,14 +173,35 @@ const LoginForm = props => {
     }));
   };
 
+  const handleFileSelect = event => {
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    setLogo(event.target.files[0]);
+    reader.onload = function() {
+      setSelectedFile(reader.result);
+    };
+  };
+
   const handleSubmit = async event => {
     event.preventDefault();
-
-    console.log(formState.values);
-    const result = await UpdateTenantRequest({
-      ...formState.values,
-      id: data.data.id
-    });
+    const formData = new FormData();
+    logo && formData.append('avatar', logo);
+    formState.values.email && formData.append('email', formState.values.email);
+    formState.values.password && formData.append('password', formState.values.password);
+    formState.values.name && formData.append('name', formState.values.name);
+    formState.values.mobile && formData.append('mobile', formState.values.mobile);
+    formState.values.is_active && formData.append('is_active', formState.values.is_active);
+    formData.append('id', data.data.id);
+    console.log(formData);
+    const result = await UpdateUserRequest(formData);
+    if (result) {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...result
+        }
+      }));
+    }
     if (!isError) {
       console.log('done');
     }
@@ -169,179 +213,115 @@ const LoginForm = props => {
     return <div>Loading ....</div>;
   }
   return (
-    <form
-      {...rest}
-      className={clsx(classes.root, className)}
-      onSubmit={handleSubmit}>
-      <div className={classes.fields}>
-        <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('busisness_name')}
-              fullWidth
-              helperText={
-                hasError('busisness_name')
-                  ? formState.errors.busisness_name[0]
-                  : null
-              }
-              label="busisness Name"
-              name="busisness_name"
-              onChange={handleChange}
-              value={formState.values.busisness_name}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('email')}
-              fullWidth
-              helperText={hasError('email') ? formState.errors.email[0] : null}
-              label="Email address"
-              name="email"
-              onChange={handleChange}
-              value={formState.values.email}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('password')}
-              fullWidth
-              helperText={
-                hasError('password') ? formState.errors.password[0] : null
-              }
-              label=" password"
-              name="password"
-              onChange={handleChange}
-              value={formState.values.password}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('client_name_en')}
-              fullWidth
-              helperText={
-                hasError('client_name_en')
-                  ? formState.errors.client_name_en[0]
-                  : null
-              }
-              label=" client_name_en"
-              name="client_name_en"
-              onChange={handleChange}
-              value={formState.values.client_name_en}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('client_name_ar')}
-              fullWidth
-              helperText={
-                hasError('client_name_ar')
-                  ? formState.errors.client_name_ar[0]
-                  : null
-              }
-              label=" client_name_ar"
-              name="client_name_ar"
-              onChange={handleChange}
-              value={formState.values.client_name_ar}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('subscribedfrom')}
-              fullWidth
-              helperText={
-                hasError('subscribedfrom')
-                  ? formState.errors.subscribedfrom[0]
-                  : null
-              }
-              label=" subscribedfrom"
-              name="subscribedfrom"
-              onChange={handleChange}
-              value={formState.values.subscribedfrom}
-              variant="outlined"
-              id="date"
-              type="date"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('subscribedTo')}
-              fullWidth
-              helperText={
-                hasError('subscribedTo')
-                  ? formState.errors.subscribedTo[0]
-                  : null
-              }
-              label=" subscribedTo"
-              name="subscribedTo"
-              onChange={handleChange}
-              value={formState.values.subscribedTo}
-              variant="outlined"
-              id="date"
-              type="date"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('max_branches')}
-              fullWidth
-              helperText={
-                hasError('max_branches')
-                  ? formState.errors.max_branches[0]
-                  : null
-              }
-              label=" max branches"
-              name="max_branches"
-              type="number"
-              onChange={handleChange}
-              value={formState.values.max_branches}
-              variant="outlined"
-            />
-          </Grid>{' '}
-          <Grid item xs={6}>
-            <TextField
-              error={hasError('max_groups')}
-              fullWidth
-              helperText={
-                hasError('max_groups') ? formState.errors.max_groups[0] : null
-              }
-              label=" max groups"
-              name="max_groups"
-              type="number"
-              onChange={handleChange}
-              value={formState.values.max_groups}
-              variant="outlined"
-            />
-          </Grid>{' '}
-        </Grid>
-      </div>
-      <Button
-        className={classes.submitButton}
-        color="secondary"
-        disabled={!formState.isValid}
-        size="large"
-        type="submit"
-        variant="contained">
-        Update
-      </Button>
-    </form>
+    <div>
+      <Typography gutterBottom variant="h3">
+        Edit User
+      </Typography>
+      {formState.values.avatar ? (
+        <Avatar
+          alt="avatar"
+          src={selectedFile || formState.values.avatar}
+          className={classes.avatar}
+        />
+      ) : (
+        <PersonAddIcon className={classes.icon} />
+      )}
+      <form
+        {...rest}
+        encType="multipart/form-data"
+        className={clsx(classes.root, className)}
+        onSubmit={handleSubmit}>
+        <div className={classes.fields}>
+          <TextField
+            type="file"
+            fullWidth
+            onChange={handleFileSelect}
+            // value={formState.values.name || ''}
+            variant="outlined"
+          />
+          <TextField
+            error={hasError('name')}
+            helperText={hasError('name') ? formState.errors.name[0] : null}
+            label=" Name"
+            fullWidth
+            name="name"
+            onChange={handleChange}
+            value={formState.values.name || ''}
+            variant="outlined"
+          />
+          <TextField
+            error={hasError('email')}
+            helperText={hasError('email') ? formState.errors.email[0] : null}
+            label="Email"
+            name="email"
+            fullWidth
+            onChange={handleChange}
+            value={formState.values.email || ''}
+            variant="outlined"
+          />
+          <TextField
+            error={hasError('password')}
+            fullWidth
+            helperText={
+              hasError('password') ? formState.errors.password[0] : null
+            }
+            label="password "
+            name="password"
+            type="password"
+            onChange={handleChange}
+            value={formState.values.password || ''}
+            variant="outlined"
+          />
+          <TextField
+            error={hasError('mobile')}
+            fullWidth
+            helperText={hasError('mobile') ? formState.errors.mobile[0] : null}
+            label="mobile"
+            name="mobile"
+            onChange={handleChange}
+            type="number"
+            value={formState.values.mobile || ''}
+            variant="outlined"
+          />
+          <div>
+            <div className={classes.policy}>
+              <Typography
+                color="textSecondary"
+                style={{ marginInline: '10px' }}
+                variant="body1">
+                Is Active?
+              </Typography>
+              <Checkbox
+                checked={formState.values.is_active || false}
+                className={classes.policyCheckbox}
+                color="primary"
+                name="is_active"
+                onChange={handleChange}
+              />
+            </div>
+            {hasError('policy') && (
+              <FormHelperText error>
+                {formState.errors.policy[0]}
+              </FormHelperText>
+            )}
+          </div>
+        </div>
+        <Button
+          className={classes.submitButton}
+          color="secondary"
+          disabled={!formState.isValid}
+          size="large"
+          type="submit"
+          variant="contained">
+          Edit User
+        </Button>
+      </form>
+    </div>
   );
 };
 
-LoginForm.propTypes = {
+EditForm.propTypes = {
   className: PropTypes.string
 };
 
-export default LoginForm;
+export default EditForm;

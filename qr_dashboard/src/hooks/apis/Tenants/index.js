@@ -85,7 +85,7 @@ const useCreateTenantHook = () => {
       QueryClient.invalidateQueries('allTenants');
       console.log(result);
       // dispatch(TenantList(result.data.results));
-      dispatch(ToastShow('Tenant Created Successfuly'));
+      dispatch(ToastShow('Tenant Created Successfully'));
       // console.log(result.data, 'result.data');
 
       return result.data;
@@ -111,7 +111,7 @@ const useActivateTenantHook = () => {
       QueryClient.invalidateQueries('allTenants');
       console.log(result);
       // dispatch(TenantList(result.data.results));
-      dispatch(ToastShow('Tenant updated Successfuly'));
+      dispatch(ToastShow('Tenant updated Successfully'));
       // console.log(result.data, 'result.data');
 
       return result.data;
@@ -137,7 +137,7 @@ const useDeleteTenantHook = () => {
       };
       QueryClient.invalidateQueries('allTenants');
 
-      dispatch(ToastShow('Tenant Deleted Successfuly'));
+      dispatch(ToastShow('Tenant Deleted Successfully'));
 
       return result.data;
     },
