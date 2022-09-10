@@ -14,8 +14,8 @@ import {
 } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
 import gradients from 'utils/gradients';
-import { useParams } from 'react-router-dom';
-import { useGetOneUserHook, useUpdateSingleUserHook } from 'hooks/apis/Auth';
+import { useSelector } from 'react-redux';
+import { useUpdateActiveUserHook } from 'hooks/apis/Auth';
 
 const schema = {
   // email: {
@@ -94,9 +94,6 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
-    position: 'absolute',
-    top: -32,
-    left: theme.spacing(3),
     height: 64,
     width: 64,
     fontSize: 32
@@ -104,21 +101,30 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
-    position: 'absolute',
-    top: -32,
-    left: theme.spacing(3),
     height: 64,
     width: 64,
-    fontSize: 32
+    fontSize: 32,
+    display: 'inline-flex'
+  },
+  picker: {
+    [theme.breakpoints.up('xs')]: {
+      width: '80%',
+      alignItems: 'center',
+      margin: theme.spacing(0.7, 0, 3, 2)
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '70%',
+      alignItems: 'center',
+      margin: theme.spacing(0.7, 0, 3, 2)
+    }
   }
 }));
 
-const EditForm = props => {
-  let { id } = useParams();
-
-  const { data, isLoading } = useGetOneUserHook(id);
-  const { mutate: UpdateUserRequest, isError } = useUpdateSingleUserHook();
+const UpdateProfile = props => {
+  const { mutate: UpdateUserRequest, isError } = useUpdateActiveUserHook();
   const { className, ...rest } = props;
+
+  const data = useSelector(state => state.UserInfo.user);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [logo, setLogo] = useState(null);
@@ -133,14 +139,15 @@ const EditForm = props => {
   });
 
   useEffect(() => {
+    console.log('data: ', data);
     setFormState(formState => ({
       ...formState,
       values: {
-        name: data?.data?.name,
-        avatar: data?.data?.avatar,
-        email: data?.data?.email,
-        mobile: data?.data?.mobile,
-        is_active: data?.data?.is_active
+        name: data?.name,
+        avatar: data?.avatar,
+        email: data?.email,
+        mobile: data?.mobile,
+        is_active: data?.is_active
       }
     }));
   }, [data]);
@@ -196,7 +203,7 @@ const EditForm = props => {
       formData.append('mobile', formState.values.mobile);
     formState.values.is_active &&
       formData.append('is_active', formState.values.is_active);
-    formData.append('id', data.data.id);
+    // formData.append('id', data.data.id);
     console.log(formData);
     const result = await UpdateUserRequest(formData);
     if (result) {
@@ -214,14 +221,8 @@ const EditForm = props => {
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  if (isLoading) {
-    return <div>Loading ....</div>;
-  }
   return (
     <div>
-      <Typography gutterBottom variant="h3">
-        Edit User
-      </Typography>
       {formState.values.avatar ? (
         <Avatar
           alt="avatar"
@@ -231,19 +232,20 @@ const EditForm = props => {
       ) : (
         <PersonAddIcon className={classes.icon} />
       )}
+      <TextField
+        type="file"
+        fullWidth
+        onChange={handleFileSelect}
+        // value={formState.values.name || ''}
+        variant="outlined"
+        className={classes.picker}
+      />
       <form
         {...rest}
         encType="multipart/form-data"
         className={clsx(classes.root, className)}
         onSubmit={handleSubmit}>
         <div className={classes.fields}>
-          <TextField
-            type="file"
-            fullWidth
-            onChange={handleFileSelect}
-            // value={formState.values.name || ''}
-            variant="outlined"
-          />
           <TextField
             error={hasError('name')}
             helperText={hasError('name') ? formState.errors.name[0] : null}
@@ -265,19 +267,6 @@ const EditForm = props => {
             variant="outlined"
           />
           <TextField
-            error={hasError('password')}
-            fullWidth
-            helperText={
-              hasError('password') ? formState.errors.password[0] : null
-            }
-            label="password "
-            name="password"
-            type="password"
-            onChange={handleChange}
-            value={formState.values.password || ''}
-            variant="outlined"
-          />
-          <TextField
             error={hasError('mobile')}
             fullWidth
             helperText={hasError('mobile') ? formState.errors.mobile[0] : null}
@@ -288,7 +277,7 @@ const EditForm = props => {
             value={formState.values.mobile || ''}
             variant="outlined"
           />
-          <div>
+          {/* <div>
             <div className={classes.policy}>
               <Typography
                 color="textSecondary"
@@ -309,7 +298,7 @@ const EditForm = props => {
                 {formState.errors.policy[0]}
               </FormHelperText>
             )}
-          </div>
+          </div> */}
         </div>
         <Button
           className={classes.submitButton}
@@ -318,15 +307,15 @@ const EditForm = props => {
           size="large"
           type="submit"
           variant="contained">
-          Edit User
+          Update
         </Button>
       </form>
     </div>
   );
 };
 
-EditForm.propTypes = {
+UpdateProfile.propTypes = {
   className: PropTypes.string
 };
 
-export default EditForm;
+export default UpdateProfile;

@@ -27,15 +27,24 @@ const postrequest = async data => {
 const postCreateUserrequest = async data => {
   return await api.post('auth/users/', data);
 };
+const postChangePasswordRequest = async data => {
+  return await api.post('auth/users/set_password/', data);
+};
 const ActivateUser = async data => {
   return await api.patch(`auth/users/${data.id}/`, data);
 };
 const getOneUser = async ({ queryKey }) => {
   return await api.get(`auth/users/${queryKey[1]}`);
 };
+const getActiveUser = async () => {
+  return await api.get(`auth/users/me/`);
+};
 const UpdateSingleUser = async data => {
   const id = data.get('id');
   return await api.patch(`auth/users/${id}/`, data);
+};
+const UpdateActiveUser = async data => {
+  return await api.patch(`auth/users/me/`, data);
 };
 const DeleteUser = async data => {
   return await api.delete(`auth/users/${data.id}`);
@@ -86,6 +95,24 @@ const useCreateUserHook = () => {
       console.log(err);
       //   dispatch(errorAtLogin(err.response.data.detail));
       //  return err;
+    }
+  });
+};
+
+const useChangePasswordHook = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  return useMutation(postChangePasswordRequest, {
+    onSuccess: res => {
+      const result = {
+        status: res.status + '-' + res.statusText,
+        headers: res.headers,
+        data: res.data
+      };
+      dispatch(ToastShow('Password Changed Successfully'));
+    },
+    onError: err => {
+      console.log(err);
     }
   });
 };
@@ -149,6 +176,18 @@ const useGetOneUserHook = id => {
     }
   });
 };
+const useGetActiveUserHook = () => {
+  const dispatch = useDispatch();
+  return useQuery(['allUsers'], getActiveUser, {
+    onSuccess: res => {
+      dispatch(UserInfo(res.data));
+      return res.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
+    }
+  });
+};
 const useUpdateSingleUserHook = () => {
   const dispatch = useDispatch();
   const QueryClient = useQueryClient();
@@ -161,6 +200,27 @@ const useUpdateSingleUserHook = () => {
       };
       QueryClient.invalidateQueries('allusers');
       console.log(result);
+      dispatch(ToastShow('User updated Successfully'));
+      return result.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
+    }
+  });
+};
+const useUpdateActiveUserHook = () => {
+  const dispatch = useDispatch();
+  const QueryClient = useQueryClient();
+  return useMutation(UpdateActiveUser, {
+    onSuccess: res => {
+      const result = {
+        status: res.status + '-' + res.statusText,
+        headers: res.headers,
+        data: res.data
+      };
+      QueryClient.invalidateQueries('allusers');
+      console.log('useUpdateActiveUserHook', result);
+      dispatch(UserInfo(res.data));
       dispatch(ToastShow('User updated Successfully'));
       return result.data;
     },
@@ -199,6 +259,9 @@ export {
   useGetAllUsersHook,
   useActivateUserHook,
   useGetOneUserHook,
+  useGetActiveUserHook,
   useUpdateSingleUserHook,
-  useDeleteUserHook
+  useDeleteUserHook,
+  useUpdateActiveUserHook,
+  useChangePasswordHook
 };
