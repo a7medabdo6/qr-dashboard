@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
-
+import SkeletonChildren from 'components/Skeleton/table';
+import EmptySection from 'components/EmptySection';
 import axios from 'utils/axios';
 import { Page, Paginate, SearchBar } from 'components';
 import { Header, ProjectCard } from './components';
@@ -64,7 +65,7 @@ const ProjectManagementList = () => {
     setItemOffset(newOffset);
   };
   if (isLoading) {
-    return <div>looading</div>;
+    return <SkeletonChildren />;
   }
   return (
     <Page className={classes.root} title="Project Management List">
@@ -75,12 +76,15 @@ const ProjectManagementList = () => {
           {allbranches.length} Records found. Page {page + 1} of{' '}
           {Math.ceil(allbranches.length / rowsPerPage)}
         </Typography>
-        {currentItems &&
+        {currentItems && currentItems.length > 0 ? (
           currentItems.map(project => (
             <>
               <ProjectCard key={project.id} project={project} />
             </>
-          ))}
+          ))
+        ) : (
+          <EmptySection />
+        )}
       </div>
 
       <div className={classes.paginate}>

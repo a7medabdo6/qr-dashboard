@@ -19,7 +19,7 @@ const DeleteTenant = async data => {
   return await api.delete(`tenants/${data.id}`);
 };
 const ActivateTenant = async data => {
-  const id = data.get('id');
+  const { id } = data;
   return await api.patch(`tenants/${id}/`, data);
 };
 const useGetTenantHook = () => {
