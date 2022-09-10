@@ -101,7 +101,7 @@ const Paginate = props => {
       nextLinkClassName={classes.nextLink}
       onPageChange={onPageChange}
       pageClassName={classes.page}
-      pageCount={pageCount}
+      pageCount={pageCount > 1 ? pageCount : ''}
       pageLinkClassName={classes.pageLink}
       pageRangeDisplayed={pageRangeDisplayed}
       previousClassName={classes.previous}

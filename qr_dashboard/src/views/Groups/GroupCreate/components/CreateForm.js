@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Button, TextField, Checkbox, Typography } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-
+import LoaderButton from 'components/Buttons';
 import useRouter from 'utils/useRouter';
 import { useCreateGroupHook } from 'hooks/apis/Groups';
 
@@ -48,7 +48,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
-  const { mutate: CreateGroupRequest, isError } = useCreateGroupHook();
+  const {
+    mutate: CreateGroupRequest,
+    isError,
+    isLoading
+  } = useCreateGroupHook();
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -153,7 +157,7 @@ const LoginForm = props => {
           </Grid>{' '}
         </Grid>
       </div>
-      <Button
+      {/* <Button
         className={classes.submitButton}
         color="secondary"
         disabled={!formState.isValid}
@@ -161,7 +165,12 @@ const LoginForm = props => {
         type="submit"
         variant="contained">
         Create
-      </Button>
+      </Button> */}
+      <LoaderButton
+        isLoading={isLoading}
+        formState={formState}
+        title="Create"
+      />
     </form>
   );
 };

@@ -153,7 +153,11 @@ const Header = props => {
         </Button>
       </div>
       <div className={classes.container}>
-        <Avatar alt="Person" className={classes.avatar} src={userData?.avatar} />
+        <Avatar
+          alt="Person"
+          className={classes.avatar}
+          src={userData?.avatar}
+        />
         <div className={classes.details}>
           <Typography component="h2" gutterBottom variant="overline">
             {userData?.role || 'role'}
@@ -164,15 +168,15 @@ const Header = props => {
         </div>
         <Hidden smDown>
           <div className={classes.actions}>
-            <Button
+            {/* <Button
               color="secondary"
               component={RouterLink}
               to="/chat"
               variant="contained">
               <ChatIcon className={classes.mailIcon} />
               Send message
-            </Button>
-            {connectedStatus === 'not_connected' && (
+            </Button> */}
+            {/* {connectedStatus === 'not_connected' && (
               <Button
                 color="primary"
                 onClick={handleConnectToggle}
@@ -180,8 +184,8 @@ const Header = props => {
                 <PersonAddIcon className={classes.personAddIcon} />
                 Add connection
               </Button>
-            )}
-            {connectedStatus === 'pending' && (
+            )} */}
+            {/* {connectedStatus === 'pending' && (
               <Button
                 className={classes.pendingButton}
                 onClick={handleConnectToggle}
@@ -189,12 +193,12 @@ const Header = props => {
                 <PersonAddIcon className={classes.personAddIcon} />
                 Pending connection
               </Button>
-            )}
-            <Tooltip title="More options">
+            )} */}
+            {/* <Tooltip title="More options">
               <IconButton>
                 <MoreIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </Hidden>
       </div>
