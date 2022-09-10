@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Button, TextField, Checkbox, Typography } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-
+import LoaderButton from 'components/Buttons';
 import useRouter from 'utils/useRouter';
 import { useCreateBranchHook, useGetAllGroupsHook } from 'hooks/apis/Branches';
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
-  const { mutate: CreateBranchRequest, isError } = useCreateBranchHook();
+  const { mutate: CreateBranchRequest, isLoading } = useCreateBranchHook();
   const { allgroups } = useSelector(state => state.Groups);
   const { className, ...rest } = props;
 
@@ -179,7 +179,7 @@ const LoginForm = props => {
           </Grid>{' '}
         </Grid>
       </div>
-      <Button
+      {/* <Button
         className={classes.submitButton}
         color="secondary"
         disabled={!formState.isValid}
@@ -187,7 +187,12 @@ const LoginForm = props => {
         type="submit"
         variant="contained">
         Create
-      </Button>
+      </Button> */}
+      <LoaderButton
+        formState={formState}
+        isLoading={isLoading}
+        title="Create"
+      />
     </form>
   );
 };

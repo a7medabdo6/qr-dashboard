@@ -7,6 +7,8 @@ import { Page, Paginate, SearchBar } from 'components';
 import { Header, ProjectCard } from './components';
 import { useGetAllUsersHook } from 'hooks/apis/Auth/index';
 import { useSelector } from 'react-redux';
+import SkeletonChildren from 'components/Skeleton/table';
+import EmptySection from 'components/EmptySection';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -64,8 +66,9 @@ const ProjectManagementList = () => {
     setItemOffset(newOffset);
   };
   if (isLoading) {
-    return <div>looading</div>;
+    return <SkeletonChildren />;
   }
+
   return (
     <Page className={classes.root} title="Project Management List">
       <Header />
@@ -75,7 +78,7 @@ const ProjectManagementList = () => {
           {allusers.length} Records found. Page {page + 1} of{' '}
           {Math.ceil(allusers.length / rowsPerPage)}
         </Typography>
-        {currentItems &&
+        {currentItems && currentItems.length > 0 ? (
           currentItems.map(project => (
             <>
               {project.id != JSON.parse(localStorage.getItem('user')).id ? (
@@ -84,7 +87,10 @@ const ProjectManagementList = () => {
                 <></>
               )}
             </>
-          ))}
+          ))
+        ) : (
+          <EmptySection />
+        )}
       </div>
 
       <div className={classes.paginate}>
