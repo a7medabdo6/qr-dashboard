@@ -1,15 +1,16 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import { Drawer, Divider, Paper, Avatar, Typography } from '@material-ui/core';
 import { Hidden } from '@material-ui/core';
-
+import { UserInfo } from 'store/Auth/Slice';
 import useRouter from 'utils/useRouter';
 import { Navigation } from 'components';
 import navigationConfig from './navigationConfig';
+import { useGetActiveUserHook } from 'hooks/apis/Auth';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,7 +51,13 @@ const NavBar = props => {
 
   const classes = useStyles();
   const router = useRouter();
-  const session = useSelector(state => state.session);
+  const [userData, setUserData] = useState({});
+
+  const { data, isLoading } = useGetActiveUserHook();
+
+  const userInfo = useSelector(state => state.UserInfo.user);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (openMobile) {
@@ -60,28 +67,35 @@ const NavBar = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.location.pathname]);
 
+  useEffect(() => {
+    if (data?.data) {
+      setUserData(data.data);
+      dispatch(UserInfo(data.data));
+    }
+  }, [data]);
+
   const navbarContent = (
     <div className={classes.content}>
-      {/* <div className={classes.profile}>
+      <div className={classes.profile}>
         <Avatar
           alt="Person"
           className={classes.avatar}
           component={RouterLink}
-          src={session.user.avatar}
-          to="/profile/1/timeline"
+          src={userInfo?.avatar || userData.avatar}
+          to="/profile/1/about"
         />
         <Typography
           className={classes.name}
           style={{ color: 'white' }}
           variant="h4">
-          {session?.user?.first_name} {session?.user?.last_name}
+          {userInfo?.name || userData.name || 'no name'}
         </Typography>
         <Typography style={{ color: 'white' }} variant="body2">
-          {session?.user?.bio}
+          {userInfo?.role || userData.role || 'no role'}
         </Typography>
-      </div> 
+      </div>
       <Divider className={classes.divider} />
-      */}
+
       <nav className={classes.navigation}>
         {navigationConfig.map(list => (
           <Navigation
