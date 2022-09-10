@@ -116,7 +116,7 @@ const LoginForm = props => {
           value={formState.values.busniess || ''}
           variant="outlined"
         />
-        {console.log(UserInfo, 'UserInfo')}
+        {/* {console.log(UserInfo, 'UserInfo')} */}
         <TextField
           error={hasError('email')}
           fullWidth

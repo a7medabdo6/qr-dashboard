@@ -5,7 +5,15 @@ import { makeStyles } from '@material-ui/styles';
 import { Tabs, Tab, Divider, colors } from '@material-ui/core';
 
 import { Page } from 'components';
-import { Header, Timeline, Connections, Projects, Reviews } from './components';
+import {
+  Header,
+  About,
+  UpdateProfile,
+  ChangePassword,
+  Connections,
+  Projects,
+  Reviews
+} from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -33,14 +41,14 @@ const Profile = props => {
   };
 
   const tabs = [
-    { value: 'timeline', label: 'Timeline' },
-    { value: 'connections', label: 'Connections' },
-    { value: 'projects', label: 'Projects' },
+    { value: 'about', label: 'About' },
+    { value: 'UpdateProfile', label: 'Update Profile' },
+    { value: 'ChangePassword', label: 'Change Password' },
     { value: 'reviews', label: 'Reviews' }
   ];
 
   if (!tab) {
-    return <Redirect to={`/profile/${id}/timeline`} />;
+    return <Redirect to={`/profile/${id}/about`} />;
   }
 
   if (!tabs.find(t => t.value === tab)) {
@@ -48,31 +56,23 @@ const Profile = props => {
   }
 
   return (
-    <Page
-      className={classes.root}
-      title="Profile"
-    >
+    <Page className={classes.root} title="Profile">
       <Header />
       <div className={classes.inner}>
         <Tabs
           onChange={handleTabsChange}
           scrollButtons="auto"
           value={tab}
-          variant="scrollable"
-        >
+          variant="scrollable">
           {tabs.map(tab => (
-            <Tab
-              key={tab.value}
-              label={tab.label}
-              value={tab.value}
-            />
+            <Tab key={tab.value} label={tab.label} value={tab.value} />
           ))}
         </Tabs>
         <Divider className={classes.divider} />
         <div className={classes.content}>
-          {tab === 'timeline' && <Timeline />}
-          {tab === 'connections' && <Connections />}
-          {tab === 'projects' && <Projects />}
+          {tab === 'about' && <About />}
+          {tab === 'UpdateProfile' && <UpdateProfile />}
+          {tab === 'ChangePassword' && <ChangePassword />}
           {tab === 'reviews' && <Reviews />}
         </div>
       </div>

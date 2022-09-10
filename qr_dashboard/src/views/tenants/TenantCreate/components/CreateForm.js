@@ -177,12 +177,14 @@ const CreateForm = props => {
   };
 
   const handleFileSelect = event => {
-    var reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    setLogo(event.target.files[0]);
-    reader.onload = function() {
-      setSelectedFile(reader.result);
-    };
+    if (event.target.files[0]) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      setLogo(event.target.files[0]);
+      reader.onload = function() {
+        setSelectedFile(reader.result);
+      };
+    }
   };
 
   const hasError = field =>

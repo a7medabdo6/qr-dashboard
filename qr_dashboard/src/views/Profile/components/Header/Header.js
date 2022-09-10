@@ -17,6 +17,7 @@ import AddPhotoIcon from '@material-ui/icons/AddPhotoAlternate';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ChatIcon from '@material-ui/icons/ChatOutlined';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -112,6 +113,8 @@ const Header = props => {
 
   const classes = useStyles();
 
+  const userData = useSelector(state => state.UserInfo.user);
+
   const user = {
     name: 'Shen Zhi',
     bio: 'Web Developer',
@@ -140,41 +143,23 @@ const Header = props => {
   };
 
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <div {...rest} className={clsx(classes.root, className)}>
       <div
         className={classes.cover}
-        style={{ backgroundImage: `url(${user.cover})` }}
-      >
-        <Button
-          className={classes.changeButton}
-          variant="contained"
-        >
+        style={{ backgroundImage: `url(${user.cover})` }}>
+        <Button className={classes.changeButton} variant="contained">
           <AddPhotoIcon className={classes.addPhotoIcon} />
           Change Cover
         </Button>
       </div>
       <div className={classes.container}>
-        <Avatar
-          alt="Person"
-          className={classes.avatar}
-          src={user.avatar}
-        />
+        <Avatar alt="Person" className={classes.avatar} src={userData?.avatar} />
         <div className={classes.details}>
-          <Typography
-            component="h2"
-            gutterBottom
-            variant="overline"
-          >
-            {user.bio}
+          <Typography component="h2" gutterBottom variant="overline">
+            {userData?.role || 'role'}
           </Typography>
-          <Typography
-            component="h1"
-            variant="h4"
-          >
-            {user.name}
+          <Typography component="h1" variant="h4">
+            {userData?.name || 'name'}
           </Typography>
         </div>
         <Hidden smDown>
@@ -183,8 +168,7 @@ const Header = props => {
               color="secondary"
               component={RouterLink}
               to="/chat"
-              variant="contained"
-            >
+              variant="contained">
               <ChatIcon className={classes.mailIcon} />
               Send message
             </Button>
@@ -192,8 +176,7 @@ const Header = props => {
               <Button
                 color="primary"
                 onClick={handleConnectToggle}
-                variant="contained"
-              >
+                variant="contained">
                 <PersonAddIcon className={classes.personAddIcon} />
                 Add connection
               </Button>
@@ -202,8 +185,7 @@ const Header = props => {
               <Button
                 className={classes.pendingButton}
                 onClick={handleConnectToggle}
-                variant="contained"
-              >
+                variant="contained">
                 <PersonAddIcon className={classes.personAddIcon} />
                 Pending connection
               </Button>
@@ -223,10 +205,7 @@ const Header = props => {
         }}
         autoHideDuration={6000}
         message={
-          <Typography
-            color="inherit"
-            variant="h6"
-          >
+          <Typography color="inherit" variant="h6">
             Sent connection request
           </Typography>
         }
