@@ -18,7 +18,8 @@ import gradients from 'utils/gradients';
 import Select from 'components/MultiSelect/index';
 import useRouter from 'utils/useRouter';
 import { useCreateUserHook } from 'hooks/apis/Auth';
-
+import { useSelector } from 'react-redux';
+import { useGetAllBranchesHook } from 'hooks/apis/Branches';
 const schema = {
   name: {
     presence: { allowEmpty: false, message: 'is required' },
@@ -107,7 +108,12 @@ const RegisterForm = props => {
   const classes = useStyles();
   const { history } = useRouter();
   const [selectedFile, setSelectedFile] = React.useState(null);
+  const [selectedBranches, setSelectedBranches] = React.useState([]);
   const [logo, setLogo] = useState(null);
+  const { isLoading, data } = useGetAllBranchesHook();
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const { allbranches } = useSelector(state => state.Branches);
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -154,16 +160,20 @@ const RegisterForm = props => {
     }));
   };
 
+  console.log(selectedBranches, 'selectedBranches');
   const handleSubmit = async event => {
     event.preventDefault();
-
+    var arrayofBranches = [];
+    for (let index = 0; index < selectedBranches.length; index++) {
+      arrayofBranches.push(parseInt(selectedBranches[index].id));
+    }
     const formData = new FormData();
     formData.append('avatar', logo);
     formData.append('email', formState.values.email);
     formData.append('name', formState.values.name);
     formData.append('password', formState.values.password);
-    // formData.append('branches', [0]);
-    formData.append('role', 1);
+    formData.append('branches', [1, 2]);
+    formData.append('role', user.role);
     formData.append('mobile', formState.values.mobile);
     CreateUserApi(formData);
   };
@@ -230,15 +240,22 @@ const RegisterForm = props => {
             value={formState.values.password || ''}
             variant="outlined"
           />
-          {/*<div
-            style={{
-              border: '1px solid #00000029',
-              borderRadius: '5px',
-              margin: ' 0px 8px',
-              padding: '5px'
-            }}>
-             <Select /> 
-          </div>*/}
+          {user.role == 2 && (
+            <div
+              style={{
+                border: '1px solid #00000029',
+                borderRadius: '5px',
+                margin: ' 0px 8px',
+                padding: '5px'
+              }}>
+              <Select
+                data={allbranches}
+                selectedBranches={selectedBranches}
+                setSelectedBranches={setSelectedBranches}
+              />
+            </div>
+          )}
+
           <TextField
             error={hasError('mobile')}
             fullWidth

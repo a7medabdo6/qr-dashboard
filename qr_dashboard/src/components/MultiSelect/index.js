@@ -39,48 +39,17 @@ const MenuProps = {
   }
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder'
-];
-
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium
-  };
-}
-
-export default function MultipleSelect() {
+export default function MultipleSelect({
+  data,
+  setSelectedBranches,
+  selectedBranches
+}) {
   const classes = useStyles();
-  const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  // const [selected, setSelected] = React.useState([]);
 
   const handleChange = event => {
-    setPersonName(event.target.value);
+    setSelectedBranches(event.target.value);
   };
-
-  const handleChangeMultiple = event => {
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setPersonName(value);
-  };
-
   return (
     <div>
       <FormControl
@@ -88,28 +57,22 @@ export default function MultipleSelect() {
         style={{ border: '1px soild black' }}>
         <InputLabel id="demo-mutiple-chip-label">branches</InputLabel>
         <Select
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
+          labelId="demo-mutiple-checkbox-label"
+          id="demo-mutiple-checkbox"
           multiple
-          fullWidth
-          variant="outlined"
-          value={personName}
+          value={selectedBranches}
           onChange={handleChange}
-          input={<Input id="select-multiple-chip" variant="outlined" />}
-          renderValue={selected => (
-            <div className={classes.chips}>
-              {selected.map(value => (
-                <Chip key={value} label={value} className={classes.chip} />
-              ))}
-            </div>
-          )}
+          input={<Input />}
+          renderValue={selectedBranches => selectedBranches.map(item => item.title).join(', ')}
           MenuProps={MenuProps}>
-          {names.map(name => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}>
-              {name}
+          {data.map(option => (
+            <MenuItem key={option.id} value={option}>
+              <Checkbox
+                checked={
+                  selectedBranches.find(item => item.id === option.id) ? true : false
+                }
+              />
+              <ListItemText primary={option.title} />
             </MenuItem>
           ))}
         </Select>
