@@ -267,27 +267,27 @@ export default [
           {
             title: 'users',
             href: '/users'
-          },
+          }
           // {
           //   title: 'Create',
           //   href: '/users/create'
           // }
-          {
-            title: 'General',
-            href: '/settings/general'
-          },
-          {
-            title: 'Subscription',
-            href: '/settings/subscription'
-          },
-          {
-            title: 'Notifications',
-            href: '/settings/notifications'
-          },
-          {
-            title: 'Security',
-            href: '/settings/security'
-          }
+          // {
+          //   title: 'General',
+          //   href: '/settings/general'
+          // },
+          // {
+          //   title: 'Subscription',
+          //   href: '/settings/subscription'
+          // },
+          // {
+          //   title: 'Notifications',
+          //   href: '/settings/notifications'
+          // },
+          // {
+          //   title: 'Security',
+          //   href: '/settings/security'
+          // }
         ]
       }
       // {

@@ -161,7 +161,7 @@ const ProjectCard = props => {
               color="primary"
               size="small"
               variant="outlined">
-              View
+              Edit
             </Button>
           </Link>
 

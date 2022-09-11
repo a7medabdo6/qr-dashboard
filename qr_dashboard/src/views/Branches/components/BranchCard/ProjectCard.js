@@ -17,8 +17,10 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import getInitials from 'utils/getInitials';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
-import { useDeleteGroupHook } from 'hooks/apis/Groups';
-import { useActivateGroupHook } from 'hooks/apis/Groups';
+import {
+  useActivateBranchHook,
+  useDeleteBranchHook
+} from 'hooks/apis/Branches';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -78,13 +80,13 @@ const ProjectCard = props => {
     Canceled: colors.grey[600],
     Completed: colors.green[600]
   };
-  const { mutate: DeleteGroup } = useDeleteGroupHook();
-  const { mutate: ActivateGroup } = useActivateGroupHook();
+  const { mutate: DeleteBranch } = useDeleteBranchHook();
+  const { mutate: ActivateBranch } = useActivateBranchHook();
   const onDeleteHandle = () => {
-    DeleteGroup({ id: project.id });
+    DeleteBranch({ id: project.id });
   };
   const onActivateHandle = () => {
-    ActivateGroup({ id: project.id, active: !project.active });
+    ActivateBranch({ id: project.id, active: !project.active });
   };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -155,13 +157,13 @@ const ProjectCard = props => {
           <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
-          <Link component={RouterLink} to={`/groups/edit/${project?.id}`}>
+          <Link component={RouterLink} to={`/branches/edit/${project?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
               color="primary"
               size="small"
               variant="outlined">
-              View
+              Edit
             </Button>
           </Link>
 

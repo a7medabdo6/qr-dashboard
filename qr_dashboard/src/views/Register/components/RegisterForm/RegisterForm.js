@@ -163,18 +163,20 @@ const RegisterForm = props => {
   console.log(selectedBranches, 'selectedBranches');
   const handleSubmit = async event => {
     event.preventDefault();
-    var arrayofBranches = [];
-    for (let index = 0; index < selectedBranches.length; index++) {
-      arrayofBranches.push(parseInt(selectedBranches[index].id));
-    }
+
     const formData = new FormData();
     formData.append('avatar', logo);
     formData.append('email', formState.values.email);
     formData.append('name', formState.values.name);
     formData.append('password', formState.values.password);
-    formData.append('branches', [1, 2]);
+    for (let index = 0; index < selectedBranches.length; index++) {
+      formData.append('branches', parseInt(selectedBranches[index].id));
+    }
+
     formData.append('role', user.role);
     formData.append('mobile', formState.values.mobile);
+
+    console.log(...formData, 'formData');
     CreateUserApi(formData);
   };
 

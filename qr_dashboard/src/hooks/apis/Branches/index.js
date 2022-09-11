@@ -18,11 +18,11 @@ const getOneGroup = async ({ queryKey }) => {
 const postCreateBranchrequest = async data => {
   return await api.post('branches/', data);
 };
-const ActivateGroup = async data => {
-  return await api.patch(`branches/groups/${data.id}/`, data);
+const ActivateBranch = async data => {
+  return await api.patch(`branches/${data.id}/`, data);
 };
-const DeleteGroup = async data => {
-  return await api.delete(`branches/groups/${data.id}`);
+const DeleteBranch = async data => {
+  return await api.delete(`branches/${data.id}`);
 };
 
 const useCreateBranchHook = () => {
@@ -61,7 +61,7 @@ const useGetAllBranchesHook = () => {
       };
       // console.log(result);
       dispatch(BranchesList(result.data.results));
-      // console.log(result.data, 'result.data');
+      console.log(result.data, 'result.data');
 
       // return result.data;
     },
@@ -96,11 +96,11 @@ const useGetOneGroupHook = id => {
     }
   });
 };
-const useActivateGroupHook = () => {
+const useActivateBranchHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const QueryClient = useQueryClient();
-  return useMutation(ActivateGroup, {
+  return useMutation(ActivateBranch, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -122,11 +122,11 @@ const useActivateGroupHook = () => {
     }
   });
 };
-const useDeleteGroupHook = () => {
+const useDeleteBranchHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const QueryClient = useQueryClient();
-  return useMutation(DeleteGroup, {
+  return useMutation(DeleteBranch, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -149,7 +149,7 @@ const useDeleteGroupHook = () => {
 export {
   useCreateBranchHook,
   useGetAllBranchesHook,
-  useActivateGroupHook,
-  useDeleteGroupHook,
+  useActivateBranchHook,
+  useDeleteBranchHook,
   useGetOneGroupHook
 };
