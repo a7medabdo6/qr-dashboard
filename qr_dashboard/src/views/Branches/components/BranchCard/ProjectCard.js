@@ -123,8 +123,8 @@ const ProjectCard = props => {
           <Typography variant="body2"> {project?.schema_name}</Typography>
         </div> */}
         <div className={classes.stats}>
-          <Typography variant="h6">{project?.group}</Typography>
-          <Typography variant="body2">Group</Typography>
+          <Typography variant="h6">{project?.group?.title}</Typography>
+          <Typography variant="body2">Group Name</Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
