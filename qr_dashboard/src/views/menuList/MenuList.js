@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
 
-import axios from 'utils/axios';
+import SkeletonChildren from 'components/Skeleton/table';
+import EmptySection from 'components/EmptySection';
 import { Page, Paginate, SearchBar } from 'components';
-import { Header, ProjectCard } from './components';
+import { Header, MenuCard } from './components';
+
+import { useGetAllMenusHook } from 'hooks/apis/Menus';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,81 +24,65 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProjectManagementList = () => {
+const MenusList = () => {
+  const { isLoading, data } = useGetAllMenusHook();
+  const { allMenus } = useSelector(state => state.Menus);
+
   const classes = useStyles();
-  const [rowsPerPage] = useState(10);
   const [page] = useState(0);
-  const [projects, setProjects] = useState([]);
   const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
-  
+
   const [itemsPerPage, setitemsPerPage] = useState(3);
   const [itemOffset, setItemOffset] = useState(0);
 
-  // Here we use item offsets; we could also use page offsets
-  // following the API or data you're working with.
   useEffect(() => {
-    let mounted = true;
-
-    const fetchProjects = () => {
-      axios.get('/api/projects').then(response => {
-        if (mounted) {
-          setProjects(response.data.projects);
-        }
-      });
-    };
-
-    fetchProjects();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    console.log('allMenus: ', allMenus);
+  }, [data]);
 
   const handleFilter = () => {};
   const handleSearch = () => {};
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % projects.length;
+  const handlePageClick = event => {
+    const newOffset = (event.selected * itemsPerPage) % allMenus?.length;
     console.log(
       `User requested page number ${event.selected}, which is offset ${newOffset}`
     );
     setItemOffset(newOffset);
-
   };
- 
+
+  if (isLoading) {
+    return <SkeletonChildren />;
+  }
   return (
-    <Page
-      className={classes.root}
-      title="Project Management List"
-    >
+    <Page className={classes.root} title="Menus Management List">
       <Header />
-      <SearchBar
-        onFilter={handleFilter}
-        onSearch={handleSearch}
-      />
+      <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       <div className={classes.results}>
-        <Typography
-          color="textSecondary"
-          gutterBottom
-          variant="body2"
-        >
-          {projects.length} Records found. Page {page + 1} of{' '}
-          {Math.ceil(projects.length / rowsPerPage)}
+        <Typography color="textSecondary" gutterBottom variant="body2">
+          {allMenus.length} Records found. Page {page + 1} of{' '}
+          {Math.ceil(allMenus.length / itemsPerPage)}
         </Typography>
-       { console.log(currentItems,"currentItems")}
-        {currentItems && currentItems.map(project => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-          />
-        ))}
+        {currentItems && currentItems.length > 0 ? (
+          currentItems.map(Menu => <MenuCard key={Menu.id} Menu={Menu} />)
+        ) : (
+          <EmptySection />
+        )}
       </div>
+
       <div className={classes.paginate}>
-        <Paginate pageCount={3} itemOffset={itemOffset} projects={projects} setPageCount={setPageCount} onPageChange={handlePageClick} itemsPerPage={itemsPerPage} setCurrentItems={setCurrentItems} />
+        <Paginate
+          pageCount={pageCount}
+          itemOffset={itemOffset}
+          projects={allMenus}
+          setPageCount={setPageCount}
+          onPageChange={handlePageClick}
+          itemsPerPage={itemsPerPage}
+          setCurrentItems={setCurrentItems}
+        />
       </div>
     </Page>
   );
 };
 
-export default ProjectManagementList;
+export default MenusList;

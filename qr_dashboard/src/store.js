@@ -4,6 +4,7 @@ import tenantReducer from 'store/Tenant/Slice';
 import GlobalReducer from 'store/Global/Slice';
 import groupReducer from 'store/Groups/Slice';
 import branchReducer from 'store/Branches/Slice';
+import menusReducer from 'store/Menus/Slice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     TenantList: tenantReducer,
     GlobalState: GlobalReducer,
     Groups: groupReducer,
-    Branches: branchReducer
+    Branches: branchReducer,
+    Menus: menusReducer
   }
 });
