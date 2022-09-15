@@ -146,10 +146,10 @@ export default [
         //   }
         // ]
       },
-      // {
-      //   title: 'Menus',
-      //   href: '/menu',
-      //   icon: FolderIcon,
+      {
+        title: 'Menus',
+        href: '/menu',
+        icon: FolderIcon,
       //   children: [
       //     {
       //       title: 'All Menu',
@@ -160,7 +160,7 @@ export default [
       //       href: '/menu/create'
       //     }
       //   ]
-      // },
+      },
       // {
       //   title: 'Category',
       //   href: '/category',
