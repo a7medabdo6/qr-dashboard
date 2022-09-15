@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -10,14 +11,14 @@ const useStyles = makeStyles(() => ({
 
 const Header = props => {
   const { className, ...rest } = props;
-
+  let { id } = useParams();
   const classes = useStyles();
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <Typography component="h2" gutterBottom variant="overline"></Typography>
       <Typography component="h1" style={{ marginBlock: '20PX' }} variant="h3">
-        Create Menu
+        {id ? 'Update Menu' : 'Create Menu'}
       </Typography>
     </div>
   );
