@@ -3,11 +3,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { api } from '../../../axios';
 import useRouter from 'utils/useRouter';
+import { useTranslation } from 'react-i18next';
 
 import { TenantList } from 'store/Tenant/Slice';
 import { ToastShow } from 'store/Global/Slice';
 const getAllTenants = async data => {
-  return await api.get('tenants/');
+  return await api.get('tenants/', {
+    headers: {
+      'Accept-Language': data
+    }
+  });
 };
 const getOneTenants = async ({ queryKey }) => {
   return await api.get(`tenants/${queryKey[1]}`);
@@ -24,27 +29,33 @@ const ActivateTenant = async data => {
 };
 const useGetTenantHook = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
-  return useQuery('allTenants', getAllTenants, {
-    onSuccess: res => {
-      const result = {
-        status: res.status + '-' + res.statusText,
-        headers: res.headers,
-        data: res.data
-      };
-      console.log(result);
-      dispatch(TenantList(result.data.results));
 
-      console.log(result.data, 'result.data');
+  const { t, i18n } = useTranslation();
 
-      return result.data;
-    },
-    onError: err => {
-      console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+  return useQuery(
+    ['allTenants', i18n.language],
+    () => getAllTenants(i18n.language),
+    {
+      onSuccess: res => {
+        const result = {
+          status: res.status + '-' + res.statusText,
+          headers: res.headers,
+          data: res.data
+        };
+        console.log(result);
+        dispatch(TenantList(result.data.results));
+
+        console.log(result.data, 'result.data');
+
+        return result.data;
+      },
+      onError: err => {
+        console.log(err, 'err');
+        //   dispatch(errorAtLogin(err.response.data.detail));
+        //  return err;
+      }
     }
-  });
+  );
 };
 const useGetOneTenantHook = id => {
   const dispatch = useDispatch();

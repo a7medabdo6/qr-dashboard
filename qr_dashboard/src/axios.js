@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user'));
-const lang = localStorage.getItem('i18nextLng');
 
 const headers = {
   Authorization: `Bearer ${JSON.parse(token)}`
@@ -14,7 +13,6 @@ const headers = {
 if (user && user?.tenant?.busisness_name && user?.role != 1) {
   headers.BusisnessName = user ? user.tenant.busisness_name : '';
 }
-// axios.defaults.headers.common['Accept-Language'] = lang;
 
 export const api = axios.create({
   baseURL: 'https://onpixie.net/',

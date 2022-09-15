@@ -4,10 +4,15 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { api } from '../../../axios';
 import useRouter from 'utils/useRouter';
 import { ToastShow } from 'store/Global/Slice';
+import { useTranslation } from 'react-i18next';
 
 import { UserInfo, UsersList } from 'store/Auth/Slice';
 const getAllUsers = async data => {
-  return await api.get('auth/users/');
+  return await api.get('auth/users/', {
+    headers: {
+      'Accept-Language': data
+    }
+  });
 };
 const postrequest = async data => {
   console.log(data, 'datttt');
@@ -120,25 +125,31 @@ const useChangePasswordHook = () => {
 const useGetAllUsersHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  return useQuery('allusers', getAllUsers, {
-    onSuccess: res => {
-      const result = {
-        status: res.status + '-' + res.statusText,
-        headers: res.headers,
-        data: res.data
-      };
-      // console.log(result);
-      dispatch(UsersList(result.data.results));
-      // console.log(result.data, 'result.data');
+  const { t, i18n } = useTranslation();
 
-      // return result.data;
-    },
-    onError: err => {
-      console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+  return useQuery(
+    ['allusers', i18n.language],
+    () => getAllUsers(i18n.language),
+    {
+      onSuccess: res => {
+        const result = {
+          status: res.status + '-' + res.statusText,
+          headers: res.headers,
+          data: res.data
+        };
+        // console.log(result);
+        dispatch(UsersList(result.data.results));
+        // console.log(result.data, 'result.data');
+
+        // return result.data;
+      },
+      onError: err => {
+        console.log(err, 'err');
+        //   dispatch(errorAtLogin(err.response.data.detail));
+        //  return err;
+      }
     }
-  });
+  );
 };
 const useActivateUserHook = () => {
   const dispatch = useDispatch();

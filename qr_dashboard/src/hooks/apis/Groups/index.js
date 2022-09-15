@@ -7,9 +7,14 @@ import { ToastShow } from 'store/Global/Slice';
 
 import { UserInfo } from 'store/Auth/Slice';
 import { GroupsList } from 'store/Groups/Slice';
+import { useTranslation } from 'react-i18next';
 
 const getAllGroups = async data => {
-  return await api.get('branches/groups/');
+  return await api.get('branches/groups/', {
+    headers: {
+      'Accept-Language': data
+    }
+  });
 };
 const getOneGroup = async ({ queryKey }) => {
   return await api.get(`branches/groups/${queryKey[1]}`);
@@ -44,6 +49,7 @@ const useCreateGroupHook = () => {
       console.log(err);
       //   dispatch(errorAtLogin(err.response.data.detail));
       //  return err;
+      // dispatch(ToastShow('Group Created Successfuly'));
     }
   });
 };
@@ -51,25 +57,31 @@ const useCreateGroupHook = () => {
 const useGetAllGroupsHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  return useQuery('allgroups', getAllGroups, {
-    onSuccess: res => {
-      const result = {
-        status: res.status + '-' + res.statusText,
-        headers: res.headers,
-        data: res.data
-      };
-      // console.log(result);
-      dispatch(GroupsList(result.data.results));
-      // console.log(result.data, 'result.data');
+  const { t, i18n } = useTranslation();
 
-      // return result.data;
-    },
-    onError: err => {
-      console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+  return useQuery(
+    ['allgroups', i18n.language],
+    () => getAllGroups(i18n.language),
+    {
+      onSuccess: res => {
+        const result = {
+          status: res.status + '-' + res.statusText,
+          headers: res.headers,
+          data: res.data
+        };
+        // console.log(result);
+        dispatch(GroupsList(result.data.results));
+        // console.log(result.data, 'result.data');
+
+        // return result.data;
+      },
+      onError: err => {
+        console.log(err, 'err');
+        //   dispatch(errorAtLogin(err.response.data.detail));
+        //  return err;
+      }
     }
-  });
+  );
 };
 const useGetOneGroupHook = id => {
   const dispatch = useDispatch();
