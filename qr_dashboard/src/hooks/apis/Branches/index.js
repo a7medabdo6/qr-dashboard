@@ -11,9 +11,9 @@ import { BranchesList } from 'store/Branches/Slice';
 import { useTranslation } from 'react-i18next';
 const lang = localStorage.getItem('i18nextLng');
 
-const getAllBranches = async data => {
+const getAllBranches = async (data, search) => {
   // console.log(data, 'axios data');
-  return await api.get('branches/?expand=group', {
+  return await api.get(`branches/?expand=group&find=${search}`, {
     headers: {
       'Accept-Language': data
     }
@@ -56,13 +56,13 @@ const useCreateBranchHook = () => {
   });
 };
 
-const useGetAllBranchesHook = () => {
+const useGetAllBranchesHook = search => {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  
+
   return useQuery(
-    ['allbranches', i18n.language],
-    () => getAllBranches(i18n.language),
+    ['allbranches', i18n.language, search],
+    () => getAllBranches(i18n.language, search),
     {
       onSuccess: res => {
         const result = {
@@ -72,7 +72,6 @@ const useGetAllBranchesHook = () => {
         };
         dispatch(BranchesList(result.data.results));
         console.log(result.data, 'result.data');
-
       },
       onError: err => {
         console.log(err, 'err');

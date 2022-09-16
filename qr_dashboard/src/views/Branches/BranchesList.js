@@ -23,7 +23,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProjectManagementList = () => {
-  const { isLoading, data } = useGetAllBranchesHook();
+  const [search, setsearch] = useState('');
+
+  const { isLoading, data } = useGetAllBranchesHook(search);
   const { allbranches } = useSelector(state => state.Branches);
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
@@ -55,7 +57,9 @@ const ProjectManagementList = () => {
   }, [data]);
 
   const handleFilter = () => {};
-  const handleSearch = () => {};
+  const handleSearch = text => {
+    setsearch(text);
+  };
 
   const handlePageClick = event => {
     const newOffset = (event.selected * itemsPerPage) % allbranches?.length;
@@ -64,40 +68,46 @@ const ProjectManagementList = () => {
     );
     setItemOffset(newOffset);
   };
-  if (isLoading) {
-    return <SkeletonChildren />;
-  }
+  // if (isLoading) {
+  //   return <SkeletonChildren />;
+  // }
   return (
     <Page className={classes.root} title="Project Management List">
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      <div className={classes.results}>
-        <Typography color="textSecondary" gutterBottom variant="body2">
-          {allbranches.length} Records found. Page {page + 1} of{' '}
-          {Math.ceil(allbranches.length / rowsPerPage)}
-        </Typography>
-        {currentItems && currentItems.length > 0 ? (
-          currentItems.map(project => (
-            <>
-              <ProjectCard key={project.id} project={project} />
-            </>
-          ))
-        ) : (
-          <EmptySection />
-        )}
-      </div>
+      {isLoading ? (
+        <SkeletonChildren />
+      ) : (
+        <>
+          <div className={classes.results}>
+            <Typography color="textSecondary" gutterBottom variant="body2">
+              {allbranches.length} Records found. Page {page + 1} of{' '}
+              {Math.ceil(allbranches.length / rowsPerPage)}
+            </Typography>
+            {currentItems && currentItems.length > 0 ? (
+              currentItems.map(project => (
+                <>
+                  <ProjectCard key={project.id} project={project} />
+                </>
+              ))
+            ) : (
+              <EmptySection />
+            )}
+          </div>
 
-      <div className={classes.paginate}>
-        <Paginate
-          pageCount={pageCount}
-          itemOffset={itemOffset}
-          projects={allbranches}
-          setPageCount={setPageCount}
-          onPageChange={handlePageClick}
-          itemsPerPage={itemsPerPage}
-          setCurrentItems={setCurrentItems}
-        />
-      </div>
+          <div className={classes.paginate}>
+            <Paginate
+              pageCount={pageCount}
+              itemOffset={itemOffset}
+              projects={allbranches}
+              setPageCount={setPageCount}
+              onPageChange={handlePageClick}
+              itemsPerPage={itemsPerPage}
+              setCurrentItems={setCurrentItems}
+            />
+          </div>
+        </>
+      )}
     </Page>
   );
 };

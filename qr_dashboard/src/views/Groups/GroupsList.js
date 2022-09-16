@@ -24,7 +24,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProjectManagementList = () => {
-  const { isLoading, data } = useGetAllGroupsHook();
+  const [search, setsearch] = useState('');
+  const [filters, setfilters] = useState({
+    create_at_after: '',
+    create_at_before: '',
+    active: ''
+  });
+  const { isLoading, data } = useGetAllGroupsHook(search, filters);
   const { allgroups } = useSelector(state => state.Groups);
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
@@ -55,8 +61,13 @@ const ProjectManagementList = () => {
     console.log(allgroups, 'allgroups');
   }, [data]);
 
-  const handleFilter = () => {};
-  const handleSearch = () => {};
+  const handleFilter = values => {
+    setfilters(values);
+  };
+  const handleSearch = text => {
+    console.log(text, 'searcj');
+    setsearch(text);
+  };
 
   const handlePageClick = event => {
     const newOffset = (event.selected * itemsPerPage) % allgroups.length;
@@ -65,40 +76,46 @@ const ProjectManagementList = () => {
     );
     setItemOffset(newOffset);
   };
-  if (isLoading) {
-    return <SkeletonChildren />;
-  }
+  // if (isLoading) {
+  //   return <SkeletonChildren />;
+  // }
   return (
     <Page className={classes.root} title="Project Management List">
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      <div className={classes.results}>
-        <Typography color="textSecondary" gutterBottom variant="body2">
-          {allgroups.length} Records found. Page {page + 1} of{' '}
-          {Math.ceil(allgroups.length / rowsPerPage)}
-        </Typography>
-        {currentItems && currentItems.length > 0 ? (
-          currentItems.map(project => (
-            <>
-              <ProjectCard key={project.id} project={project} />
-            </>
-          ))
-        ) : (
-          <EmptySection />
-        )}
-      </div>
+      {isLoading ? (
+        <SkeletonChildren />
+      ) : (
+        <>
+          <div className={classes.results}>
+            <Typography color="textSecondary" gutterBottom variant="body2">
+              {allgroups.length} Records found. Page {page + 1} of{' '}
+              {Math.ceil(allgroups.length / rowsPerPage)}
+            </Typography>
+            {currentItems && currentItems.length > 0 ? (
+              currentItems.map(project => (
+                <>
+                  <ProjectCard key={project.id} project={project} />
+                </>
+              ))
+            ) : (
+              <EmptySection />
+            )}
+          </div>
 
-      <div className={classes.paginate}>
-        <Paginate
-          pageCount={pageCount}
-          itemOffset={itemOffset}
-          projects={allgroups}
-          setPageCount={setPageCount}
-          onPageChange={handlePageClick}
-          itemsPerPage={itemsPerPage}
-          setCurrentItems={setCurrentItems}
-        />
-      </div>
+          <div className={classes.paginate}>
+            <Paginate
+              pageCount={pageCount}
+              itemOffset={itemOffset}
+              projects={allgroups}
+              setPageCount={setPageCount}
+              onPageChange={handlePageClick}
+              itemsPerPage={itemsPerPage}
+              setCurrentItems={setCurrentItems}
+            />
+          </div>
+        </>
+      )}
     </Page>
   );
 };

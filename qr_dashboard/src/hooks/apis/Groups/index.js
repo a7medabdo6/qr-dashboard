@@ -9,12 +9,15 @@ import { UserInfo } from 'store/Auth/Slice';
 import { GroupsList } from 'store/Groups/Slice';
 import { useTranslation } from 'react-i18next';
 
-const getAllGroups = async data => {
-  return await api.get('branches/groups/', {
-    headers: {
-      'Accept-Language': data
+const getAllGroups = async (data, search, filters) => {
+  return await api.get(
+    `branches/groups/?find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}&active=${filters.active}`,
+    {
+      headers: {
+        'Accept-Language': data
+      }
     }
-  });
+  );
 };
 const getOneGroup = async ({ queryKey }) => {
   return await api.get(`branches/groups/${queryKey[1]}`);
@@ -54,14 +57,14 @@ const useCreateGroupHook = () => {
   });
 };
 
-const useGetAllGroupsHook = () => {
+const useGetAllGroupsHook = (search, filters) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t, i18n } = useTranslation();
 
   return useQuery(
-    ['allgroups', i18n.language],
-    () => getAllGroups(i18n.language),
+    ['allgroups', i18n.language, search, filters],
+    () => getAllGroups(i18n.language, search, filters),
     {
       onSuccess: res => {
         const result = {

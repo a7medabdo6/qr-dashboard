@@ -7,8 +7,8 @@ import { ToastShow } from 'store/Global/Slice';
 import { useTranslation } from 'react-i18next';
 
 import { UserInfo, UsersList } from 'store/Auth/Slice';
-const getAllUsers = async data => {
-  return await api.get('auth/users/', {
+const getAllUsers = async (data, search) => {
+  return await api.get(`auth/users/?find=${search}`, {
     headers: {
       'Accept-Language': data
     }
@@ -122,14 +122,14 @@ const useChangePasswordHook = () => {
   });
 };
 
-const useGetAllUsersHook = () => {
+const useGetAllUsersHook = search => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t, i18n } = useTranslation();
 
   return useQuery(
-    ['allusers', i18n.language],
-    () => getAllUsers(i18n.language),
+    ['allusers', i18n.language, search],
+    () => getAllUsers(i18n.language, search),
     {
       onSuccess: res => {
         const result = {

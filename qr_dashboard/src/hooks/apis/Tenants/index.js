@@ -7,12 +7,15 @@ import { useTranslation } from 'react-i18next';
 
 import { TenantList } from 'store/Tenant/Slice';
 import { ToastShow } from 'store/Global/Slice';
-const getAllTenants = async data => {
-  return await api.get('tenants/', {
-    headers: {
-      'Accept-Language': data
+const getAllTenants = async (data, search, filters) => {
+  return await api.get(
+    `tenants/?find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}`,
+    {
+      headers: {
+        'Accept-Language': data
+      }
     }
-  });
+  );
 };
 const getOneTenants = async ({ queryKey }) => {
   return await api.get(`tenants/${queryKey[1]}`);
@@ -27,14 +30,14 @@ const ActivateTenant = async data => {
   const { id } = data;
   return await api.patch(`tenants/${id}/`, data);
 };
-const useGetTenantHook = () => {
+const useGetTenantHook = (search, filters) => {
   const dispatch = useDispatch();
 
   const { t, i18n } = useTranslation();
 
   return useQuery(
-    ['allTenants', i18n.language],
-    () => getAllTenants(i18n.language),
+    ['allTenants', i18n.language, search, filters],
+    () => getAllTenants(i18n.language, search, filters),
     {
       onSuccess: res => {
         const result = {

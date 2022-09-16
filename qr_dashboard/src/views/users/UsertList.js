@@ -24,7 +24,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProjectManagementList = () => {
-  const { isLoading, data } = useGetAllUsersHook();
+  const [search, setsearch] = useState('');
+
+  const { isLoading, data } = useGetAllUsersHook(search);
   const { allusers } = useSelector(state => state.UserInfo);
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
@@ -56,7 +58,9 @@ const ProjectManagementList = () => {
   }, [data]);
 
   const handleFilter = () => {};
-  const handleSearch = () => {};
+  const handleSearch = text => {
+    setsearch(text);
+  };
 
   const handlePageClick = event => {
     const newOffset = (event.selected * itemsPerPage) % allusers.length;
