@@ -1,2 +1,2 @@
 export { default as Header } from './Header';
-export { default as ProjectCard } from './MenuCard';
+export { default as MenuCard } from './MenuCard';

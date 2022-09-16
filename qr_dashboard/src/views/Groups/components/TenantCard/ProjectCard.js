@@ -90,20 +90,19 @@ const ProjectCard = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
         <div className={classes.header}>
-          <Avatar alt="Author" className={classes.avatar} src={project?.avatar}>
-            {/* {getInitials(project?.client_name)} */}
+          {/* <Avatar alt="Author" className={classes.avatar} src={project?.avatar}>
             {project?.name}
-          </Avatar>
+          </Avatar> */}
           <div>
             <Link
               color="textPrimary"
               component={RouterLink}
               noWrap
-              to="#"
+              // to="#"
               variant="h5">
               {project?.title}
             </Link>
-            <Typography variant="body2">
+            {/* <Typography variant="body2">
               <Link
                 color="textPrimary"
                 component={RouterLink}
@@ -111,7 +110,7 @@ const ProjectCard = props => {
                 variant="h6">
                 {project?.name}
               </Link>
-            </Typography>
+            </Typography> */}
           </div>
         </div>
         {/* <div className={classes.stats}>
@@ -121,9 +120,15 @@ const ProjectCard = props => {
           </Typography>
           <Typography variant="body2"> {project?.schema_name}</Typography>
         </div> */}
-        <div className={classes.stats}>
+        {/* <div className={classes.stats}>
           <Typography variant="h6">{project?.email}</Typography>
           <Typography variant="body2">Email</Typography>
+        </div> */}
+        <div className={classes.stats}>
+          <Typography variant="h6">
+            {moment(project?.create_at).format('DD MMMM YYYY')}
+          </Typography>
+          <Typography variant="body2"> started</Typography>
         </div>
         {/* <div className={classes.stats}>
           <Typography variant="h6">
@@ -156,7 +161,7 @@ const ProjectCard = props => {
               color="primary"
               size="small"
               variant="outlined">
-              View
+              Edit
             </Button>
           </Link>
 

@@ -21,6 +21,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import AddIcon from '@material-ui/icons/Add';
+import Label from 'components/Label';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,7 +55,10 @@ const useStyles = makeStyles(theme => ({
   },
   contentSectionContent: {},
   formGroup: {
-    padding: theme.spacing(2, 0)
+    padding: theme.spacing(2, 0),
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
   fieldGroup: {
     display: 'flex',
@@ -98,7 +102,9 @@ const Filter = props => {
     tag: '',
     tags: ['Full-Time'],
     amount: [1, 7],
-    projectStatus: 'ended',
+    active: '',
+    create_at_after: '',
+    create_at_before: '',
     customerName: '',
     customerType: 'freelancer',
     customerEmail: '',
@@ -169,18 +175,13 @@ const Filter = props => {
       classes={{ paper: classes.drawer }}
       onClose={onClose}
       open={open}
-      variant="temporary"
-    >
+      variant="temporary">
       <form
         {...rest}
         className={clsx(classes.root, className)}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={handleSubmit}>
         <div className={classes.header}>
-          <Button
-            onClick={onClose}
-            size="small"
-          >
+          <Button onClick={onClose} size="small">
             <CloseIcon className={classes.buttonIcon} />
             Close
           </Button>
@@ -189,15 +190,14 @@ const Filter = props => {
           <div className={classes.contentSection}>
             <div
               className={classes.contentSectionHeader}
-              onClick={handleToggleProject}
-            >
-              <Typography variant="h5">Project</Typography>
+              onClick={handleToggleProject}>
+              <Typography variant="h5">Filters</Typography>
               {expandProject ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </div>
             <Divider />
             <Collapse in={expandProject}>
               <div className={classes.contentSectionContent}>
-                <div className={classes.formGroup}>
+                {/* <div className={classes.formGroup}>
                   <TextField
                     className={classes.field}
                     fullWidth
@@ -215,23 +215,17 @@ const Filter = props => {
                     // eslint-disable-next-line react/jsx-sort-props
                     SelectProps={{ native: true }}
                     value={values.paymentStatus}
-                    variant="outlined"
-                  >
-                    <option
-                      disabled
-                      value=""
-                    />
+                    variant="outlined">
+                    <option disabled value="" />
                     {paymentStatusOptions.map(option => (
-                      <option
-                        key={option}
-                        value={option}
-                      >
+                      <option key={option} value={option}>
                         {option}
                       </option>
                     ))}
                   </TextField>
-                </div>
-                <div className={classes.formGroup}>
+              
+                </div> */}
+                {/* <div className={classes.formGroup}>
                   <div className={classes.fieldGroup}>
                     <TextField
                       className={clsx(classes.field, classes.flexGrow)}
@@ -263,8 +257,8 @@ const Filter = props => {
                       />
                     ))}
                   </div>
-                </div>
-                <div className={classes.formGroup}>
+                </div> */}
+                {/* <div className={classes.formGroup}>
                   <Typography
                     component="p"
                     gutterBottom
@@ -296,39 +290,35 @@ const Filter = props => {
                       ${values.amount[1]}K
                     </Typography>
                   </div>
-                </div>
-                <div className={classes.formGroup}>
-                  <Typography
-                    component="p"
-                    gutterBottom
-                    variant="overline"
-                  >
-                    Project status
+                </div> */}
+                <div className={classes.formGroup} style={{ display: 'block' }}>
+                  <Typography component="p" gutterBottom variant="overline">
+                    status
                   </Typography>
                   <div className={classes.fieldGroup}>
                     <RadioGroup
                       className={classes.radioGroup}
-                      name="projectStatus"
+                      name="active"
                       onChange={event =>
-                        handleFieldChange(
-                          event,
-                          'projectStatus',
-                          event.target.value
-                        )
+                        handleFieldChange(event, 'active', event.target.value)
                       }
-                      value={values.projectStatus}
-                    >
+                      value={values.active}>
                       <FormControlLabel
                         control={<Radio color="primary" />}
-                        label="Ended"
-                        value="ended"
+                        label="All"
+                        value=""
                       />
                       <FormControlLabel
                         control={<Radio color="primary" />}
-                        label="On-Going"
-                        value="onGoing"
+                        label="Active"
+                        value="true"
                       />
                       <FormControlLabel
+                        control={<Radio color="primary" />}
+                        label="Disabled"
+                        value="false"
+                      />
+                      {/* <FormControlLabel
                         control={<Radio color="primary" />}
                         label="In Review"
                         value="inReview"
@@ -337,18 +327,53 @@ const Filter = props => {
                         control={<Radio color="primary" />}
                         label="Competed"
                         value="completed"
-                      />
+                      /> */}
                     </RadioGroup>
                   </div>
+                </div>
+                <div className={classes.formGroup}>
+                  <Label style={{ marginInline: '10px' }}>From</Label>
+                  <TextField
+                    className={classes.field}
+                    fullWidth
+                    margin="dense"
+                    name="create_at_after"
+                    onChange={event =>
+                      handleFieldChange(
+                        event,
+                        'create_at_after',
+                        event.target.value
+                      )
+                    }
+                    type="date"
+                    value={values.create_at_after}
+                    variant="outlined"></TextField>
+                </div>
+                <div className={classes.formGroup}>
+                  <Label style={{ marginInline: '16px' }}>To</Label>
+                  <TextField
+                    className={classes.field}
+                    fullWidth
+                    margin="dense"
+                    name="create_at_before"
+                    onChange={event =>
+                      handleFieldChange(
+                        event,
+                        'create_at_before',
+                        event.target.value
+                      )
+                    }
+                    type="date"
+                    value={values.create_at_before}
+                    variant="outlined"></TextField>
                 </div>
               </div>
             </Collapse>
           </div>
-          <div className={classes.contentSection}>
+          {/* <div className={classes.contentSection}>
             <div
               className={classes.contentSectionHeader}
-              onClick={handleToggleCustomer}
-            >
+              onClick={handleToggleCustomer}>
               <Typography variant="h5">Customer</Typography>
               {expandCustomer ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </div>
@@ -382,12 +407,8 @@ const Filter = props => {
                       }
                       size="small"
                       value={values.customerType}
-                      variant="outlined"
-                    >
-                      <ToggleButton
-                        color="primary"
-                        value="projectOwner"
-                      >
+                      variant="outlined">
+                      <ToggleButton color="primary" value="projectOwner">
                         Project owner
                       </ToggleButton>
                       <ToggleButton value="freelancer">Freelancer</ToggleButton>
@@ -447,17 +468,10 @@ const Filter = props => {
                       // eslint-disable-next-line react/jsx-sort-props
                       SelectProps={{ native: true }}
                       value={values.customerAge}
-                      variant="outlined"
-                    >
-                      <option
-                        disabled
-                        value=""
-                      />
+                      variant="outlined">
+                      <option disabled value="" />
                       {customerAgeOption.map(option => (
-                        <option
-                          key={option}
-                          value={option}
-                        >
+                        <option key={option} value={option}>
                           {option}
                         </option>
                       ))}
@@ -466,23 +480,14 @@ const Filter = props => {
                 </div>
               </div>
             </Collapse>
-          </div>
+          </div> */}
         </div>
         <div className={classes.actions}>
-          <Button
-            fullWidth
-            onClick={handleClear}
-            variant="contained"
-          >
+          <Button fullWidth onClick={handleClear} variant="contained">
             <DeleteIcon className={classes.buttonIcon} />
             Clear
           </Button>
-          <Button
-            color="primary"
-            fullWidth
-            type="submit"
-            variant="contained"
-          >
+          <Button color="primary" fullWidth type="submit" variant="contained">
             Apply filters
           </Button>
         </div>

@@ -8,9 +8,16 @@ import { ToastShow } from 'store/Global/Slice';
 import { UserInfo } from 'store/Auth/Slice';
 import { GroupsList } from 'store/Groups/Slice';
 import { BranchesList } from 'store/Branches/Slice';
+import { useTranslation } from 'react-i18next';
+const lang = localStorage.getItem('i18nextLng');
 
-const getAllBranches = async data => {
-  return await api.get('branches/');
+const getAllBranches = async (data, search) => {
+  // console.log(data, 'axios data');
+  return await api.get(`branches/?expand=group&find=${search}`, {
+    headers: {
+      'Accept-Language': data
+    }
+  });
 };
 const getOneGroup = async ({ queryKey }) => {
   return await api.get(`branches/${queryKey[1]}`);
@@ -18,11 +25,11 @@ const getOneGroup = async ({ queryKey }) => {
 const postCreateBranchrequest = async data => {
   return await api.post('branches/', data);
 };
-const ActivateGroup = async data => {
-  return await api.patch(`branches/groups/${data.id}/`, data);
+const ActivateBranch = async data => {
+  return await api.patch(`branches/${data.id}/`, data);
 };
-const DeleteGroup = async data => {
-  return await api.delete(`branches/groups/${data.id}`);
+const DeleteBranch = async data => {
+  return await api.delete(`branches/${data.id}`);
 };
 
 const useCreateBranchHook = () => {
@@ -49,28 +56,30 @@ const useCreateBranchHook = () => {
   });
 };
 
-const useGetAllBranchesHook = () => {
+const useGetAllBranchesHook = search => {
   const dispatch = useDispatch();
-  const router = useRouter();
-  return useQuery('allbranches', getAllBranches, {
-    onSuccess: res => {
-      const result = {
-        status: res.status + '-' + res.statusText,
-        headers: res.headers,
-        data: res.data
-      };
-      // console.log(result);
-      dispatch(BranchesList(result.data.results));
-      // console.log(result.data, 'result.data');
+  const { t, i18n } = useTranslation();
 
-      // return result.data;
-    },
-    onError: err => {
-      console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+  return useQuery(
+    ['allbranches', i18n.language, search],
+    () => getAllBranches(i18n.language, search),
+    {
+      onSuccess: res => {
+        const result = {
+          status: res.status + '-' + res.statusText,
+          headers: res.headers,
+          data: res.data
+        };
+        dispatch(BranchesList(result.data.results));
+        console.log(result.data, 'result.data');
+      },
+      onError: err => {
+        console.log(err, 'err');
+        //   dispatch(errorAtLogin(err.response.data.detail));
+        //  return err;
+      }
     }
-  });
+  );
 };
 const useGetOneGroupHook = id => {
   const dispatch = useDispatch();
@@ -96,11 +105,11 @@ const useGetOneGroupHook = id => {
     }
   });
 };
-const useActivateGroupHook = () => {
+const useActivateBranchHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const QueryClient = useQueryClient();
-  return useMutation(ActivateGroup, {
+  return useMutation(ActivateBranch, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -122,11 +131,11 @@ const useActivateGroupHook = () => {
     }
   });
 };
-const useDeleteGroupHook = () => {
+const useDeleteBranchHook = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const QueryClient = useQueryClient();
-  return useMutation(DeleteGroup, {
+  return useMutation(DeleteBranch, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -149,7 +158,7 @@ const useDeleteGroupHook = () => {
 export {
   useCreateBranchHook,
   useGetAllBranchesHook,
-  useActivateGroupHook,
-  useDeleteGroupHook,
+  useActivateBranchHook,
+  useDeleteBranchHook,
   useGetOneGroupHook
 };

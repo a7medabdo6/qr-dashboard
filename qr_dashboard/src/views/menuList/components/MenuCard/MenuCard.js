@@ -14,11 +14,9 @@ import {
   colors
 } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import getInitials from 'utils/getInitials';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
-import { useDeleteUserHook } from 'hooks/apis/Auth';
-import { useActivateUserHook } from 'hooks/apis/Auth';
+import { useActivateMenuHook, useDeleteMenuHook } from 'hooks/apis/Menus';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -69,8 +67,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProjectCard = props => {
-  const { project, className, ...rest } = props;
+const MenuCard = props => {
+  const { Menu, className, ...rest } = props;
   const classes = useStyles();
 
   const statusColors = {
@@ -78,79 +76,58 @@ const ProjectCard = props => {
     Canceled: colors.grey[600],
     Completed: colors.green[600]
   };
-  const { mutate: DeleteUser } = useDeleteUserHook();
-  const { mutate: ActivateUser } = useActivateUserHook();
+  const { mutate: DeleteMenu } = useDeleteMenuHook();
+  const { mutate: ActivateMenu } = useActivateMenuHook();
   const onDeleteHandle = () => {
-    DeleteUser({ id: project.id });
+    DeleteMenu({ id: Menu.id });
   };
   const onActivateHandle = () => {
-    ActivateUser({ id: project.id, is_active: !project.is_active });
+    ActivateMenu({ id: Menu.id, active: !Menu.active });
   };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
         <div className={classes.header}>
-          <Avatar alt="Author" className={classes.avatar} src={project?.avatar}>
-            {/* {getInitials(project?.client_name)} */}
-            {project?.name}
-          </Avatar>
           <div>
             <Link
               color="textPrimary"
               component={RouterLink}
               noWrap
-              to="#"
+              to={`/menu/edit/${Menu?.id}`}
               variant="h5">
-              {project?.title}
+              {Menu?.title}
             </Link>
-            <Typography variant="body2">
-              <Link
-                color="textPrimary"
-                component={RouterLink}
-                to="/management/customers/1"
-                variant="h6">
-                {project?.name}
-              </Link>
-            </Typography>
           </div>
         </div>
-        {/* <div className={classes.stats}>
-          <Typography variant="h6">
-            {project?.currency}
-            {project?.price}
-          </Typography>
-          <Typography variant="body2"> {project?.schema_name}</Typography>
-        </div> */}
         <div className={classes.stats}>
-          <Typography variant="h6">{project?.email}</Typography>
-          <Typography variant="body2">Email</Typography>
-        </div>
-        {/* <div className={classes.stats}>
-          <Typography variant="h6">
-            {moment(project?.subscribedfrom).format('DD MMMM YYYY')}
-          </Typography>
-          <Typography variant="body2">Project started</Typography>
+          {Menu?.branch.map(item => (
+            <Typography key={item?.id} variant="h6">
+              {item?.title}
+              {`, `}
+            </Typography>
+          ))}
+          <Typography variant="body2">Branches Name</Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
-            {moment(project?.subscribedTo).format('DD MMMM YYYY')}
+            {moment(Menu?.create_at).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2">Project deadline</Typography>
-        </div> */}
+          <Typography variant="body2"> started</Typography>
+        </div>
         <div className={classes.stats}>
           <Typography
             style={{
-              color: project?.is_active
+              color: Menu?.active
                 ? statusColors.Completed
                 : statusColors['In progress']
             }}
             variant="h6">
-            {project?.is_active ? 'Active' : 'In progress'}
+            {Menu?.active ? 'Active' : 'In progress'}
           </Typography>
           <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
-          <Link component={RouterLink} to={`/users/edit/${project?.id}`}>
+          <Link component={RouterLink} to={`/menu/edit/${Menu?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
               color="primary"
@@ -160,7 +137,7 @@ const ProjectCard = props => {
             </Button>
           </Link>
 
-          {project?.is_active && (
+          {Menu?.active && (
             <Button
               style={{ marginInline: '5px', width: '100px' }}
               size="small"
@@ -171,7 +148,7 @@ const ProjectCard = props => {
               <BlockIcon />
             </Button>
           )}
-          {!project?.is_active && (
+          {!Menu?.active && (
             <Button
               style={{ marginInline: '5px', width: '100px' }}
               size="small"
@@ -197,9 +174,9 @@ const ProjectCard = props => {
   );
 };
 
-ProjectCard.propTypes = {
+MenuCard.propTypes = {
   className: PropTypes.string,
-  project: PropTypes.object.isRequired
+  Menu: PropTypes.object.isRequired
 };
 
-export default ProjectCard;
+export default MenuCard;

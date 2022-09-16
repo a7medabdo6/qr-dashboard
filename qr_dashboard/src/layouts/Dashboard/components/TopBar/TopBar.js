@@ -40,6 +40,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { logout } from 'actions';
+import { ChangeLang } from 'store/Global/Slice';
 // import { Logout } from 'hooks/apis/Auth';
 const options = ['en', 'ar'];
 const useStyles = makeStyles(theme => ({
@@ -122,7 +123,8 @@ const TopBar = props => {
     console.log(lang);
     setoption(lang.target.value);
     i18n.changeLanguage(lang.target.value);
-
+    dispatch(ChangeLang(lang.target.value));
+    // localStorage.setItem("lang",lang.target.value)
     console.log(i18n.language);
     document.body.dir = i18n.language == 'ar' ? 'rtl' : 'ltr';
     return i18n.language == 'ar'

@@ -12,10 +12,14 @@ import {
   Link,
   Avatar
 } from '@material-ui/core';
+import Select from 'components/MultiSelect/index';
+
 import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
 import gradients from 'utils/gradients';
 import { useParams } from 'react-router-dom';
 import { useGetOneUserHook, useUpdateSingleUserHook } from 'hooks/apis/Auth';
+import { useSelector } from 'react-redux';
+import { useGetAllBranchesHook } from 'hooks/apis/Branches';
 
 const schema = {
   // email: {
@@ -115,6 +119,7 @@ const useStyles = makeStyles(theme => ({
 
 const EditForm = props => {
   let { id } = useParams();
+  const [selectedBranches, setSelectedBranches] = React.useState([]);
 
   const { data, isLoading } = useGetOneUserHook(id);
   const { mutate: UpdateUserRequest, isError } = useUpdateSingleUserHook();
@@ -122,6 +127,11 @@ const EditForm = props => {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [logo, setLogo] = useState(null);
+
+  const { data: GetAllBranches } = useGetAllBranchesHook();
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const { allbranches } = useSelector(state => state.Branches);
 
   const classes = useStyles();
 
@@ -143,8 +153,15 @@ const EditForm = props => {
         is_active: data?.data?.is_active
       }
     }));
+    // arr2 = [2,4],
+    const res = allbranches.filter(item =>
+      data?.data?.branches.includes(item.id)
+    );
+    console.log(res, 'ressssss');
+    setSelectedBranches(res);
   }, [data]);
 
+  console.log(selectedBranches, 'setSelectedBranches');
   useEffect(() => {
     const errors = validate(formState.values, schema);
     setFormState(formState => ({
@@ -197,7 +214,11 @@ const EditForm = props => {
     formState.values.is_active &&
       formData.append('is_active', formState.values.is_active);
     formData.append('id', data.data.id);
+    for (let index = 0; index < selectedBranches.length; index++) {
+      formData.append('branches', parseInt(selectedBranches[index].id));
+    }
     console.log(formData);
+
     const result = await UpdateUserRequest(formData);
     if (result) {
       setFormState(formState => ({
@@ -277,6 +298,21 @@ const EditForm = props => {
             value={formState.values.password || ''}
             variant="outlined"
           />
+          {user.role == 2 && (
+            <div
+              style={{
+                border: '1px solid #00000029',
+                borderRadius: '5px',
+                margin: ' 0px 8px',
+                padding: '5px'
+              }}>
+              <Select
+                data={allbranches}
+                selectedBranches={selectedBranches}
+                setSelectedBranches={setSelectedBranches}
+              />
+            </div>
+          )}
           <TextField
             error={hasError('mobile')}
             fullWidth

@@ -17,8 +17,10 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import getInitials from 'utils/getInitials';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
-import { useDeleteGroupHook } from 'hooks/apis/Groups';
-import { useActivateGroupHook } from 'hooks/apis/Groups';
+import {
+  useActivateBranchHook,
+  useDeleteBranchHook
+} from 'hooks/apis/Branches';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -78,32 +80,31 @@ const ProjectCard = props => {
     Canceled: colors.grey[600],
     Completed: colors.green[600]
   };
-  const { mutate: DeleteGroup } = useDeleteGroupHook();
-  const { mutate: ActivateGroup } = useActivateGroupHook();
+  const { mutate: DeleteBranch } = useDeleteBranchHook();
+  const { mutate: ActivateBranch } = useActivateBranchHook();
   const onDeleteHandle = () => {
-    DeleteGroup({ id: project.id });
+    DeleteBranch({ id: project.id });
   };
   const onActivateHandle = () => {
-    ActivateGroup({ id: project.id, active: !project.active });
+    ActivateBranch({ id: project.id, active: !project.active });
   };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
         <div className={classes.header}>
-          <Avatar alt="Author" className={classes.avatar} src={project?.avatar}>
-            {/* {getInitials(project?.client_name)} */}
+          {/* <Avatar alt="Author" className={classes.avatar} src={project?.avatar}>
             {project?.name}
-          </Avatar>
+          </Avatar> */}
           <div>
             <Link
               color="textPrimary"
               component={RouterLink}
               noWrap
-              to="#"
+              // to="#"
               variant="h5">
               {project?.title}
             </Link>
-            <Typography variant="body2">
+            {/* <Typography variant="body2">
               <Link
                 color="textPrimary"
                 component={RouterLink}
@@ -111,7 +112,7 @@ const ProjectCard = props => {
                 variant="h6">
                 {project?.name}
               </Link>
-            </Typography>
+            </Typography> */}
           </div>
         </div>
         {/* <div className={classes.stats}>
@@ -122,8 +123,14 @@ const ProjectCard = props => {
           <Typography variant="body2"> {project?.schema_name}</Typography>
         </div> */}
         <div className={classes.stats}>
-          <Typography variant="h6">{project?.email}</Typography>
-          <Typography variant="body2">Email</Typography>
+          <Typography variant="h6">{project?.group?.title}</Typography>
+          <Typography variant="body2">Group Name</Typography>
+        </div>
+        <div className={classes.stats}>
+          <Typography variant="h6">
+            {moment(project?.create_at).format('DD MMMM YYYY')}
+          </Typography>
+          <Typography variant="body2"> started</Typography>
         </div>
         {/* <div className={classes.stats}>
           <Typography variant="h6">
@@ -150,13 +157,13 @@ const ProjectCard = props => {
           <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
-          <Link component={RouterLink} to={`/groups/edit/${project?.id}`}>
+          <Link component={RouterLink} to={`/branches/edit/${project?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
               color="primary"
               size="small"
               variant="outlined">
-              View
+              Edit
             </Button>
           </Link>
 
