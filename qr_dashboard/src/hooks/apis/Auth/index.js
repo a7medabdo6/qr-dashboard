@@ -7,12 +7,15 @@ import { ToastShow } from 'store/Global/Slice';
 import { useTranslation } from 'react-i18next';
 
 import { UserInfo, UsersList } from 'store/Auth/Slice';
-const getAllUsers = async (data, search) => {
-  return await api.get(`auth/users/?find=${search}`, {
-    headers: {
-      'Accept-Language': data
+const getAllUsers = async (data, search, filters) => {
+  return await api.get(
+    `auth/users/?find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}&active=${filters.active}`,
+    {
+      headers: {
+        'Accept-Language': data
+      }
     }
-  });
+  );
 };
 const postrequest = async data => {
   console.log(data, 'datttt');
@@ -122,14 +125,14 @@ const useChangePasswordHook = () => {
   });
 };
 
-const useGetAllUsersHook = search => {
+const useGetAllUsersHook = (search, filters) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t, i18n } = useTranslation();
 
   return useQuery(
-    ['allusers', i18n.language, search],
-    () => getAllUsers(i18n.language, search),
+    ['allusers', i18n.language, search, filters],
+    () => getAllUsers(i18n.language, search, filters),
     {
       onSuccess: res => {
         const result = {
