@@ -57,8 +57,7 @@ const useCreateMenuHook = () => {
     },
     onError: err => {
       console.log(err);
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
     }
   });
 };
@@ -80,11 +79,13 @@ const useGetAllMenusHook = (search, filters) => {
       },
       onError: err => {
         console.log(err, 'err');
+        dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
       }
     }
   );
 };
 const useGetOneMenuHook = id => {
+  const dispatch = useDispatch();
   return useQuery(['allMenus', id], getOneMenu, {
     onSuccess: res => {
       const result = {
@@ -96,8 +97,7 @@ const useGetOneMenuHook = id => {
     },
     onError: err => {
       console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
     }
   });
 };
@@ -113,6 +113,7 @@ const useUpdateMenuHook = () => {
     },
     onError: err => {
       console.log(err, 'err');
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
     }
   });
 };
@@ -127,13 +128,12 @@ const useActivateMenuHook = () => {
         data: res.data
       };
       QueryClient.invalidateQueries('allMenus');
-      dispatch(ToastShow('allMenus Updated Successfully'));
+      dispatch(ToastShow('Menu Updated Successfully'));
       return result.data;
     },
     onError: err => {
       console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
     }
   });
 };
@@ -153,8 +153,7 @@ const useDeleteMenuHook = () => {
     },
     onError: err => {
       console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
     }
   });
 };

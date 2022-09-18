@@ -9,6 +9,10 @@ import { useDispatch } from 'react-redux';
 
 export default function PositionedSnackbar() {
   const { toast } = useSelector(state => state.GlobalState);
+  let message,
+    type = null;
+  message = toast?.message;
+  type = toast?.type;
   const dispatch = useDispatch();
 
   const [state, setState] = React.useState({
@@ -36,8 +40,10 @@ export default function PositionedSnackbar() {
         autoHideDuration={2000}
         message="I love snacks"
         key={'top' + 'right'}>
-        <Alert onClose={handleClose} severity="success">
-          {toast}
+        <Alert
+          onClose={handleClose}
+          severity={type === 'error' ? 'error' : 'success'}>
+          {message ? message : toast}
         </Alert>
       </Snackbar>
     </div>
