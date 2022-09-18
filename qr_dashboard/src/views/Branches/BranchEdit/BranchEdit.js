@@ -47,7 +47,7 @@ const ProjectCreate = () => {
     canHire: ''
   });
   return (
-    <Page className={classes.root} title="Tenant Edit">
+    <Page className={classes.root} title="Edit Branch">
       <Header />
       <TenantEdit />
     </Page>

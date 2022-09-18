@@ -17,7 +17,7 @@ const Header = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       <Typography component="h2" gutterBottom variant="overline"></Typography>
       <Typography component="h1" style={{ marginBlock: '20PX' }} variant="h3">
-        Edit Group
+        Edit Branch
         <Toast />
       </Typography>
     </div>

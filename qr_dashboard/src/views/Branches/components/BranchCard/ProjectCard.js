@@ -100,7 +100,7 @@ const ProjectCard = props => {
               color="textPrimary"
               component={RouterLink}
               noWrap
-              // to="#"
+              to={`/branches/edit/${project?.id}`}
               variant="h5">
               {project?.title}
             </Link>

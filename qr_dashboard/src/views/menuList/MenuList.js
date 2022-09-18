@@ -25,7 +25,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const MenusList = () => {
-  const { isLoading, data } = useGetAllMenusHook();
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    create_at_after: '',
+    create_at_before: '',
+    active: ''
+  });
+  const { isLoading, data } = useGetAllMenusHook(search, filters);
   const { allMenus } = useSelector(state => state.Menus);
 
   const classes = useStyles();
@@ -40,8 +46,12 @@ const MenusList = () => {
     console.log('allMenus: ', allMenus);
   }, [data]);
 
-  const handleFilter = () => {};
-  const handleSearch = () => {};
+  const handleFilter = values => {
+    setFilters(values);
+  };
+  const handleSearch = text => {
+    setSearch(text);
+  };
 
   const handlePageClick = event => {
     const newOffset = (event.selected * itemsPerPage) % allMenus?.length;

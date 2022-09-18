@@ -1,18 +1,12 @@
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { api } from '../../../axios';
 import useRouter from 'utils/useRouter';
 import { ToastShow } from 'store/Global/Slice';
-
-import { UserInfo } from 'store/Auth/Slice';
-import { GroupsList } from 'store/Groups/Slice';
 import { BranchesList } from 'store/Branches/Slice';
 import { useTranslation } from 'react-i18next';
-const lang = localStorage.getItem('i18nextLng');
 
 const getAllBranches = async (data, search, filters) => {
-  // console.log(data, 'axios data');
   return await api.get(
     `branches/?expand=group&find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}&active=${filters.active}`,
     {
@@ -22,7 +16,7 @@ const getAllBranches = async (data, search, filters) => {
     }
   );
 };
-const getOneGroup = async ({ queryKey }) => {
+const getOneBranch = async ({ queryKey }) => {
   return await api.get(`branches/${queryKey[1]}`);
 };
 const postCreateBranchrequest = async data => {
@@ -84,10 +78,10 @@ const useGetAllBranchesHook = (search, filters) => {
     }
   );
 };
-const useGetOneGroupHook = id => {
+const useGetOneBranchHook = id => {
   const dispatch = useDispatch();
   const router = useRouter();
-  return useQuery(['onegroup', id], getOneGroup, {
+  return useQuery(['allbranches', id], getOneBranch, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,
@@ -122,7 +116,7 @@ const useActivateBranchHook = () => {
       QueryClient.invalidateQueries('allbranches');
       console.log(result);
       // dispatch(TenantList(result.data.results));
-      dispatch(ToastShow('group updated Successfuly'));
+      dispatch(ToastShow('Branch updated Successfully'));
       // console.log(result.data, 'result.data');
 
       return result.data;
@@ -147,7 +141,7 @@ const useDeleteBranchHook = () => {
       };
       QueryClient.invalidateQueries('allbranches');
 
-      dispatch(ToastShow('group Deleted Successfuly'));
+      dispatch(ToastShow('Branch Deleted Successfully'));
 
       return result.data;
     },
@@ -163,5 +157,5 @@ export {
   useGetAllBranchesHook,
   useActivateBranchHook,
   useDeleteBranchHook,
-  useGetOneGroupHook
+  useGetOneBranchHook
 };
