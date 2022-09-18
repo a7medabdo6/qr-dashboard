@@ -105,8 +105,16 @@ const CreateFrom = props => {
     mutate: UpdateMenuRequest,
     isLoading: isLoadingUpdate
   } = useUpdateMenuHook();
-  useGetAllBranchesHook();
+
+  const [search, setsearch] = useState('');
+  const [filters, setfilters] = useState({
+    create_at_after: '',
+    create_at_before: '',
+    active: ''
+  });
+  useGetAllBranchesHook(search, filters);
   const { allbranches } = useSelector(state => state.Branches);
+
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -193,7 +201,7 @@ const CreateFrom = props => {
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  console.log('isLoadingData: ', isLoadingData);
+
   if (isLoadingData) {
     return <div>Loading ....</div>;
   }

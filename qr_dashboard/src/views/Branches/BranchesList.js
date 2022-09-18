@@ -24,8 +24,12 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectManagementList = () => {
   const [search, setsearch] = useState('');
-
-  const { isLoading, data } = useGetAllBranchesHook(search);
+  const [filters, setfilters] = useState({
+    create_at_after: '',
+    create_at_before: '',
+    active: ''
+  });
+  const { isLoading, data } = useGetAllBranchesHook(search, filters);
   const { allbranches } = useSelector(state => state.Branches);
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
@@ -56,7 +60,9 @@ const ProjectManagementList = () => {
     console.log(allbranches, 'allbranches');
   }, [data]);
 
-  const handleFilter = () => {};
+  const handleFilter = values => {
+    setfilters(values);
+  };
   const handleSearch = text => {
     setsearch(text);
   };

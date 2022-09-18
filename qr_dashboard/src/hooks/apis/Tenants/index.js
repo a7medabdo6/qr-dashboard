@@ -9,7 +9,7 @@ import { TenantList } from 'store/Tenant/Slice';
 import { ToastShow } from 'store/Global/Slice';
 const getAllTenants = async (data, search, filters) => {
   return await api.get(
-    `tenants/?find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}`,
+    `tenants/?find=${search}&created_at_before=${filters?.create_at_before}&created_at_after=${filters?.create_at_after}&is_active=${filters.active}&created_on=`,
     {
       headers: {
         'Accept-Language': data

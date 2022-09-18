@@ -25,8 +25,12 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectManagementList = () => {
   const [search, setsearch] = useState('');
-
-  const { isLoading, data } = useGetAllUsersHook(search);
+  const [filters, setfilters] = useState({
+    create_at_after: '',
+    create_at_before: '',
+    active: ''
+  });
+  const { isLoading, data } = useGetAllUsersHook(search, filters);
   const { allusers } = useSelector(state => state.UserInfo);
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
@@ -57,7 +61,9 @@ const ProjectManagementList = () => {
     console.log(allusers, 'allusers');
   }, [data]);
 
-  const handleFilter = () => {};
+  const handleFilter = values => {
+    setfilters(values);
+  };
   const handleSearch = text => {
     setsearch(text);
   };
@@ -69,45 +75,51 @@ const ProjectManagementList = () => {
     );
     setItemOffset(newOffset);
   };
-  if (isLoading) {
-    return <SkeletonChildren />;
-  }
+  // if (isLoading) {
+  //   return <SkeletonChildren />;
+  // }
 
   return (
     <Page className={classes.root} title="Project Management List">
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
-      <div className={classes.results}>
-        <Typography color="textSecondary" gutterBottom variant="body2">
-          {allusers.length} Records found. Page {page + 1} of{' '}
-          {Math.ceil(allusers.length / rowsPerPage)}
-        </Typography>
-        {currentItems && currentItems.length > 0 ? (
-          currentItems.map(project => (
-            <>
-              {project.id != JSON.parse(localStorage.getItem('user')).id ? (
-                <ProjectCard key={project.id} project={project} />
-              ) : (
-                <></>
-              )}
-            </>
-          ))
-        ) : (
-          <EmptySection />
-        )}
-      </div>
+      {isLoading ? (
+        <SkeletonChildren />
+      ) : (
+        <>
+          <div className={classes.results}>
+            <Typography color="textSecondary" gutterBottom variant="body2">
+              {allusers.length} Records found. Page {page + 1} of{' '}
+              {Math.ceil(allusers.length / rowsPerPage)}
+            </Typography>
+            {currentItems && currentItems.length > 0 ? (
+              currentItems.map(project => (
+                <>
+                  {project.id != JSON.parse(localStorage.getItem('user')).id ? (
+                    <ProjectCard key={project.id} project={project} />
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ))
+            ) : (
+              <EmptySection />
+            )}
+          </div>
 
-      <div className={classes.paginate}>
-        <Paginate
-          pageCount={pageCount}
-          itemOffset={itemOffset}
-          projects={allusers}
-          setPageCount={setPageCount}
-          onPageChange={handlePageClick}
-          itemsPerPage={itemsPerPage}
-          setCurrentItems={setCurrentItems}
-        />
-      </div>
+          <div className={classes.paginate}>
+            <Paginate
+              pageCount={pageCount}
+              itemOffset={itemOffset}
+              projects={allusers}
+              setPageCount={setPageCount}
+              onPageChange={handlePageClick}
+              itemsPerPage={itemsPerPage}
+              setCurrentItems={setCurrentItems}
+            />
+          </div>
+        </>
+      )}
     </Page>
   );
 };
