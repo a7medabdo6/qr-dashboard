@@ -52,8 +52,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
+  const [search, setsearch] = useState('');
+  const [filters, setfilters] = useState({
+    create_at_after: '',
+    create_at_before: '',
+    active: ''
+  });
   const { mutate: CreateBranchRequest, isLoading } = useCreateBranchHook();
-  const { data } = useGetAllGroupsHook();
+  const { data } = useGetAllGroupsHook(search, filters);
   const { allgroups } = useSelector(state => state.Groups);
   const { className, ...rest } = props;
 

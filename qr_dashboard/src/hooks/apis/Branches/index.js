@@ -31,7 +31,6 @@ const DeleteBranch = async data => {
 
 const useCreateBranchHook = () => {
   const QueryClient = useQueryClient();
-
   const dispatch = useDispatch();
   const router = useRouter();
   return useMutation(postCreateBranchrequest, {
@@ -42,8 +41,8 @@ const useCreateBranchHook = () => {
         data: res.data
       };
       QueryClient.invalidateQueries('allbranches');
-
-      dispatch(ToastShow('Branch Created Successfuly'));
+      dispatch(ToastShow('Branch Created Successfully'));
+      router.history.push('/branches');
     },
     onError: err => {
       console.log(err);
@@ -117,6 +116,7 @@ const useActivateBranchHook = () => {
       console.log(result);
       // dispatch(TenantList(result.data.results));
       dispatch(ToastShow('Branch updated Successfully'));
+      router.history.push('/branches');
       // console.log(result.data, 'result.data');
 
       return result.data;
