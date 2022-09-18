@@ -99,7 +99,7 @@ const ProjectCard = props => {
               color="textPrimary"
               component={RouterLink}
               noWrap
-              to="#"
+              to={`/users/edit/${project?.id}`}
               variant="h5">
               {project?.title}
             </Link>
@@ -107,7 +107,7 @@ const ProjectCard = props => {
               <Link
                 color="textPrimary"
                 component={RouterLink}
-                to="/management/customers/1"
+                to={`/users/edit/${project?.id}`}
                 variant="h6">
                 {project?.name}
               </Link>
