@@ -3,11 +3,30 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { api } from '../../../axios';
 import useRouter from 'utils/useRouter';
 import { ToastShow } from 'store/Global/Slice';
-
 import { MenusList } from 'store/Menus/Slice';
+import { useTranslation } from 'react-i18next';
 
-const getAllMenus = async () => {
-  return await api.get('menus/?expand=branch');
+const getAllMenus = async (data, search, filters) => {
+  console.log('data: ', data);
+  console.log('search: ', search);
+  console.log('filters: ', filters);
+  return await api.get(
+    `menus/?expand=branch&`.concat(
+      search ? `find=${search}&` : ``,
+      filters?.create_at_before
+        ? `create_at_before=${filters?.create_at_before}&`
+        : ``,
+      filters?.create_at_after
+        ? `create_at_after=${filters?.create_at_after}&`
+        : ``,
+      filters?.active ? `active=${filters?.active}&` : ``
+    ),
+    data && {
+      headers: {
+        'Accept-Language': data
+      }
+    }
+  );
 };
 const getOneMenu = async ({ queryKey }) => {
   if (queryKey[1]) return await api.get(`menus/${queryKey[1]}`);
@@ -44,23 +63,26 @@ const useCreateMenuHook = () => {
   });
 };
 
-const useGetAllMenusHook = () => {
+const useGetAllMenusHook = (search, filters) => {
   const dispatch = useDispatch();
-  return useQuery('allMenus', getAllMenus, {
-    onSuccess: res => {
-      const result = {
-        status: res.status + '-' + res.statusText,
-        headers: res.headers,
-        data: res.data
-      };
-      dispatch(MenusList(result.data.results));
-    },
-    onError: err => {
-      console.log(err, 'err');
-      //   dispatch(errorAtLogin(err.response.data.detail));
-      //  return err;
+  const { t, i18n } = useTranslation();
+  return useQuery(
+    ['allMenus', i18n.language, search, filters],
+    () => getAllMenus(i18n.language, search, filters),
+    {
+      onSuccess: res => {
+        const result = {
+          status: res.status + '-' + res.statusText,
+          headers: res.headers,
+          data: res.data
+        };
+        dispatch(MenusList(result.data.results));
+      },
+      onError: err => {
+        console.log(err, 'err');
+      }
     }
-  });
+  );
 };
 const useGetOneMenuHook = id => {
   return useQuery(['allMenus', id], getOneMenu, {

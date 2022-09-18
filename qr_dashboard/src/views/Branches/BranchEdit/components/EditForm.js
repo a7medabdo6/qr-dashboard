@@ -10,7 +10,10 @@ import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { useParams } from 'react-router-dom';
 import useRouter from 'utils/useRouter';
-import { useGetOneGroupHook, useActivateGroupHook } from 'hooks/apis/Groups';
+import {
+  useGetOneBranchHook,
+  useActivateBranchHook
+} from 'hooks/apis/Branches';
 
 const schema = {
   // email: {
@@ -85,9 +88,9 @@ const useStyles = makeStyles(theme => ({
 const LoginForm = props => {
   let { id } = useParams();
 
-  const { data, isLoading } = useGetOneGroupHook(id);
+  const { data, isLoading } = useGetOneBranchHook(id);
   console.log(data, 'iid');
-  const { mutate: UpdateGroupRequest, isError } = useActivateGroupHook();
+  const { mutate: UpdateGroupRequest, isError } = useActivateBranchHook();
   const { className, ...rest } = props;
 
   const classes = useStyles();
