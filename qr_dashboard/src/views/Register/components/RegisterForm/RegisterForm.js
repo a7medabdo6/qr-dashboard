@@ -178,7 +178,7 @@ const RegisterForm = props => {
     formData.append('role', user.role);
     formData.append('mobile', formState.values.mobile);
 
-    console.log(...formData, 'formData');
+    // console.log(...formData, 'formData');
     CreateUserApi(formData);
   };
 
