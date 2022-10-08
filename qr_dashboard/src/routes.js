@@ -270,6 +270,11 @@ export const DashboardUser = [
         component: lazy(() => import('views/menuList/MenuCreate'))
       },
       {
+        path: '/menu/modify/:id',
+        exact: true,
+        component: lazy(() => import('views/menuList/MenuModify'))
+      },
+      {
         path: '/products',
         exact: true,
         component: lazy(() => import('views/ProductManagementList'))
@@ -581,6 +586,11 @@ export const DashboardManager = [
         path: '/menu/edit/:id',
         exact: true,
         component: lazy(() => import('views/menuList/MenuCreate'))
+      },
+      {
+        path: '/menu/modify/:id',
+        exact: true,
+        component: lazy(() => import('views/menuList/MenuModify'))
       },
       // {
       //   path: '/products',
