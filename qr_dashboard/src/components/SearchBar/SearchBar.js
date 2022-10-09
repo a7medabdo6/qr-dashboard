@@ -6,6 +6,7 @@ import { Grid, Button } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { Search, Filter } from './components';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,6 +32,7 @@ const SearchBar = props => {
   const { onFilter, onSearch, className, ...rest } = props;
 
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
 
   const [openFilter, setOpenFilter] = useState(false);
 
@@ -63,7 +65,7 @@ const SearchBar = props => {
           size="small"
           variant="outlined"
         >
-          <FilterListIcon className={classes.filterIcon} /> Show filters
+          <FilterListIcon className={classes.filterIcon} /> {t('show_fillters')}
         </Button>
       </Grid>
       <Filter

@@ -43,6 +43,8 @@ const Protected = ({ isLoggedIn, userType }) => {
 
     case 2:
       return <div>{renderRoutes(DashboardManager)}</div>;
+    case 3:
+      return <div>{renderRoutes(DashboardManager)}</div>;
 
     default:
       return <Redirect to="/auth/login" />;

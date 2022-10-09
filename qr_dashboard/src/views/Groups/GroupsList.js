@@ -88,10 +88,10 @@ const ProjectManagementList = () => {
       ) : (
         <>
           <div className={classes.results}>
-            <Typography color="textSecondary" gutterBottom variant="body2">
+            {/* <Typography color="textSecondary" gutterBottom variant="body2">
               {allgroups.length} Records found. Page {page + 1} of{' '}
               {Math.ceil(allgroups.length / rowsPerPage)}
-            </Typography>
+            </Typography> */}
             {currentItems && currentItems.length > 0 ? (
               currentItems.map(project => (
                 <>

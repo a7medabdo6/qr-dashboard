@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Paper, Button, Input } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,6 +34,7 @@ const Search = props => {
   const { onSearch, className, ...rest } = props;
   const [SearchText, setSearchText] = useState('');
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
@@ -42,7 +44,7 @@ const Search = props => {
           className={classes.searchInput}
           disableUnderline
           onChange={e => setSearchText(e.target.value)}
-          placeholder="Search"
+          placeholder={t('Search')}
         />
       </Paper>
       <Button
@@ -50,7 +52,7 @@ const Search = props => {
         onClick={() => onSearch(SearchText)}
         size="large"
         variant="contained">
-        Search
+        {t('Search')}
       </Button>
     </div>
   );

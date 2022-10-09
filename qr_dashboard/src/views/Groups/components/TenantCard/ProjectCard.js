@@ -19,6 +19,7 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
 import { useDeleteGroupHook } from 'hooks/apis/Groups';
 import { useActivateGroupHook } from 'hooks/apis/Groups';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,6 +73,7 @@ const useStyles = makeStyles(theme => ({
 const ProjectCard = props => {
   const { project, className, ...rest } = props;
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
 
   const statusColors = {
     'In progress': colors.orange[600],
@@ -128,7 +130,7 @@ const ProjectCard = props => {
           <Typography variant="h6">
             {moment(project?.create_at).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2"> started</Typography>
+          <Typography variant="body2">{t('started')}</Typography>
         </div>
         {/* <div className={classes.stats}>
           <Typography variant="h6">
@@ -150,9 +152,9 @@ const ProjectCard = props => {
                 : statusColors['In progress']
             }}
             variant="h6">
-            {project?.active ? 'Active' : 'In progress'}
+            {project?.active ? t('Active') : t('Disable')}
           </Typography>
-          <Typography variant="body2"> Status</Typography>
+          <Typography variant="body2"> {t('Status')}</Typography>
         </div>
         <div className={classes.actions}>
           <Link component={RouterLink} to={`/groups/edit/${project?.id}`}>
@@ -161,7 +163,8 @@ const ProjectCard = props => {
               color="primary"
               size="small"
               variant="outlined">
-              Edit
+              
+              {t('Edit')}
             </Button>
           </Link>
 
@@ -172,7 +175,8 @@ const ProjectCard = props => {
               variant="outlined"
               onClick={onActivateHandle}
               color="primary">
-              Disable
+              
+              {t('Disable')}
               <BlockIcon />
             </Button>
           )}
@@ -183,7 +187,8 @@ const ProjectCard = props => {
               variant="contained"
               onClick={onActivateHandle}
               color="primary">
-              Activate
+              
+              {t('Activate')}
               <DoneAllIcon />
             </Button>
           )}
@@ -193,7 +198,9 @@ const ProjectCard = props => {
             variant="contained"
             color="secondary"
             onClick={onDeleteHandle}>
-            delete
+            
+            {t('delete')}
+
             <DeleteForeverIcon />
           </Button>
         </div>

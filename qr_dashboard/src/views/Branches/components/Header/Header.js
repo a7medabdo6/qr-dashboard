@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -11,6 +12,7 @@ const useStyles = makeStyles(() => ({
 
 const Header = props => {
   const { className, ...rest } = props;
+  const { t, i18n } = useTranslation();
 
   const classes = useStyles();
 
@@ -19,10 +21,10 @@ const Header = props => {
       <Grid alignItems="flex-end" container justify="space-between" spacing={3}>
         <Grid item>
           <Typography component="h2" gutterBottom variant="overline">
-            Management
+            {t('Management')}
           </Typography>
           <Typography component="h1" variant="h3">
-            Branches
+            {t('Branches')}
           </Typography>
         </Grid>
         <Grid item>
@@ -31,7 +33,7 @@ const Header = props => {
             component={RouterLink}
             to="/branches/create"
             variant="contained">
-            Add Branch
+            {t('add_branch')}
           </Button>
         </Grid>
       </Grid>

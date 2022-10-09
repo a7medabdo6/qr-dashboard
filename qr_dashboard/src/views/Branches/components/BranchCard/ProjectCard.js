@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
+
 import {
   Avatar,
   Button,
@@ -21,6 +22,7 @@ import {
   useActivateBranchHook,
   useDeleteBranchHook
 } from 'hooks/apis/Branches';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,7 +76,8 @@ const useStyles = makeStyles(theme => ({
 const ProjectCard = props => {
   const { project, className, ...rest } = props;
   const classes = useStyles();
-
+  
+  const { t, i18n } = useTranslation();
   const statusColors = {
     'In progress': colors.orange[600],
     Canceled: colors.grey[600],
@@ -124,13 +127,13 @@ const ProjectCard = props => {
         </div> */}
         <div className={classes.stats}>
           <Typography variant="h6">{project?.group?.title}</Typography>
-          <Typography variant="body2">Group Name</Typography>
+          <Typography variant="body2"> {t('Group_Name')}</Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
             {moment(project?.create_at).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2"> started</Typography>
+          <Typography variant="body2">{t('started')} </Typography>
         </div>
         {/* <div className={classes.stats}>
           <Typography variant="h6">
@@ -152,9 +155,9 @@ const ProjectCard = props => {
                 : statusColors['In progress']
             }}
             variant="h6">
-            {project?.active ? 'Active' : 'In progress'}
+            {project?.active ? t('Active') : t('Disable')}
           </Typography>
-          <Typography variant="body2"> Status</Typography>
+          <Typography variant="body2">{t('Status')} </Typography>
         </div>
         <div className={classes.actions}>
           <Link component={RouterLink} to={`/branches/edit/${project?.id}`}>
@@ -163,7 +166,7 @@ const ProjectCard = props => {
               color="primary"
               size="small"
               variant="outlined">
-              Edit
+              {t('Edit')}
             </Button>
           </Link>
 
@@ -174,7 +177,7 @@ const ProjectCard = props => {
               variant="outlined"
               onClick={onActivateHandle}
               color="primary">
-              Disable
+              {t('Disable')}
               <BlockIcon />
             </Button>
           )}
@@ -185,7 +188,7 @@ const ProjectCard = props => {
               variant="contained"
               onClick={onActivateHandle}
               color="primary">
-              Activate
+              {t('Activate')}
               <DoneAllIcon />
             </Button>
           )}
@@ -195,7 +198,8 @@ const ProjectCard = props => {
             variant="contained"
             color="secondary"
             onClick={onDeleteHandle}>
-            delete
+            {t('delete')}
+
             <DeleteForeverIcon />
           </Button>
         </div>

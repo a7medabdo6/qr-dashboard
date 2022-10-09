@@ -80,7 +80,7 @@ const ProjectManagementList = () => {
   //   return <SkeletonChildren />;
   // }
   return (
-    <Page className={classes.root} title="Project Management List">
+    <Page className={classes.root} >
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {isLoading ? (
@@ -89,19 +89,19 @@ const ProjectManagementList = () => {
         <>
           <div className={classes.results}>
             <Typography color="textSecondary" gutterBottom variant="body2">
-              {allbranches.length} Records found. Page {page + 1} of{' '}
-              {Math.ceil(allbranches.length / rowsPerPage)}
+              {/* {allbranches.length} Records found. Page {page + 1} of{' '}
+              {Math.ceil(allbranches.length / rowsPerPage)} */}
             </Typography>
             {currentItems && currentItems.length > 0 ? (
               currentItems.map(project => {
-                if (userInfo.branches.includes(project.id)) {
+                // if (userInfo.branches.includes(project.id)) {
                   return (
                     <>
                       <ProjectCard key={project.id} project={project} />
                     </>
                   );
-                }
-                return <></>;
+                // }
+                // return <></>;
               })
             ) : (
               <EmptySection />
