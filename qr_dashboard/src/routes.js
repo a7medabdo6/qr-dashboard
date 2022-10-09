@@ -269,6 +269,7 @@ export const DashboardUser = [
         exact: true,
         component: lazy(() => import('views/menuList/MenuCreate'))
       },
+
       {
         path: '/category',
         exact: true,
