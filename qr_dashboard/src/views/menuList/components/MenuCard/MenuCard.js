@@ -16,6 +16,7 @@ import {
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { useActivateMenuHook, useDeleteMenuHook } from 'hooks/apis/Menus';
 
 const useStyles = makeStyles(theme => ({
@@ -127,6 +128,15 @@ const MenuCard = props => {
           <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
+          <Link component={RouterLink} to={`/menu/modify/${Menu?.id}`}>
+            <Button
+              style={{ marginInline: '5px' }}
+              color="primary"
+              size="small"
+              variant="text">
+              <SettingsIcon />
+            </Button>
+          </Link>
           <Link component={RouterLink} to={`/menu/edit/${Menu?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
