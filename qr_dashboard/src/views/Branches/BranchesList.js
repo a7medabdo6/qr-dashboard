@@ -31,6 +31,8 @@ const ProjectManagementList = () => {
   });
   const { isLoading, data } = useGetAllBranchesHook(search, filters);
   const { allbranches } = useSelector(state => state.Branches);
+  const userInfo = useSelector(state => state.UserInfo.user);
+
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
   const [page] = useState(0);
@@ -78,7 +80,7 @@ const ProjectManagementList = () => {
   //   return <SkeletonChildren />;
   // }
   return (
-    <Page className={classes.root} title="Project Management List">
+    <Page className={classes.root} >
       <Header />
       <SearchBar onFilter={handleFilter} onSearch={handleSearch} />
       {isLoading ? (
@@ -87,15 +89,20 @@ const ProjectManagementList = () => {
         <>
           <div className={classes.results}>
             <Typography color="textSecondary" gutterBottom variant="body2">
-              {allbranches.length} Records found. Page {page + 1} of{' '}
-              {Math.ceil(allbranches.length / rowsPerPage)}
+              {/* {allbranches.length} Records found. Page {page + 1} of{' '}
+              {Math.ceil(allbranches.length / rowsPerPage)} */}
             </Typography>
             {currentItems && currentItems.length > 0 ? (
-              currentItems.map(project => (
-                <>
-                  <ProjectCard key={project.id} project={project} />
-                </>
-              ))
+              currentItems.map(project => {
+                // if (userInfo.branches.includes(project.id)) {
+                  return (
+                    <>
+                      <ProjectCard key={project.id} project={project} />
+                    </>
+                  );
+                // }
+                // return <></>;
+              })
             ) : (
               <EmptySection />
             )}

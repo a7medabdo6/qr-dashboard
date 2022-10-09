@@ -14,12 +14,12 @@ import {
   colors
 } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import getInitials from 'utils/getInitials';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
-import { useDeleteGroupHook } from 'hooks/apis/Groups';
-import { useActivateGroupHook } from 'hooks/apis/Groups';
-import { useTranslation } from 'react-i18next';
+import {
+  useActivateCategoryHook,
+  useDeleteCategoryHook
+} from 'hooks/apis/Category';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,125 +70,95 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProjectCard = props => {
-  const { project, className, ...rest } = props;
+const CategoryCard = props => {
+  const { Category, className, ...rest } = props;
   const classes = useStyles();
-  const { t, i18n } = useTranslation();
 
   const statusColors = {
     'In progress': colors.orange[600],
     Canceled: colors.grey[600],
     Completed: colors.green[600]
   };
-  const { mutate: DeleteGroup } = useDeleteGroupHook();
-  const { mutate: ActivateGroup } = useActivateGroupHook();
+  const { mutate: DeleteCategory } = useDeleteCategoryHook();
+  const { mutate: ActivateCategory } = useActivateCategoryHook();
   const onDeleteHandle = () => {
-    DeleteGroup({ id: project.id });
+    DeleteCategory({ id: Category.id });
   };
   const onActivateHandle = () => {
-    ActivateGroup({ id: project.id, active: !project.active });
+    ActivateCategory({ id: Category.id, active: !Category.active });
   };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
         <div className={classes.header}>
-          {/* <Avatar alt="Author" className={classes.avatar} src={project?.avatar}>
-            {project?.name}
-          </Avatar> */}
           <div>
             <Link
               color="textPrimary"
               component={RouterLink}
               noWrap
-              to={`/groups/edit/${project?.id}`}
+              to={`/category/edit/${Category?.id}`}
               variant="h5">
-              {project?.title}
+              {Category?.title}
             </Link>
-            {/* <Typography variant="body2">
-              <Link
-                color="textPrimary"
-                component={RouterLink}
-                to="/management/customers/1"
-                variant="h6">
-                {project?.name}
-              </Link>
-            </Typography> */}
           </div>
         </div>
-        {/* <div className={classes.stats}>
-          <Typography variant="h6">
-            {project?.currency}
-            {project?.price}
-          </Typography>
-          <Typography variant="body2"> {project?.schema_name}</Typography>
-        </div> */}
-        {/* <div className={classes.stats}>
-          <Typography variant="h6">{project?.email}</Typography>
-          <Typography variant="body2">Email</Typography>
-        </div> */}
         <div className={classes.stats}>
-          <Typography variant="h6">
-            {moment(project?.create_at).format('DD MMMM YYYY')}
-          </Typography>
-          <Typography variant="body2">{t('started')}</Typography>
-        </div>
-        {/* <div className={classes.stats}>
-          <Typography variant="h6">
-            {moment(project?.subscribedfrom).format('DD MMMM YYYY')}
-          </Typography>
-          <Typography variant="body2">Project started</Typography>
+          {Category?.branch.map(item => (
+            <Typography key={item?.id} variant="h6">
+              {item?.title}
+              {`, `}
+            </Typography>
+          ))}
+          <Typography variant="body2">Branches Name</Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
-            {moment(project?.subscribedTo).format('DD MMMM YYYY')}
+            {moment(Category?.create_at).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2">Project deadline</Typography>
-        </div> */}
+          <Typography variant="body2"> started</Typography>
+        </div>
         <div className={classes.stats}>
           <Typography
             style={{
-              color: project?.active
+              color: Category?.active
                 ? statusColors.Completed
                 : statusColors['In progress']
             }}
             variant="h6">
-            {project?.active ? t('Active') : t('Disable')}
+            {Category?.active ? 'Active' : 'In progress'}
           </Typography>
-          <Typography variant="body2"> {t('Status')}</Typography>
+          <Typography variant="body2"> Status</Typography>
         </div>
         <div className={classes.actions}>
-          <Link component={RouterLink} to={`/groups/edit/${project?.id}`}>
+          <Link component={RouterLink} to={`/Category/edit/${Category?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
               color="primary"
               size="small"
               variant="outlined">
-              
-              {t('Edit')}
+              Edit
             </Button>
           </Link>
 
-          {project?.active && (
+          {Category?.active && (
             <Button
               style={{ marginInline: '5px', width: '100px' }}
               size="small"
               variant="outlined"
               onClick={onActivateHandle}
               color="primary">
-              
-              {t('Disable')}
+              Disable
               <BlockIcon />
             </Button>
           )}
-          {!project?.active && (
+          {!Category?.active && (
             <Button
               style={{ marginInline: '5px', width: '100px' }}
               size="small"
               variant="contained"
               onClick={onActivateHandle}
               color="primary">
-              
-              {t('Activate')}
+              Activate
               <DoneAllIcon />
             </Button>
           )}
@@ -198,9 +168,7 @@ const ProjectCard = props => {
             variant="contained"
             color="secondary"
             onClick={onDeleteHandle}>
-            
-            {t('delete')}
-
+            delete
             <DeleteForeverIcon />
           </Button>
         </div>
@@ -209,9 +177,9 @@ const ProjectCard = props => {
   );
 };
 
-ProjectCard.propTypes = {
+CategoryCard.propTypes = {
   className: PropTypes.string,
-  project: PropTypes.object.isRequired
+  Category: PropTypes.object.isRequired
 };
 
-export default ProjectCard;
+export default CategoryCard;

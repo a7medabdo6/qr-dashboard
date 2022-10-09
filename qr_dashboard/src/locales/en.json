@@ -1,3 +1,26 @@
 {
-  "Welcome": "welcome en"
+  "Welcome": "welcome en",
+  "DashBoard": "DashBoard",
+  "Groups": "Groups",
+  "Branches": "Branches",
+  "Menus": "Menus",
+  "Setting": "Setting",
+  "Users": "Users",
+  "Signout": "Signout",
+  "add_group": "Add group",
+  "Group_Name": "Group Name",
+  "started": "started",
+  "Activate": "Activate",
+  "Search": "Search",
+  "show_fillters": "show fillters",
+  "Active": "Active",
+  "Status": "Status",
+  "Edit": "Edit",
+  "Disable": "Disable",
+  "delete": "delete",
+  "title": "title (en)",
+  "title_ar": "title {ar)",
+  "add_branch": "Add Branch",
+  "Management":"Management"
+
 }

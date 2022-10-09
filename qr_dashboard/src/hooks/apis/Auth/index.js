@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { UserInfo, UsersList } from 'store/Auth/Slice';
 const getAllUsers = async (data, search, filters) => {
   return await api.get(
-    `auth/users/?find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}&active=${filters.active}`,
+    `auth/users/?find=${search}&create_at_before=${filters?.create_at_before}&create_at_after=${filters?.create_at_after}&is_active=${filters.active}`,
     {
       headers: {
         'Accept-Language': data

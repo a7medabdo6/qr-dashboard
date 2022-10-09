@@ -149,17 +149,12 @@ export default [
       {
         title: 'Menus',
         href: '/menu',
-        icon: FolderIcon,
-      //   children: [
-      //     {
-      //       title: 'All Menu',
-      //       href: '/menu'
-      //     },
-      //     {
-      //       title: 'Create',
-      //       href: '/menu/create'
-      //     }
-      //   ]
+        icon: FolderIcon
+      },
+      {
+        title: 'Categories',
+        href: '/category',
+        icon: FolderIcon
       },
       // {
       //   title: 'Category',

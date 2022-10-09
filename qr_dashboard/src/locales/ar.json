@@ -1,3 +1,25 @@
 {
-  "Welcome": "welcome ar"
+  "Welcome": "welcome ar",
+  "DashBoard": "الرئيسية ",
+  "Groups": "الأنشطة  ",
+  "Branches": "الأفرع",
+  "Menus": "القوائم ",
+  "Setting": "الاعدادات",
+  "Users": "المستخدمين  ",
+  "Signout": "تسجيل خروج",
+  "add_group": "إضافة نشاط",
+  "Group_Name": "اسم النشاط ",
+  "started": "تاريخ البدء",
+  "Activate": "تفعيل",
+  "Search": "بحث",
+  "show_fillters": "التصفية ",
+  "Active": "فعال",
+  "Status": "الحالة ",
+  "Edit": "تعديل ",
+  "Disable": "غير فعال",
+  "delete": "حذف ",
+  "title": "الاسم بالانجليزية",
+  "title_ar": "الاسم بالعربي",
+  "add_branch": "اضافة فرع  ",
+  "Management": "ادارة"
 }

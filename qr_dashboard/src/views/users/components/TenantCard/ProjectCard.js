@@ -78,6 +78,8 @@ const ProjectCard = props => {
     Canceled: colors.grey[600],
     Completed: colors.green[600]
   };
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const { mutate: DeleteUser } = useDeleteUserHook();
   const { mutate: ActivateUser } = useActivateUserHook();
   const onDeleteHandle = () => {
@@ -149,49 +151,51 @@ const ProjectCard = props => {
           </Typography>
           <Typography variant="body2"> Status</Typography>
         </div>
-        <div className={classes.actions}>
-          <Link component={RouterLink} to={`/users/edit/${project?.id}`}>
+        {user.role != 3 && (
+          <div className={classes.actions}>
+            <Link component={RouterLink} to={`/users/edit/${project?.id}`}>
+              <Button
+                style={{ marginInline: '5px' }}
+                color="primary"
+                size="small"
+                variant="outlined">
+                Edit
+              </Button>
+            </Link>
+
+            {project?.is_active && (
+              <Button
+                style={{ marginInline: '5px', width: '100px' }}
+                size="small"
+                variant="outlined"
+                onClick={onActivateHandle}
+                color="primary">
+                Disable
+                <BlockIcon />
+              </Button>
+            )}
+            {!project?.is_active && (
+              <Button
+                style={{ marginInline: '5px', width: '100px' }}
+                size="small"
+                variant="contained"
+                onClick={onActivateHandle}
+                color="primary">
+                Activate
+                <DoneAllIcon />
+              </Button>
+            )}
             <Button
               style={{ marginInline: '5px' }}
-              color="primary"
-              size="small"
-              variant="outlined">
-              Edit
-            </Button>
-          </Link>
-
-          {project?.is_active && (
-            <Button
-              style={{ marginInline: '5px', width: '100px' }}
-              size="small"
-              variant="outlined"
-              onClick={onActivateHandle}
-              color="primary">
-              Disable
-              <BlockIcon />
-            </Button>
-          )}
-          {!project?.is_active && (
-            <Button
-              style={{ marginInline: '5px', width: '100px' }}
               size="small"
               variant="contained"
-              onClick={onActivateHandle}
-              color="primary">
-              Activate
-              <DoneAllIcon />
+              color="secondary"
+              onClick={onDeleteHandle}>
+              delete
+              <DeleteForeverIcon />
             </Button>
-          )}
-          <Button
-            style={{ marginInline: '5px' }}
-            size="small"
-            variant="contained"
-            color="secondary"
-            onClick={onDeleteHandle}>
-            delete
-            <DeleteForeverIcon />
-          </Button>
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

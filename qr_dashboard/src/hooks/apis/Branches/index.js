@@ -80,7 +80,7 @@ const useGetAllBranchesHook = (search, filters) => {
 const useGetOneBranchHook = id => {
   const dispatch = useDispatch();
   const router = useRouter();
-  return useQuery(['allbranches', id], getOneBranch, {
+  return useQuery(['onebranches', id], getOneBranch, {
     onSuccess: res => {
       const result = {
         status: res.status + '-' + res.statusText,

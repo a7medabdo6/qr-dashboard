@@ -13,9 +13,15 @@ import {
   Link,
   Avatar
 } from '@material-ui/core';
+import LoadingButton from 'components/Buttons/index';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
 import gradients from 'utils/gradients';
-import Select from 'components/MultiSelect/index';
+import Select2 from 'components/MultiSelect/index';
 import useRouter from 'utils/useRouter';
 import { useCreateUserHook } from 'hooks/apis/Auth';
 import { useSelector } from 'react-redux';
@@ -104,13 +110,15 @@ const useStyles = makeStyles(theme => ({
 
 const RegisterForm = props => {
   const { className, ...rest } = props;
-  const { mutate: CreateUserApi } = useCreateUserHook();
+  const { mutate: CreateUserApi, isLoading } = useCreateUserHook();
   const classes = useStyles();
   const { history } = useRouter();
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [selectedBranches, setSelectedBranches] = React.useState([]);
+  const [role, setRole] = React.useState(2);
+
   const [logo, setLogo] = useState(null);
-  const { isLoading, data } = useGetAllBranchesHook();
+  const { data } = useGetAllBranchesHook();
   const user = JSON.parse(localStorage.getItem('user'));
 
   const { allbranches } = useSelector(state => state.Branches);
@@ -141,6 +149,9 @@ const RegisterForm = props => {
     }));
   }, [formState.values]);
 
+  const handleChangeRole = event => {
+    setRole(event.target.value);
+  };
   const handleChange = event => {
     event.persist();
 
@@ -173,10 +184,10 @@ const RegisterForm = props => {
       formData.append('branches', parseInt(selectedBranches[index].id));
     }
 
-    formData.append('role', user.role);
+    formData.append('role', role);
     formData.append('mobile', formState.values.mobile);
 
-    console.log(...formData, 'formData');
+    // console.log(...formData, 'formData');
     CreateUserApi(formData);
   };
 
@@ -242,7 +253,23 @@ const RegisterForm = props => {
             value={formState.values.password || ''}
             variant="outlined"
           />
-          {user.role == 2 && (
+          <FormControl
+            variant="outlined"
+            fullWidth
+            className={classes.formControl}>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={role}
+              onChange={handleChangeRole}>
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={2}>Manager</MenuItem>
+              <MenuItem value={3}>Branch Manager</MenuItem>
+            </Select>
+          </FormControl>
+          {role == 3 && (
             <div
               style={{
                 border: '1px solid #00000029',
@@ -250,7 +277,7 @@ const RegisterForm = props => {
                 margin: ' 0px 8px',
                 padding: '5px'
               }}>
-              <Select
+              <Select2
                 data={allbranches}
                 selectedBranches={selectedBranches}
                 setSelectedBranches={setSelectedBranches}
@@ -293,15 +320,12 @@ const RegisterForm = props => {
             )}
           </div>
         </div>
-        <Button
-          className={classes.submitButton}
-          color="secondary"
-          disabled={!formState.isValid}
-          size="large"
-          type="submit"
-          variant="contained">
-          Create account
-        </Button>
+
+        <LoadingButton
+          formState={formState}
+          title="Create"
+          isLoading={isLoading}
+        />
       </form>
     </div>
   );

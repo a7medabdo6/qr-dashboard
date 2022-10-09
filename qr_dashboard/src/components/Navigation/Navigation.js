@@ -1,5 +1,5 @@
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
+import React, { useSelector } from 'react';
 import { matchPath } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -16,12 +16,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavigationList = props => {
-  const { pages, ...rest } = props;
+  const { pages, userInfo, ...rest } = props;
 
   return (
     <List>
       {pages.reduce(
-        (items, page) => reduceChildRoutes({ items, page, ...rest }),
+        (items, page) => reduceChildRoutes({ items, page, ...rest }, userInfo),
         []
       )}
     </List>
@@ -35,6 +35,7 @@ NavigationList.propTypes = {
 
 const reduceChildRoutes = props => {
   const { router, items, page, depth } = props;
+  const user = JSON.parse(localStorage.getItem('user'));
 
   if (page.children) {
     const open = matchPath(router.location.pathname, {
@@ -58,16 +59,23 @@ const reduceChildRoutes = props => {
       </NavigationListItem>
     );
   } else {
-    items.push(
-      <NavigationListItem
-        depth={depth}
-        href={page.href}
-        icon={page.icon}
-        key={page.title}
-        label={page.label}
-        title={page.title}
-      />
-    );
+    console.log(router.location.pathname, 'router.location.pathname');
+    if (
+      user?.branches?.length > 0 &&
+      ['Categories', 'Menus', 'Groups'].includes(page.title)
+    ) {
+    } else {
+      items.push(
+        <NavigationListItem
+          depth={depth}
+          href={page.href}
+          icon={page.icon}
+          key={page.title}
+          label={page.label}
+          title={page.title}
+        />
+      );
+    }
   }
 
   return items;
