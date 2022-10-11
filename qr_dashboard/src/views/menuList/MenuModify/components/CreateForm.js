@@ -25,7 +25,9 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import BuildCircleIcon from '@material-ui/icons/Adjust';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+import BuildCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
+import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import LoaderButton from 'components/Buttons';
 import { useParams } from 'react-router-dom';
@@ -42,7 +44,18 @@ const useStyles = makeStyles(theme => ({
     boxShadow: 'none'
   },
   autoMargin: {
-    margin: 'auto'
+    [theme.breakpoints.up('xs')]: {
+      margin: 'auto',
+      maxHeight: '35px',
+      zIndex: 2
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: 'auto',
+      maxWidth: '60px',
+      maxHeight: '35px',
+      zIndex: 2,
+      fontSize: theme.spacing(1.8)
+    }
   },
   divider: {
     [theme.breakpoints.up('xs')]: {
@@ -91,6 +104,18 @@ const useStyles = makeStyles(theme => ({
     width: '35px',
     height: '35px'
   },
+  smIcon: {
+    width: '22px',
+    height: '22px'
+  },
+  secIcon: {
+    width: '20px',
+    height: '20px'
+  },
+  smSecIcon: {
+    width: '12px',
+    height: '12px'
+  },
   editIcon: {
     color: '#fb8c01',
     padding: '0px',
@@ -107,6 +132,52 @@ const useStyles = makeStyles(theme => ({
     color: '#707070',
     padding: '0px',
     minWidth: 'auto'
+  },
+  child: {
+    position: 'relative',
+    top: '0px'
+  },
+  child2: {
+    left: '20%',
+    top: '20%',
+    position: 'absolute'
+  },
+  child3: {
+    left: '22%',
+    top: '22%',
+    position: 'absolute'
+  },
+  subHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('xs')]: {
+      padding: '15px 35px'
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '15px 5px'
+    }
+  },
+  subData: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('xs')]: {
+      padding: '6px 35px'
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '6px 5px'
+    }
+  },
+  orange: {
+    color: '#fb8c01'
+  },
+  subDataSubTitle: {
+    overflow: 'clip',
+    maxHeight: '35px',
+    [theme.breakpoints.down('xs')]: {
+      maxWidth: '150px'
+    }
   }
 }));
 
@@ -162,7 +233,10 @@ const CreateFrom = props => {
             className={classes.editIcon}
             size="large"
             variant="text">
-            <BuildCircleIcon className={classes.icon} />
+            <BuildCircleIcon className={clsx(classes.icon, classes.child)} />
+            <EditIcon
+              className={clsx(classes.secIcon, classes.child, classes.child2)}
+            />
           </Button>
         </AccordionSummary>
         <AccordionDetails className={classes.flexColumn}>
@@ -190,15 +264,145 @@ const CreateFrom = props => {
                 className={classes.darkIcon}
                 size="large"
                 variant="text">
-                <BuildCircleIcon className={classes.icon} />
+                <BuildCircleIcon
+                  className={clsx(classes.icon, classes.child)}
+                />
+                <EditIcon
+                  className={clsx(
+                    classes.secIcon,
+                    classes.child,
+                    classes.child2
+                  )}
+                />
               </Button>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Donec placerat, lectus sed mattis semper, neque lectus feugiat
-                lectus, varius pulvinar diam eros in elit. Pellentesque
-                convallis laoreet laoreet.
-              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <div className={classes.subHeader}>
+                    <Typography variant="h6" className={classes.orange}>
+                      VARIANTS
+                    </Typography>
+                    <Button
+                      className={classes.editIcon}
+                      onClick={() => console.log('Add')}
+                      size="large"
+                      variant="text">
+                      <AddCircleIcon className={classes.smIcon} />
+                    </Button>
+                  </div>
+                  <div className={classes.subData}>
+                    <Typography
+                      variant="subtitle1"
+                      className={classes.subDataSubTitle}>
+                      Small
+                    </Typography>
+                    <span>
+                      <Button
+                        className={classes.darkIcon}
+                        onClick={() => console.log('Add')}
+                        size="large"
+                        variant="text">
+                        <RemoveCircleOutlineIcon className={classes.smIcon} />
+                      </Button>
+                      <Button
+                        color="default"
+                        className={classes.darkIcon}
+                        size="large"
+                        variant="text">
+                        <BuildCircleIcon
+                          className={clsx(classes.smIcon, classes.child)}
+                        />
+                        <EditIcon
+                          className={clsx(
+                            classes.smSecIcon,
+                            classes.child,
+                            classes.child3
+                          )}
+                        />
+                      </Button>
+                    </span>
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <div className={classes.subHeader}>
+                    <Typography variant="h6" className={classes.orange}>
+                      MODIFIERS
+                    </Typography>
+                    <Button
+                      className={classes.editIcon}
+                      onClick={() => console.log('Add')}
+                      size="large"
+                      variant="text">
+                      <AddCircleIcon className={classes.smIcon} />
+                    </Button>
+                  </div>
+                  <div className={classes.subData}>
+                    <Typography
+                      variant="subtitle1"
+                      className={classes.subDataSubTitle}>
+                      Extra Cheese
+                    </Typography>
+                    <span>
+                      <Button
+                        className={classes.darkIcon}
+                        onClick={() => console.log('Add')}
+                        size="large"
+                        variant="text">
+                        <RemoveCircleOutlineIcon className={classes.smIcon} />
+                      </Button>
+                      <Button
+                        color="default"
+                        className={classes.darkIcon}
+                        size="large"
+                        variant="text">
+                        <BuildCircleIcon
+                          className={clsx(classes.smIcon, classes.child)}
+                        />
+                        <EditIcon
+                          className={clsx(
+                            classes.smSecIcon,
+                            classes.child,
+                            classes.child3
+                          )}
+                        />
+                      </Button>
+                    </span>
+                  </div>
+                  <div className={classes.subData}>
+                    <Typography
+                      variant="subtitle1"
+                      className={classes.subDataSubTitle}>
+                      No Olive
+                    </Typography>
+                    <span>
+                      <Button
+                        className={classes.darkIcon}
+                        onClick={() => console.log('Add')}
+                        size="large"
+                        variant="text">
+                        <RemoveCircleOutlineIcon className={classes.smIcon} />
+                      </Button>
+                      <Button
+                        color="default"
+                        className={classes.darkIcon}
+                        size="large"
+                        variant="text">
+                        <BuildCircleIcon
+                          className={clsx(classes.smIcon, classes.child)}
+                        />
+                        <EditIcon
+                          className={clsx(
+                            classes.smSecIcon,
+                            classes.child,
+                            classes.child3
+                          )}
+                        />
+                      </Button>
+                    </span>
+                  </div>
+                </Grid>
+              </Grid>
             </AccordionDetails>
           </Accordion>
           <Accordion
@@ -226,6 +430,13 @@ const CreateFrom = props => {
                 size="large"
                 variant="text">
                 <BuildCircleIcon className={classes.icon} />
+                <EditIcon
+                  className={clsx(
+                    classes.secIcon,
+                    classes.child,
+                    classes.child2
+                  )}
+                />
               </Button>
             </AccordionSummary>
             <AccordionDetails>
@@ -261,6 +472,13 @@ const CreateFrom = props => {
                 size="large"
                 variant="text">
                 <BuildCircleIcon className={classes.icon} />
+                <EditIcon
+                  className={clsx(
+                    classes.secIcon,
+                    classes.child,
+                    classes.child2
+                  )}
+                />
               </Button>
             </AccordionSummary>
             <AccordionDetails>
@@ -308,7 +526,10 @@ const CreateFrom = props => {
             className={classes.editIcon}
             size="large"
             variant="text">
-            <BuildCircleIcon className={classes.icon} />
+            <BuildCircleIcon className={clsx(classes.icon, classes.child)} />
+            <EditIcon
+              className={clsx(classes.secIcon, classes.child, classes.child2)}
+            />
           </Button>
         </AccordionSummary>
         <AccordionDetails className={classes.flexColumn}>
@@ -337,6 +558,13 @@ const CreateFrom = props => {
                 size="large"
                 variant="text">
                 <BuildCircleIcon className={classes.icon} />
+                <EditIcon
+                  className={clsx(
+                    classes.secIcon,
+                    classes.child,
+                    classes.child2
+                  )}
+                />
               </Button>
             </AccordionSummary>
             <AccordionDetails>
@@ -372,6 +600,13 @@ const CreateFrom = props => {
                 size="large"
                 variant="text">
                 <BuildCircleIcon className={classes.icon} />
+                <EditIcon
+                  className={clsx(
+                    classes.secIcon,
+                    classes.child,
+                    classes.child2
+                  )}
+                />
               </Button>
             </AccordionSummary>
             <AccordionDetails>

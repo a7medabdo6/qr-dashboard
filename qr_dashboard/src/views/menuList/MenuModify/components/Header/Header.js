@@ -12,7 +12,8 @@ const useStyles = makeStyles(theme => ({
   },
   btnWhite: {
     backgroundColor: '#fff',
-    marginLeft: theme.spacing(1)
+    marginLeft: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   }
 }));
 
