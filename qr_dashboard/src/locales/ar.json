@@ -3,7 +3,10 @@
   "DashBoard": "الرئيسية ",
   "Groups": "الأنشطة  ",
   "Branches": "الأفرع",
+  "Branches_name": "اسم الفرع ",
   "Menus": "القوائم ",
+  "Add_menu":" اضافة قائمة ",
+
   "Setting": "الاعدادات",
   "Users": "المستخدمين  ",
   "Signout": "تسجيل خروج",
