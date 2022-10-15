@@ -13,7 +13,9 @@ const useStyles = makeStyles(theme => ({
   btnWhite: {
     backgroundColor: '#fff',
     marginLeft: theme.spacing(1),
-    marginBottom: theme.spacing(1)
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: theme.spacing(1)
+    }
   }
 }));
 
