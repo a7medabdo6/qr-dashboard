@@ -4,6 +4,10 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/styles';
+import "./style.css";
+import Menu from '@material-ui/core/Menu';
+
+
 import {
   TextField,
   Checkbox,
@@ -63,7 +67,7 @@ const useStyles = makeStyles(theme => ({
   divider: {
     margin: 'auto',
     border: 'solid',
-    borderColor: '#ccc',
+    borderColor: '#e4e4e4',
     borderWidth: '0.7px',
     [theme.breakpoints.up('xs')]: {
       width: '75%'
@@ -89,8 +93,8 @@ const useStyles = makeStyles(theme => ({
     minWidth: 'auto'
   },
   icon: {
-    width: '35px',
-    height: '35px'
+    width: '30px',
+    height: '30px'
   },
   smIcon: {
     width: '22px',
@@ -114,7 +118,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space'
   },
   secondaryLevel: {
-    backgroundColor: '#e9e9e9'
+    backgroundColor: '#f0f0f0'
   },
   darkIcon: {
     color: '#707070',
@@ -177,6 +181,20 @@ const CreateFrom = props => {
   const [subExpanded, setSubExpanded] = useState(false);
   const [productExpanded, setProductExpanded] = useState(false);
 
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+
+
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -206,19 +224,33 @@ const CreateFrom = props => {
               id="panel1bh-header">
               <Typography
                 variant={'h4'}
-                color={'primary'}
+                color={'secondary'}
                 className={classes.autoMargin}>
                 {category?.title}
               </Typography>
               <Divider className={classes.divider} />
+
+              
               <Button
                 color="primary"
                 className={classes.addIcon}
-                onClick={() => console.log(category?.id)}
+                aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}
                 size="large"
                 variant="text">
                 <AddCircleIcon className={classes.icon} />
               </Button>
+
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>Add New</MenuItem>
+                <MenuItem onClick={handleClose}>Add From Existing</MenuItem>
+              </Menu>
+
               <Button
                 color="secondary"
                 className={classes.paddingZero}
@@ -244,6 +276,7 @@ const CreateFrom = props => {
                   )}
                 />
               </Button>
+
             </AccordionSummary>
             <AccordionDetails className={classes.flexColumn}>
               {category?.subcategories?.map((subCategory, index) => (
