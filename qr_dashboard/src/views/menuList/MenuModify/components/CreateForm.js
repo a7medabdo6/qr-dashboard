@@ -310,7 +310,8 @@ const CreateFrom = props => {
                           id="panel2bh-header">
                           <Typography
                             variant="h5"
-                            className={classes.autoMargin}>
+                            className={classes.autoMargin + ' product-h5-menu-editor'}>
+                            <img src={product.image} className="product-thumb-menu-editor" />
                             {product?.title}
                           </Typography>
                           <Divider className={classes.dividerHidden} />
