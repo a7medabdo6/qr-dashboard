@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
     overflow: 'hidden'
   },
   topBar: {
-    zIndex: 2,
+    zIndex: 3,
     position: 'relative'
   },
   container: {

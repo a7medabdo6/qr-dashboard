@@ -59,7 +59,7 @@ const reduceChildRoutes = props => {
       </NavigationListItem>
     );
   } else {
-    console.log(router.location.pathname, 'router.location.pathname');
+    // console.log(router.location.pathname, 'router.location.pathname');
     if (
       user?.branches?.length > 0 &&
       ['Categories', 'Menus', 'Groups'].includes(page.title)
