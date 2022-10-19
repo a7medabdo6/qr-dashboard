@@ -32,6 +32,9 @@ const getOneCategory = async ({ queryKey }) => {
   if (queryKey[1]) return await api.get(`menus/categories/${queryKey[1]}`);
   else return 0;
 };
+const getMainCategories = async () => {
+  return await api.get(`menus/categories/?parent=true`);
+};
 const postCreateCategoryRequest = async data => {
   return await api.post('menus/categories/', data);
 };
@@ -157,11 +160,29 @@ const useDeleteCategoryHook = () => {
     }
   });
 };
+const useGetMainCategoryHook = () => {
+  const dispatch = useDispatch();
+  return useQuery(['allCategory'], getMainCategories, {
+    onSuccess: res => {
+      const result = {
+        status: res.status + '-' + res.statusText,
+        headers: res.headers,
+        data: res.data
+      };
+      return result.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
+    }
+  });
+};
 export {
   useCreateCategoryHook,
   useGetAllCategoryHook,
   useGetOneCategoryHook,
   useUpdateCategoryHook,
   useActivateCategoryHook,
-  useDeleteCategoryHook
+  useDeleteCategoryHook,
+  useGetMainCategoryHook
 };

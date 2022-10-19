@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import validate from 'validate.js';
+import validate, { async } from 'validate.js';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -41,11 +41,7 @@ import {
   useGetOneMenuHook,
   useModifyMenuHook
 } from 'hooks/apis/Menus';
-import {
-  useCreateCategoryHook,
-  useGetOneCategoryHook,
-  useUpdateCategoryHook
-} from 'hooks/apis/Category';
+import { useGetMainCategoryHook } from 'hooks/apis/Category';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -228,16 +224,81 @@ const ModalStyle = {
   pb: 3,
   width: '65%'
 };
+const ITEM_HEIGHT = 100;
+const ITEM_PADDING_TOP = 80;
+const MenuProps = {
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left'
+  },
+  transformOrigin: {
+    vertical: 'top',
+    horizontal: 'left'
+  },
+  getContentAnchorEl: null,
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 40
+    }
+  }
+};
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName?.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium
+  };
+}
 
 const CreateFrom = props => {
   let { id } = useParams();
   const { data, isLoading: isLoadingData } = useGetOneMenuHook(id);
+  const {
+    data: Categories,
+    isLoading: isLoadingCategories
+  } = useGetMainCategoryHook();
   const classes = useStyles();
+  const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
   const [subExpanded, setSubExpanded] = useState(false);
   const [productExpanded, setProductExpanded] = useState(false);
+  const [multiFormState, setMultiFormState] = useState({
+    isValid: false
+  });
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
+  const [
+    openAddExistingCategoryModal,
+    setOpenAddExistingCategoryModal
+  ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const {
+    mutate: UpdateMenuRequest,
+    isLoading: isLoadingUpdate
+  } = useModifyMenuHook();
+
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: { active: true },
+    touched: {},
+    errors: {}
+  });
+
+  const [selectedCategory, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    const errors = validate(formState.values, schema);
+
+    setFormState(formState => ({
+      ...formState,
+      isValid: errors ? false : true,
+      errors: errors || {}
+    }));
+  }, [formState.values]);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -263,30 +324,48 @@ const CreateFrom = props => {
     }
   };
 
-  const [openModal, setOpenModal] = React.useState(false);
   const handleOpenModal = () => {
     setOpenModal(true);
   };
+
+  const handleAddExistingCategoryModal = () => {
+    setOpenAddExistingCategoryModal(true);
+  };
+
+  const handleOpenEditCategoryModal = categoryId => {
+    setOpenEditCategoryModal(true);
+    let editedCategory = data.data.categories.filter(
+      cat => cat.id === categoryId
+    )[0];
+    console.log('editedCategory', editedCategory);
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        ...editedCategory
+      },
+      touched: {
+        ...formState.touched,
+        title: true,
+        title_ar: true
+      }
+    }));
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
+    setOpenEditCategoryModal(false);
+    setOpenAddExistingCategoryModal(false);
+    setMultiFormState(false);
+    setSelectedCategories([]);
     setFormState({
       isValid: false,
-      values: { active: true, branch: [] },
+      values: { active: true },
       touched: {},
       errors: {}
     });
   };
 
-  const [formState, setFormState] = useState({
-    isValid: false,
-    values: { active: true, branch: [] },
-    touched: {},
-    errors: {}
-  });
-  const {
-    mutate: UpdateMenuRequest,
-    isLoading: isLoadingUpdate
-  } = useModifyMenuHook();
   const handleAddNewCategory = async event => {
     event.preventDefault();
     let Menu = { ...data?.data };
@@ -294,20 +373,60 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map(cat => {
       return { id: cat.id };
     });
-    Menu.categories.push(formState.values);
-    console.log('Menu: ', Menu);
+    Menu.categories.push({ ...formState.values, parent: true });
     await UpdateMenuRequest(Menu);
     handleCloseModal();
   };
-  useEffect(() => {
-    const errors = validate(formState.values, schema);
 
-    setFormState(formState => ({
-      ...formState,
-      isValid: errors ? false : true,
-      errors: errors || {}
-    }));
-  }, [formState.values]);
+  const handleAddExistingCategory = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    Menu.categories = Menu.categories.map(cat => {
+      return { id: cat.id };
+    });
+    selectedCategory.forEach(category => {
+      Menu.categories.push({ id: category.id });
+    });
+    await UpdateMenuRequest(Menu);
+    handleCloseModal();
+  };
+
+  const handleUpdateCategory = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let modifyIndex = Menu.categories.findIndex(
+      cat => cat.id === formState.values.id
+    );
+    Menu.categories[modifyIndex] = { ...formState.values };
+    Menu.categories = Menu.categories.map(cat => {
+      if (cat.id === formState.values.id) {
+        return {
+          id: cat.id,
+          title: cat.title,
+          title_ar: cat.title_ar
+        };
+      } else return { id: cat.id };
+    });
+
+    await UpdateMenuRequest(Menu);
+    handleCloseModal();
+  };
+
+  const handleDeleteCategory = async categoryId => {
+    setIsLoading(true);
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    Menu.categories = Menu.categories
+      .filter(cat => cat.id !== categoryId)
+      .map(cat => {
+        return { id: cat.id };
+      });
+    await UpdateMenuRequest(Menu);
+    await setIsLoading(false);
+  };
+
   const handleChange = event => {
     event.persist();
     setFormState(formState => ({
@@ -325,9 +444,21 @@ const CreateFrom = props => {
       }
     }));
   };
+
+  const handleChangeMulti = event => {
+    const {
+      target: { value }
+    } = event;
+    setSelectedCategories([...value]);
+    setMultiFormState({
+      isValid: value?.length > 0 ? true : false
+    });
+  };
+
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  if (isLoadingData) {
+
+  if (isLoadingData || isLoading) {
     return <div>Loading ....</div>;
   }
   return (
@@ -358,8 +489,7 @@ const CreateFrom = props => {
             <Button
               color="default"
               className={classes.btnWhite}
-              // component={RouterLink}
-              // to="/categories/create"
+              onClick={handleAddExistingCategoryModal}
               variant="outlined">
               Add Existing Category
             </Button>
@@ -414,7 +544,7 @@ const CreateFrom = props => {
                 <Button
                   color="secondary"
                   className={classes.paddingZero}
-                  onClick={() => console.log(category?.id)}
+                  onClick={() => handleDeleteCategory(category?.id)}
                   size="large"
                   variant="text">
                   <RemoveCircleIcon className={classes.icon} />
@@ -422,7 +552,7 @@ const CreateFrom = props => {
                 <Button
                   color="secondary"
                   className={classes.editIcon}
-                  onClick={() => console.log(category?.id)}
+                  onClick={() => handleOpenEditCategoryModal(category?.id)}
                   size="large"
                   variant="text">
                   <BuildCircleIcon
@@ -742,6 +872,121 @@ const CreateFrom = props => {
             <LoaderButton
               className={classes.submitButton}
               formState={formState}
+              isLoading={isLoadingUpdate}
+              title={'Add'}
+            />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openEditCategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleUpdateCategory}>
+            <Typography variant="h4">Update Category</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title')}
+                    fullWidth
+                    helperText={
+                      hasError('title') ? formState.errors.title[0] : null
+                    }
+                    label="title (en)"
+                    name="title"
+                    onChange={handleChange}
+                    value={formState.values.title || ''}
+                    variant="outlined"
+                  />
+                </Grid>{' '}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title_ar')}
+                    fullWidth
+                    helperText={
+                      hasError('title_ar') ? formState.errors.title_ar[0] : null
+                    }
+                    label="title (ar)"
+                    name="title_ar"
+                    onChange={handleChange}
+                    value={formState.values.title_ar || ''}
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={formState}
+              isLoading={isLoadingUpdate}
+              title={'Edit'}
+            />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openAddExistingCategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleAddExistingCategory}>
+            <Typography variant="h4">Add Existing Category</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id="multiple-category-label"
+                      className={classes.label}>
+                      {`Category`}
+                    </InputLabel>
+                    <Select
+                      name="category"
+                      labelId="multiple-category-label"
+                      id="category-label"
+                      multiple
+                      value={selectedCategory}
+                      onChange={handleChangeMulti}
+                      input={
+                        <OutlinedInput id="category-label" label="Branch(es)" />
+                      }
+                      renderValue={selected => (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 0.5
+                          }}>
+                          {selected.map(category => (
+                            <Chip key={category.id} label={category.title} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}>
+                      {Categories?.data?.results
+                        ?.filter(category => {
+                          return data?.data?.categories?.every(
+                            allCategories => {
+                              return category.id != allCategories.id;
+                            }
+                          );
+                        })
+                        .map(category => (
+                          <MenuItem
+                            key={category.id}
+                            value={category}
+                            style={getStyles(
+                              category,
+                              selectedCategory || '',
+                              theme
+                            )}>
+                            {category.title}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={multiFormState}
               isLoading={isLoadingUpdate}
               title={'Add'}
             />
