@@ -41,146 +41,14 @@ import {
   useGetOneMenuHook,
   useModifyMenuHook
 } from 'hooks/apis/Menus';
-import { useGetMainCategoryHook } from 'hooks/apis/Category';
+import {
+  useGetMainCategoryHook,
+  useGetSubcategoryHook
+} from 'hooks/apis/Category';
+import Header from './components/Header';
+import CategoryList from './components/CategoryList';
 
 const useStyles = makeStyles(theme => ({
-  root: {},
-  accordion: {
-    backgroundColor: 'transparent',
-    boxShadow: 'none'
-  },
-  autoMargin: {
-    marginTop: 'auto',
-    marginBottom: 'auto',
-    maxHeight: '35px',
-    zIndex: 2,
-    [theme.breakpoints.up('xs')]: {
-      maxWidth: '300px',
-      minWidth: 'auto'
-    },
-    [theme.breakpoints.down('xs')]: {
-      maxWidth: '100px',
-      minWidth: '60px',
-      fontSize: theme.spacing(1.8)
-    }
-  },
-  divider: {
-    margin: 'auto',
-    border: 'solid',
-    borderColor: '#e4e4e4',
-    borderWidth: '0.7px',
-    [theme.breakpoints.up('xs')]: {
-      width: '75%'
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '10%'
-    }
-  },
-  dividerHidden: {
-    margin: 'auto',
-    border: 'solid',
-    borderColor: '#ccc',
-    borderWidth: '0.7px',
-    visibility: 'hidden'
-  },
-  addIcon: {
-    color: '#00b41e',
-    padding: '0px',
-    minWidth: 'auto'
-  },
-  paddingZero: {
-    padding: '0px',
-    minWidth: 'auto'
-  },
-  icon: {
-    width: '30px',
-    height: '30px'
-  },
-  smIcon: {
-    width: '22px',
-    height: '22px'
-  },
-  secIcon: {
-    width: '20px',
-    height: '20px'
-  },
-  smSecIcon: {
-    width: '12px',
-    height: '12px'
-  },
-  editIcon: {
-    color: '#fb8c01',
-    padding: '0px',
-    minWidth: 'auto'
-  },
-  flexColumn: {
-    flexDirection: 'column',
-    justifyContent: 'space'
-  },
-  secondaryLevel: {
-    backgroundColor: '#f0f0f0'
-  },
-  darkIcon: {
-    color: '#707070',
-    padding: '0px',
-    minWidth: 'auto'
-  },
-  child: {
-    position: 'relative',
-    top: '0px'
-  },
-  child2: {
-    left: '17%',
-    top: '17%',
-    position: 'absolute'
-  },
-  child3: {
-    left: '22%',
-    top: '22%',
-    position: 'absolute'
-  },
-  subHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    [theme.breakpoints.up('xs')]: {
-      padding: '15px 35px'
-    },
-    [theme.breakpoints.down('xs')]: {
-      padding: '15px 5px'
-    }
-  },
-  subData: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    [theme.breakpoints.up('xs')]: {
-      padding: '6px 35px'
-    },
-    [theme.breakpoints.down('xs')]: {
-      padding: '6px 5px'
-    }
-  },
-  orange: {
-    color: '#fb8c01'
-  },
-  subDataSubTitle: {
-    overflow: 'clip',
-    maxHeight: '35px',
-    [theme.breakpoints.down('xs')]: {
-      maxWidth: '150px'
-    }
-  },
-  headerRoot: {
-    marginBottom: theme.spacing(5)
-  },
-  btnWhite: {
-    backgroundColor: '#fff',
-    marginLeft: theme.spacing(1),
-    [theme.breakpoints.down('xs')]: {
-      marginBottom: theme.spacing(1)
-    }
-  },
   label: {
     marginTop: theme.spacing(-0.5),
     marginLeft: theme.spacing(1.5)
@@ -224,7 +92,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%'
 };
-const ITEM_HEIGHT = 100;
+const ITEM_HEIGHT = 30;
 const ITEM_PADDING_TOP = 80;
 const MenuProps = {
   anchorOrigin: {
@@ -259,6 +127,10 @@ const CreateFrom = props => {
     data: Categories,
     isLoading: isLoadingCategories
   } = useGetMainCategoryHook();
+  const {
+    data: Subcategories,
+    isLoading: isLoadingSubcategories
+  } = useGetSubcategoryHook();
   const classes = useStyles();
   const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
@@ -274,7 +146,18 @@ const CreateFrom = props => {
     openAddExistingCategoryModal,
     setOpenAddExistingCategoryModal
   ] = useState(false);
+  const [openAddSubCategoryModal, setOpenAddSubCategoryModal] = useState(false);
+  const [openEditSubcategoryModal, setOpenEditSubcategoryModal] = useState(
+    false
+  );
+  const [
+    openAddExistingSubCategoryModal,
+    setOpenAddExistingSubCategoryModal
+  ] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const [categoryId, setCategoryId] = useState(false);
 
   const {
     mutate: UpdateMenuRequest,
@@ -300,7 +183,8 @@ const CreateFrom = props => {
     }));
   }, [formState.values]);
 
-  const handleClick = event => {
+  const handleClick = (event, categoryId) => {
+    setCategoryId(categoryId);
     setAnchorEl(event.currentTarget);
   };
 
@@ -337,7 +221,6 @@ const CreateFrom = props => {
     let editedCategory = data.data.categories.filter(
       cat => cat.id === categoryId
     )[0];
-    console.log('editedCategory', editedCategory);
     setFormState(formState => ({
       ...formState,
       values: {
@@ -352,10 +235,36 @@ const CreateFrom = props => {
     }));
   };
 
+  const handleOpenEditSubcategoryModal = (categoryId, subcategoryId) => {
+    setOpenEditSubcategoryModal(true);
+    setCategoryId(categoryId);
+    let editedCategory = data.data.categories.filter(
+      cat => cat.id === categoryId
+    )[0];
+    let editedSubcategory = editedCategory.subcategories.filter(
+      cat => cat.id === subcategoryId
+    )[0];
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        ...editedSubcategory
+      },
+      touched: {
+        ...formState.touched,
+        title: true,
+        title_ar: true
+      }
+    }));
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
     setOpenEditCategoryModal(false);
     setOpenAddExistingCategoryModal(false);
+    setOpenAddSubCategoryModal(false);
+    setOpenAddExistingSubCategoryModal(false);
+    setOpenEditSubcategoryModal(false);
     setMultiFormState(false);
     setSelectedCategories([]);
     setFormState({
@@ -374,6 +283,52 @@ const CreateFrom = props => {
       return { id: cat.id };
     });
     Menu.categories.push({ ...formState.values, parent: true });
+    await UpdateMenuRequest(Menu);
+    handleCloseModal();
+  };
+
+  const handleAddNewSubcategory = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let catIndex;
+    Menu.categories = Menu.categories.map((cat, index) => {
+      if (cat.id === categoryId) {
+        catIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories.map(cat => {
+      return { id: cat.id };
+    });
+    Menu.categories[catIndex].subcategories.push({
+      ...formState.values
+    });
+    await UpdateMenuRequest(Menu);
+    handleCloseModal();
+  };
+
+  const handleAddExistingSubcategory = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let catIndex;
+    Menu.categories = Menu.categories.map((cat, index) => {
+      if (cat.id === categoryId) {
+        catIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories.map(cat => {
+      return { id: cat.id };
+    });
+    selectedCategory.forEach(category => {
+      Menu.categories[catIndex].subcategories.push({ id: category.id });
+    });
     await UpdateMenuRequest(Menu);
     handleCloseModal();
   };
@@ -427,6 +382,77 @@ const CreateFrom = props => {
     await setIsLoading(false);
   };
 
+  const handleDeleteSubcategory = async (categoryId, subcategoryId) => {
+    setIsLoading(true);
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let catIndex;
+    Menu.categories = Menu.categories.map((cat, index) => {
+      if (cat.id === categoryId) {
+        catIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories
+      .filter(cat => cat.id !== subcategoryId)
+      .map(cat => {
+        return { id: cat.id };
+      });
+    await UpdateMenuRequest(Menu);
+    await setIsLoading(false);
+  };
+
+  const handleAddNewSubCategory = () => {
+    setOpenAddSubCategoryModal(true);
+    handleClose();
+  };
+
+  const handleAddExistingSubCategory = () => {
+    setOpenAddExistingSubCategoryModal(true);
+    handleClose();
+  };
+
+  const handleUpdateSubcategory = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let catIndex;
+    Menu.categories = Menu.categories.map((cat, index) => {
+      if (cat.id === categoryId) {
+        catIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories.map(cat => {
+      return { id: cat.id };
+    });
+
+    let modifyIndex = Menu.categories[catIndex].subcategories.findIndex(
+      cat => cat.id === formState.values.id
+    );
+    Menu.categories[catIndex].subcategories[modifyIndex] = {
+      ...formState.values
+    };
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories.map(cat => {
+      if (cat.id === formState.values.id) {
+        return {
+          id: cat.id,
+          title: cat.title,
+          title_ar: cat.title_ar
+        };
+      } else return { id: cat.id };
+    });
+    await UpdateMenuRequest(Menu);
+    handleCloseModal();
+  };
+
   const handleChange = event => {
     event.persist();
     setFormState(formState => ({
@@ -463,376 +489,26 @@ const CreateFrom = props => {
   }
   return (
     <>
-      <div className={classes.headerRoot}>
-        <Grid
-          alignItems="flex-end"
-          container
-          justify="space-between"
-          spacing={3}>
-          <Grid item>
-            <Typography
-              component="h2"
-              gutterBottom
-              variant="overline"></Typography>
-            <Typography component="h1" variant="h3">
-              Modify Menu
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Button
-              color="default"
-              className={classes.btnWhite}
-              onClick={handleOpenModal}
-              variant="outlined">
-              Add New Category
-            </Button>
-            <Button
-              color="default"
-              className={classes.btnWhite}
-              onClick={handleAddExistingCategoryModal}
-              variant="outlined">
-              Add Existing Category
-            </Button>
-          </Grid>
-        </Grid>
-      </div>
-      <div className={classes.root}>
-        {data?.data?.categories?.length > 0 ? (
-          data?.data?.categories.map((category, index) => (
-            <Accordion
-              key={index}
-              className={classes.accordion}
-              expanded={expanded === index}>
-              <AccordionSummary
-                expandIcon={
-                  <ExpandMoreIcon
-                    onClick={() => handleExpand('category', index)}
-                  />
-                }
-                aria-controls="panel1bh-content"
-                id="panel1bh-header">
-                <Typography
-                  variant={'h4'}
-                  color={'secondary'}
-                  className={classes.autoMargin}
-                  onClick={() => handleExpand('category', index)}>
-                  {category?.title}
-                </Typography>
-                <Divider className={classes.divider} />
-
-                <Button
-                  color="primary"
-                  className={classes.addIcon}
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                  size="large"
-                  variant="text">
-                  <AddCircleIcon className={classes.icon} />
-                </Button>
-
-                <Menu
-                  id="simple-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}>
-                  <MenuItem onClick={handleClose}>Add New</MenuItem>
-                  <MenuItem onClick={handleClose}>Add From Existing</MenuItem>
-                </Menu>
-
-                <Button
-                  color="secondary"
-                  className={classes.paddingZero}
-                  onClick={() => handleDeleteCategory(category?.id)}
-                  size="large"
-                  variant="text">
-                  <RemoveCircleIcon className={classes.icon} />
-                </Button>
-                <Button
-                  color="secondary"
-                  className={classes.editIcon}
-                  onClick={() => handleOpenEditCategoryModal(category?.id)}
-                  size="large"
-                  variant="text">
-                  <BuildCircleIcon
-                    className={clsx(classes.icon, classes.child)}
-                  />
-                  <EditIcon
-                    className={clsx(
-                      classes.secIcon,
-                      classes.child,
-                      classes.child2
-                    )}
-                  />
-                </Button>
-              </AccordionSummary>
-              <AccordionDetails className={classes.flexColumn}>
-                {category?.subcategories?.map((subCategory, index) => (
-                  <Accordion
-                    key={index}
-                    className={classes.accordion}
-                    expanded={subExpanded === index}>
-                    <AccordionSummary
-                      expandIcon={
-                        <ExpandMoreIcon
-                          onClick={() => handleExpand('subcategory', index)}
-                        />
-                      }
-                      aria-controls="panel1bh-content"
-                      id="panel1bh-header">
-                      <Typography
-                        variant={'h4'}
-                        color={'primary'}
-                        className={classes.autoMargin}
-                        onClick={() => handleExpand('subcategory', index)}>
-                        {subCategory?.title}
-                      </Typography>
-                      <Divider className={classes.divider} />
-                      <Button
-                        color="primary"
-                        className={classes.addIcon}
-                        onClick={() => console.log(subCategory?.id)}
-                        size="large"
-                        variant="text">
-                        <AddCircleIcon className={classes.icon} />
-                      </Button>
-                      <Button
-                        color="secondary"
-                        className={classes.paddingZero}
-                        onClick={() => console.log(subCategory?.id)}
-                        size="large"
-                        variant="text">
-                        <RemoveCircleIcon className={classes.icon} />
-                      </Button>
-                      <Button
-                        color="secondary"
-                        className={classes.editIcon}
-                        onClick={() => console.log(subCategory?.id)}
-                        size="large"
-                        variant="text">
-                        <BuildCircleIcon
-                          className={clsx(classes.icon, classes.child)}
-                        />
-                        <EditIcon
-                          className={clsx(
-                            classes.secIcon,
-                            classes.child,
-                            classes.child2
-                          )}
-                        />
-                      </Button>
-                    </AccordionSummary>
-                    <AccordionDetails className={classes.flexColumn}>
-                      {subCategory?.products?.map((product, index) => (
-                        <Accordion
-                          key={index}
-                          expanded={productExpanded === index}>
-                          <AccordionSummary
-                            expandIcon={
-                              <ExpandMoreIcon
-                                onClick={() => handleExpand('product', index)}
-                              />
-                            }
-                            aria-controls="panel2bh-content"
-                            className={classes.secondaryLevel}
-                            id="panel2bh-header">
-                            <Typography
-                              variant="h5"
-                              className={
-                                classes.autoMargin + ' product-h5-menu-editor'
-                              }
-                              onClick={() => handleExpand('product', index)}>
-                              <img
-                                src={product.image}
-                                className="product-thumb-menu-editor"
-                              />
-                              {product?.title}
-                            </Typography>
-                            <Divider className={classes.dividerHidden} />
-                            <Button
-                              color="default"
-                              onClick={() => console.log(product?.id)}
-                              className={classes.darkIcon}
-                              size="large"
-                              variant="text">
-                              <RemoveCircleIcon className={classes.icon} />
-                            </Button>
-                            <Button
-                              color="default"
-                              className={classes.darkIcon}
-                              onClick={() => console.log(product?.id)}
-                              size="large"
-                              variant="text">
-                              <BuildCircleIcon className={classes.icon} />
-                              <EditIcon
-                                className={clsx(
-                                  classes.secIcon,
-                                  classes.child,
-                                  classes.child2
-                                )}
-                              />
-                            </Button>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <Grid container spacing={2}>
-                              <Grid item xs={12} md={6}>
-                                <div className={classes.subHeader}>
-                                  <Typography
-                                    variant="h6"
-                                    className={classes.orange}>
-                                    VARIANTS
-                                  </Typography>
-                                  <Button
-                                    className={classes.editIcon}
-                                    onClick={() => console.log('Add')}
-                                    size="large"
-                                    variant="text">
-                                    <AddCircleIcon className={classes.smIcon} />
-                                  </Button>
-                                </div>
-                                <div className={classes.subData}>
-                                  <Typography
-                                    variant="subtitle1"
-                                    className={classes.subDataSubTitle}>
-                                    Small
-                                  </Typography>
-                                  <span>
-                                    <Button
-                                      className={classes.darkIcon}
-                                      onClick={() => console.log('Add')}
-                                      size="large"
-                                      variant="text">
-                                      <RemoveCircleOutlineIcon
-                                        className={classes.smIcon}
-                                      />
-                                    </Button>
-                                    <Button
-                                      color="default"
-                                      className={classes.darkIcon}
-                                      size="large"
-                                      variant="text">
-                                      <BuildCircleIcon
-                                        className={clsx(
-                                          classes.smIcon,
-                                          classes.child
-                                        )}
-                                      />
-                                      <EditIcon
-                                        className={clsx(
-                                          classes.smSecIcon,
-                                          classes.child,
-                                          classes.child3
-                                        )}
-                                      />
-                                    </Button>
-                                  </span>
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} md={6}>
-                                <div className={classes.subHeader}>
-                                  <Typography
-                                    variant="h6"
-                                    className={classes.orange}>
-                                    MODIFIERS
-                                  </Typography>
-                                  <Button
-                                    className={classes.editIcon}
-                                    onClick={() => console.log('Add')}
-                                    size="large"
-                                    variant="text">
-                                    <AddCircleIcon className={classes.smIcon} />
-                                  </Button>
-                                </div>
-                                <div className={classes.subData}>
-                                  <Typography
-                                    variant="subtitle1"
-                                    className={classes.subDataSubTitle}>
-                                    Extra Cheese
-                                  </Typography>
-                                  <span>
-                                    <Button
-                                      className={classes.darkIcon}
-                                      onClick={() => console.log('Add')}
-                                      size="large"
-                                      variant="text">
-                                      <RemoveCircleOutlineIcon
-                                        className={classes.smIcon}
-                                      />
-                                    </Button>
-                                    <Button
-                                      color="default"
-                                      className={classes.darkIcon}
-                                      size="large"
-                                      variant="text">
-                                      <BuildCircleIcon
-                                        className={clsx(
-                                          classes.smIcon,
-                                          classes.child
-                                        )}
-                                      />
-                                      <EditIcon
-                                        className={clsx(
-                                          classes.smSecIcon,
-                                          classes.child,
-                                          classes.child3
-                                        )}
-                                      />
-                                    </Button>
-                                  </span>
-                                </div>
-                                <div className={classes.subData}>
-                                  <Typography
-                                    variant="subtitle1"
-                                    className={classes.subDataSubTitle}>
-                                    No Olive
-                                  </Typography>
-                                  <span>
-                                    <Button
-                                      className={classes.darkIcon}
-                                      onClick={() => console.log('Add')}
-                                      size="large"
-                                      variant="text">
-                                      <RemoveCircleOutlineIcon
-                                        className={classes.smIcon}
-                                      />
-                                    </Button>
-                                    <Button
-                                      color="default"
-                                      className={classes.darkIcon}
-                                      size="large"
-                                      variant="text">
-                                      <BuildCircleIcon
-                                        className={clsx(
-                                          classes.smIcon,
-                                          classes.child
-                                        )}
-                                      />
-                                      <EditIcon
-                                        className={clsx(
-                                          classes.smSecIcon,
-                                          classes.child,
-                                          classes.child3
-                                        )}
-                                      />
-                                    </Button>
-                                  </span>
-                                </div>
-                              </Grid>
-                            </Grid>
-                          </AccordionDetails>
-                        </Accordion>
-                      ))}
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-          ))
-        ) : (
-          <EmptySection />
-        )}
-      </div>
+      <Header
+        handleOpenModal={handleOpenModal}
+        handleAddExistingCategoryModal={handleAddExistingCategoryModal}
+      />
+      <CategoryList
+        data={data}
+        expanded={expanded}
+        anchorEl={anchorEl}
+        subExpanded={subExpanded}
+        productExpanded={productExpanded}
+        handleExpand={handleExpand}
+        handleClick={handleClick}
+        handleClose={handleClose}
+        handleDeleteCategory={handleDeleteCategory}
+        handleDeleteSubcategory={handleDeleteSubcategory}
+        handleOpenEditCategoryModal={handleOpenEditCategoryModal}
+        handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
+        handleAddNewSubCategory={handleAddNewSubCategory}
+        handleAddExistingSubCategory={handleAddExistingSubCategory}
+      />
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={{ ...ModalStyle }}>
           <form onSubmit={handleAddNewCategory}>
@@ -874,51 +550,6 @@ const CreateFrom = props => {
               formState={formState}
               isLoading={isLoadingUpdate}
               title={'Add'}
-            />
-          </form>
-        </Box>
-      </Modal>
-      <Modal open={openEditCategoryModal} onClose={handleCloseModal}>
-        <Box sx={{ ...ModalStyle }}>
-          <form onSubmit={handleUpdateCategory}>
-            <Typography variant="h4">Update Category</Typography>
-            <div className={classes.fields}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    error={hasError('title')}
-                    fullWidth
-                    helperText={
-                      hasError('title') ? formState.errors.title[0] : null
-                    }
-                    label="title (en)"
-                    name="title"
-                    onChange={handleChange}
-                    value={formState.values.title || ''}
-                    variant="outlined"
-                  />
-                </Grid>{' '}
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    error={hasError('title_ar')}
-                    fullWidth
-                    helperText={
-                      hasError('title_ar') ? formState.errors.title_ar[0] : null
-                    }
-                    label="title (ar)"
-                    name="title_ar"
-                    onChange={handleChange}
-                    value={formState.values.title_ar || ''}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-            </div>
-            <LoaderButton
-              className={classes.submitButton}
-              formState={formState}
-              isLoading={isLoadingUpdate}
-              title={'Edit'}
             />
           </form>
         </Box>
@@ -989,6 +620,203 @@ const CreateFrom = props => {
               formState={multiFormState}
               isLoading={isLoadingUpdate}
               title={'Add'}
+            />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openEditCategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleUpdateCategory}>
+            <Typography variant="h4">Update Category</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title')}
+                    fullWidth
+                    helperText={
+                      hasError('title') ? formState.errors.title[0] : null
+                    }
+                    label="title (en)"
+                    name="title"
+                    onChange={handleChange}
+                    value={formState.values.title || ''}
+                    variant="outlined"
+                  />
+                </Grid>{' '}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title_ar')}
+                    fullWidth
+                    helperText={
+                      hasError('title_ar') ? formState.errors.title_ar[0] : null
+                    }
+                    label="title (ar)"
+                    name="title_ar"
+                    onChange={handleChange}
+                    value={formState.values.title_ar || ''}
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={formState}
+              isLoading={isLoadingUpdate}
+              title={'Edit'}
+            />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openAddSubCategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleAddNewSubcategory}>
+            <Typography variant="h4">Add New Subcategory</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title')}
+                    fullWidth
+                    helperText={
+                      hasError('title') ? formState.errors.title[0] : null
+                    }
+                    label="title (en)"
+                    name="title"
+                    onChange={handleChange}
+                    value={formState.values.title || ''}
+                    variant="outlined"
+                  />
+                </Grid>{' '}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title_ar')}
+                    fullWidth
+                    helperText={
+                      hasError('title_ar') ? formState.errors.title_ar[0] : null
+                    }
+                    label="title (ar)"
+                    name="title_ar"
+                    onChange={handleChange}
+                    value={formState.values.title_ar || ''}
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={formState}
+              isLoading={isLoadingUpdate}
+              title={'Add'}
+            />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openAddExistingSubCategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleAddExistingSubcategory}>
+            <Typography variant="h4">Add Existing Subcategory</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id="multiple-category-label"
+                      className={classes.label}>
+                      {`Subcategory`}
+                    </InputLabel>
+                    <Select
+                      name="category"
+                      labelId="multiple-category-label"
+                      id="category-label"
+                      multiple
+                      value={selectedCategory}
+                      onChange={handleChangeMulti}
+                      input={
+                        <OutlinedInput id="category-label" label="Branch(es)" />
+                      }
+                      renderValue={selected => (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 0.5
+                          }}>
+                          {selected.map(category => (
+                            <Chip key={category.id} label={category.title} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}>
+                      {Subcategories?.data?.results.map(category => (
+                        <MenuItem
+                          key={category.id}
+                          value={category}
+                          style={getStyles(
+                            category,
+                            selectedCategory || '',
+                            theme
+                          )}>
+                          {category.title}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={multiFormState}
+              isLoading={isLoadingUpdate}
+              title={'Add'}
+            />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openEditSubcategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleUpdateSubcategory}>
+            <Typography variant="h4">Update Subcategory</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title')}
+                    fullWidth
+                    helperText={
+                      hasError('title') ? formState.errors.title[0] : null
+                    }
+                    label="title (en)"
+                    name="title"
+                    onChange={handleChange}
+                    value={formState.values.title || ''}
+                    variant="outlined"
+                  />
+                </Grid>{' '}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title_ar')}
+                    fullWidth
+                    helperText={
+                      hasError('title_ar') ? formState.errors.title_ar[0] : null
+                    }
+                    label="title (ar)"
+                    name="title_ar"
+                    onChange={handleChange}
+                    value={formState.values.title_ar || ''}
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={formState}
+              isLoading={isLoadingUpdate}
+              title={'Edit'}
             />
           </form>
         </Box>

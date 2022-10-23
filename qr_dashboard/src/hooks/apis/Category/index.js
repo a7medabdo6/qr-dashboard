@@ -35,6 +35,9 @@ const getOneCategory = async ({ queryKey }) => {
 const getMainCategories = async () => {
   return await api.get(`menus/categories/?parent=true`);
 };
+const getSubcategories = async () => {
+  return await api.get(`menus/categories/?parent=false`);
+};
 const postCreateCategoryRequest = async data => {
   return await api.post('menus/categories/', data);
 };
@@ -177,6 +180,23 @@ const useGetMainCategoryHook = () => {
     }
   });
 };
+const useGetSubcategoryHook = () => {
+  const dispatch = useDispatch();
+  return useQuery(['subCategories'], getSubcategories, {
+    onSuccess: res => {
+      const result = {
+        status: res.status + '-' + res.statusText,
+        headers: res.headers,
+        data: res.data
+      };
+      return result.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
+    }
+  });
+};
 export {
   useCreateCategoryHook,
   useGetAllCategoryHook,
@@ -184,5 +204,6 @@ export {
   useUpdateCategoryHook,
   useActivateCategoryHook,
   useDeleteCategoryHook,
-  useGetMainCategoryHook
+  useGetMainCategoryHook,
+  useGetSubcategoryHook
 };
