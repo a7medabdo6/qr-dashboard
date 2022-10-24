@@ -152,7 +152,7 @@ function SubcategoriesList({
   subExpanded,
   handleExpand,
   productExpanded,
-  handleDeleteSubcategory,
+  handleOpenDeleteSubModal,
   handleOpenEditSubcategoryModal
 }) {
   const classes = useStyles();
@@ -192,7 +192,7 @@ function SubcategoriesList({
               color="secondary"
               className={classes.paddingZero}
               onClick={() =>
-                handleDeleteSubcategory(category?.id, subCategory?.id)
+                handleOpenDeleteSubModal(category?.id, subCategory?.id)
               }
               size="large"
               variant="text">

@@ -82,7 +82,6 @@ const ModalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
   bgcolor: 'background.paper',
   border: '2px solid #eee',
   borderRadius: '10px',
@@ -91,6 +90,20 @@ const ModalStyle = {
   px: 4,
   pb: 3,
   width: '65%'
+};
+const smModalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  border: '2px solid #eee',
+  borderRadius: '10px',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+  width: '35%'
 };
 const ITEM_HEIGHT = 30;
 const ITEM_PADDING_TOP = 80;
@@ -150,6 +163,10 @@ const CreateFrom = props => {
   const [openEditSubcategoryModal, setOpenEditSubcategoryModal] = useState(
     false
   );
+  const [openDeleteCategoryModal, setOpenDeleteCategoryModal] = useState(false);
+  const [openDeleteSubcategoryModal, setOpenDeleteSubcategoryModal] = useState(
+    false
+  );
   const [
     openAddExistingSubCategoryModal,
     setOpenAddExistingSubCategoryModal
@@ -158,6 +175,7 @@ const CreateFrom = props => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [categoryId, setCategoryId] = useState(false);
+  const [subcategoryId, setSubcategoryId] = useState(false);
 
   const {
     mutate: UpdateMenuRequest,
@@ -210,6 +228,17 @@ const CreateFrom = props => {
 
   const handleOpenModal = () => {
     setOpenModal(true);
+  };
+
+  const handleOpenDeleteSubModal = (categoryId, subcategoryId) => {
+    setCategoryId(categoryId);
+    setSubcategoryId(subcategoryId);
+    setOpenDeleteSubcategoryModal(true);
+  };
+
+  const handleOpenDeleteCatModal = categoryId => {
+    setCategoryId(categoryId);
+    setOpenDeleteCategoryModal(true);
   };
 
   const handleAddExistingCategoryModal = () => {
@@ -265,6 +294,8 @@ const CreateFrom = props => {
     setOpenAddSubCategoryModal(false);
     setOpenAddExistingSubCategoryModal(false);
     setOpenEditSubcategoryModal(false);
+    setOpenDeleteCategoryModal(false);
+    setOpenDeleteSubcategoryModal(false);
     setMultiFormState(false);
     setSelectedCategories([]);
     setFormState({
@@ -369,7 +400,7 @@ const CreateFrom = props => {
     handleCloseModal();
   };
 
-  const handleDeleteCategory = async categoryId => {
+  const handleDeleteCategory = async () => {
     setIsLoading(true);
     let Menu = { ...data?.data };
     Menu.id = id;
@@ -380,9 +411,10 @@ const CreateFrom = props => {
       });
     await UpdateMenuRequest(Menu);
     await setIsLoading(false);
+    await handleCloseModal();
   };
 
-  const handleDeleteSubcategory = async (categoryId, subcategoryId) => {
+  const handleDeleteSubcategory = async () => {
     setIsLoading(true);
     let Menu = { ...data?.data };
     Menu.id = id;
@@ -402,6 +434,7 @@ const CreateFrom = props => {
       });
     await UpdateMenuRequest(Menu);
     await setIsLoading(false);
+    await handleCloseModal();
   };
 
   const handleAddNewSubCategory = () => {
@@ -502,8 +535,8 @@ const CreateFrom = props => {
         handleExpand={handleExpand}
         handleClick={handleClick}
         handleClose={handleClose}
-        handleDeleteCategory={handleDeleteCategory}
-        handleDeleteSubcategory={handleDeleteSubcategory}
+        handleOpenDeleteCatModal={handleOpenDeleteCatModal}
+        handleOpenDeleteSubModal={handleOpenDeleteSubModal}
         handleOpenEditCategoryModal={handleOpenEditCategoryModal}
         handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
         handleAddNewSubCategory={handleAddNewSubCategory}
@@ -818,6 +851,40 @@ const CreateFrom = props => {
               isLoading={isLoadingUpdate}
               title={'Edit'}
             />
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openDeleteCategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...smModalStyle }}>
+          <form onSubmit={handleDeleteCategory}>
+            <Typography variant="h4">Remove Category</Typography>
+            <Typography variant="subtitle1" style={{ marginTop: '5px' }}>
+              Are you sure you want to remove this Category?
+            </Typography>
+            <Button
+              type="submit"
+              variant={'contained'}
+              color={'secondary'}
+              className={classes.submitButton}>
+              Remove
+            </Button>
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openDeleteSubcategoryModal} onClose={handleCloseModal}>
+        <Box sx={{ ...smModalStyle }}>
+          <form onSubmit={handleDeleteSubcategory}>
+            <Typography variant="h4">Remove Subcategory</Typography>
+            <Typography variant="subtitle1" style={{ marginTop: '5px' }}>
+              Are you sure you want to remove this Subcategory?
+            </Typography>
+            <Button
+              type="submit"
+              variant={'contained'}
+              color={'secondary'}
+              className={classes.submitButton}>
+              Remove
+            </Button>
           </form>
         </Box>
       </Modal>

@@ -7,8 +7,8 @@ function Category({
   handleExpand,
   handleClick,
   handleClose,
-  handleDeleteCategory,
-  handleDeleteSubcategory,
+  handleOpenDeleteCatModal,
+  handleOpenDeleteSubModal,
   handleOpenEditCategoryModal,
   handleOpenEditSubcategoryModal,
   handleAddNewSubCategory,
@@ -30,8 +30,8 @@ function Category({
             handleExpand={handleExpand}
             handleClick={handleClick}
             handleClose={handleClose}
-            handleDeleteCategory={handleDeleteCategory}
-            handleDeleteSubcategory={handleDeleteSubcategory}
+            handleOpenDeleteCatModal={handleOpenDeleteCatModal}
+            handleOpenDeleteSubModal={handleOpenDeleteSubModal}
             handleOpenEditCategoryModal={handleOpenEditCategoryModal}
             handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
             handleAddNewSubCategory={handleAddNewSubCategory}

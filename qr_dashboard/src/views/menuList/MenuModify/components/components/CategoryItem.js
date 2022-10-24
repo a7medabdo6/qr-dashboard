@@ -88,8 +88,8 @@ function CategoryItem({
   handleExpand,
   handleClick,
   handleClose,
-  handleDeleteCategory,
-  handleDeleteSubcategory,
+  handleOpenDeleteCatModal,
+  handleOpenDeleteSubModal,
   handleOpenEditCategoryModal,
   handleOpenEditSubcategoryModal,
   handleAddNewSubCategory,
@@ -146,7 +146,7 @@ function CategoryItem({
         <Button
           color="secondary"
           className={classes.paddingZero}
-          onClick={() => handleDeleteCategory(category?.id)}
+          onClick={() => handleOpenDeleteCatModal(category?.id)}
           size="large"
           variant="text">
           <RemoveCircleIcon className={classes.icon} />
@@ -168,7 +168,7 @@ function CategoryItem({
         subExpanded={subExpanded}
         productExpanded={productExpanded}
         handleExpand={handleExpand}
-        handleDeleteSubcategory={handleDeleteSubcategory}
+        handleOpenDeleteSubModal={handleOpenDeleteSubModal}
         handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
       />
     </Accordion>
