@@ -94,6 +94,7 @@ function CategoryItem({
   handleOpenEditSubcategoryModal,
   handleAddNewSubCategory,
   handleAddExistingSubCategory,
+  handleOpenAddProductModal,
   expanded,
   anchorEl,
   subExpanded,
@@ -170,6 +171,7 @@ function CategoryItem({
         handleExpand={handleExpand}
         handleOpenDeleteSubModal={handleOpenDeleteSubModal}
         handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
+        handleOpenAddProductModal={handleOpenAddProductModal}
       />
     </Accordion>
   );

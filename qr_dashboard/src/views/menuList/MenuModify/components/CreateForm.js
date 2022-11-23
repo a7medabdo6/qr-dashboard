@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import validate, { async } from 'validate.js';
-import clsx from 'clsx';
+import validate from 'validate.js';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import './style.css';
-import Menu from '@material-ui/core/Menu';
-
+import gradients from 'utils/gradients';
 import {
   TextField,
-  Checkbox,
   Typography,
   Select,
   OutlinedInput,
@@ -18,23 +14,13 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Divider,
   Button,
-  Modal
+  Modal,
+  Avatar
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import BuildCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import LoaderButton from 'components/Buttons';
-import EmptySection from 'components/EmptySection';
-
+import InsertPhoto from '@material-ui/icons/InsertPhoto';
 import { useParams } from 'react-router-dom';
 import {
   useCreateMenuHook,
@@ -65,6 +51,24 @@ const useStyles = makeStyles(theme => ({
   submitButton: {
     marginTop: theme.spacing(4),
     width: '100%'
+  },
+  icon: {
+    backgroundImage: gradients.orange,
+    color: theme.palette.white,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    margin: '0 10px',
+    height: 44,
+    width: 44,
+    fontSize: 32
+  },
+  avatar: {
+    color: theme.palette.white,
+    borderRadius: theme.shape.borderRadius,
+    margin: '0 10px',
+    height: 44,
+    width: 44,
+    fontSize: 32
   }
 }));
 
@@ -172,10 +176,15 @@ const CreateFrom = props => {
     setOpenAddExistingSubCategoryModal
   ] = useState(false);
 
+  const [openAddProductModal, setOpenAddProductModal] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [categoryId, setCategoryId] = useState(false);
   const [subcategoryId, setSubcategoryId] = useState(false);
+
+  const [logo, setLogo] = useState(false);
+  const [selectedFile, setSelectedFile] = React.useState(false);
 
   const {
     mutate: UpdateMenuRequest,
@@ -296,7 +305,10 @@ const CreateFrom = props => {
     setOpenEditSubcategoryModal(false);
     setOpenDeleteCategoryModal(false);
     setOpenDeleteSubcategoryModal(false);
+    setOpenAddProductModal(false);
     setMultiFormState(false);
+    setLogo(false);
+    setSelectedFile(false);
     setSelectedCategories([]);
     setFormState({
       isValid: false,
@@ -486,6 +498,45 @@ const CreateFrom = props => {
     handleCloseModal();
   };
 
+  const handleOpenAddProductModal = (categoryId, subcategoryId) => {
+    setCategoryId(categoryId);
+    setSubcategoryId(subcategoryId);
+    setOpenAddProductModal(true);
+  };
+
+  const handleAddProduct = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let catIndex;
+    Menu.categories = Menu.categories.map((cat, index) => {
+      if (cat.id === categoryId) {
+        catIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+    let subCatIndex;
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories.map((cat, index) => {
+      if (cat.id === subcategoryId) {
+        subCatIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+
+    Menu.categories[catIndex].subcategories[subCatIndex].products.push({
+      ...formState.values
+    });
+    Menu.categories[catIndex].subcategories[subCatIndex].products.forEach(
+      product => {
+        delete product.image;
+      }
+    );
+    await UpdateMenuRequest(Menu);
+    handleCloseModal();
+  };
+
   const handleChange = event => {
     event.persist();
     setFormState(formState => ({
@@ -512,6 +563,17 @@ const CreateFrom = props => {
     setMultiFormState({
       isValid: value?.length > 0 ? true : false
     });
+  };
+
+  const handleFileSelect = event => {
+    if (event.target.files[0]) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      setLogo(event.target.files[0]);
+      reader.onload = function() {
+        setSelectedFile(reader.result);
+      };
+    }
   };
 
   const hasError = field =>
@@ -541,6 +603,7 @@ const CreateFrom = props => {
         handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
         handleAddNewSubCategory={handleAddNewSubCategory}
         handleAddExistingSubCategory={handleAddExistingSubCategory}
+        handleOpenAddProductModal={handleOpenAddProductModal}
       />
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={{ ...ModalStyle }}>
@@ -885,6 +948,82 @@ const CreateFrom = props => {
               className={classes.submitButton}>
               Remove
             </Button>
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={openAddProductModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          <form onSubmit={handleAddProduct}>
+            <Typography variant="h4">Add New Product</Typography>
+            <div className={classes.fields}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('price')}
+                    fullWidth
+                    helperText={
+                      hasError('price') ? formState.errors.price[0] : null
+                    }
+                    label="Price"
+                    name="price"
+                    onChange={handleChange}
+                    value={formState.values.price || ''}
+                    variant="outlined"
+                  />
+                </Grid>{' '}
+                <Grid item xs={12} style={{ display: 'flex' }} md={6}>
+                  {logo ? (
+                    <Avatar
+                      alt="avatar"
+                      src={selectedFile}
+                      className={classes.avatar}
+                    />
+                  ) : (
+                    <InsertPhoto className={classes.icon} />
+                  )}
+                  <TextField
+                    type="file"
+                    onChange={handleFileSelect}
+                    // value={formState.values.name || ''}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title')}
+                    fullWidth
+                    helperText={
+                      hasError('title') ? formState.errors.title[0] : null
+                    }
+                    label="title (en)"
+                    name="title"
+                    onChange={handleChange}
+                    value={formState.values.title || ''}
+                    variant="outlined"
+                  />
+                </Grid>{' '}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('title_ar')}
+                    fullWidth
+                    helperText={
+                      hasError('title_ar') ? formState.errors.title_ar[0] : null
+                    }
+                    label="title (ar)"
+                    name="title_ar"
+                    onChange={handleChange}
+                    value={formState.values.title_ar || ''}
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </div>
+            <LoaderButton
+              className={classes.submitButton}
+              formState={formState}
+              isLoading={isLoadingUpdate}
+              title={'Add'}
+            />
           </form>
         </Box>
       </Modal>

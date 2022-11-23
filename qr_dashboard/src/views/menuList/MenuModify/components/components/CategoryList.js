@@ -13,6 +13,7 @@ function Category({
   handleOpenEditSubcategoryModal,
   handleAddNewSubCategory,
   handleAddExistingSubCategory,
+  handleOpenAddProductModal,
   data,
   expanded,
   anchorEl,
@@ -36,6 +37,7 @@ function Category({
             handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
             handleAddNewSubCategory={handleAddNewSubCategory}
             handleAddExistingSubCategory={handleAddExistingSubCategory}
+            handleOpenAddProductModal={handleOpenAddProductModal}
             expanded={expanded}
             anchorEl={anchorEl}
             subExpanded={subExpanded}

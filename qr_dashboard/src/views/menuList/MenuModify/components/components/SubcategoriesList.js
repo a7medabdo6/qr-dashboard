@@ -6,7 +6,10 @@ import '../style.css';
 import {
   Accordion,
   AccordionDetails,
-  AccordionSummary, Button, Divider, Typography
+  AccordionSummary,
+  Button,
+  Divider,
+  Typography
 } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import EditIcon from '@material-ui/icons/Edit';
@@ -14,7 +17,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import BuildCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import Grid from '@material-ui/core/Grid';
-
 
 const useStyles = makeStyles(theme => ({
   accordion: {
@@ -150,7 +152,8 @@ function SubcategoriesList({
   handleExpand,
   productExpanded,
   handleOpenDeleteSubModal,
-  handleOpenEditSubcategoryModal
+  handleOpenEditSubcategoryModal,
+  handleOpenAddProductModal
 }) {
   const classes = useStyles();
 
@@ -180,7 +183,9 @@ function SubcategoriesList({
             <Button
               color="primary"
               className={classes.addIcon}
-              onClick={() => console.log(subCategory?.id)}
+              onClick={() =>
+                handleOpenAddProductModal(category?.id, subCategory?.id)
+              }
               size="large"
               variant="text">
               <AddCircleIcon className={classes.icon} />
@@ -213,23 +218,22 @@ function SubcategoriesList({
             <Grid container spacing={3}>
               {subCategory?.products?.map((product, index) => (
                 <>
-                
                   <Grid key={index} item xs={12} md={3}>
                     <a href="#">
-                      <div className='product-card'>
+                      <div className="product-card">
                         <img src={product?.image} />
                         <Typography
                           variant="h5"
-                          className={classes.autoMargin + ' product-h5-menu-editor my-2'}
-                          >
+                          className={
+                            classes.autoMargin + ' product-h5-menu-editor my-2'
+                          }>
                           {product?.title}
                         </Typography>
                       </div>
-                      </a>
+                    </a>
                   </Grid>
-                
-                
-                {/* <Accordion key={index} expanded={productExpanded === index}>
+
+                  {/* <Accordion key={index} expanded={productExpanded === index}>
                   <AccordionSummary
                     expandIcon={
                       <ExpandMoreIcon
@@ -409,16 +413,9 @@ function SubcategoriesList({
                     </Grid>
                   </AccordionDetails>
                 </Accordion> */}
-
-
-
                 </>
-
-
-
               ))}
             </Grid>
-
           </AccordionDetails>
         </Accordion>
       ))}
