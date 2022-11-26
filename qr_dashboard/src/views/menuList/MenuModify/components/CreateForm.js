@@ -239,7 +239,7 @@ const CreateFrom = props => {
   const [selectedCategory, setSelectedCategories] = useState([]);
 
   useEffect(() => {
-    const errors = validate(formState.values, schema);
+    const errors = validate(formState.values, schema || productSchema);
 
     setFormState(formState => ({
       ...formState,
@@ -1088,15 +1088,15 @@ const CreateFrom = props => {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    error={hasError('title_en')}
+                    error={hasError('title')}
                     fullWidth
                     helperText={
-                      hasError('title_en') ? formState.errors.title_en[0] : null
+                      hasError('title') ? formState.errors.title[0] : null
                     }
                     label="title (en)"
-                    name="title_en"
+                    name="title"
                     onChange={handleChange}
-                    value={formState.values.title_en || ''}
+                    value={formState.values.title || ''}
                     variant="outlined"
                   />
                 </Grid>
@@ -1156,17 +1156,15 @@ const CreateFrom = props => {
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      error={hasError('title_en')}
+                      error={hasError('title')}
                       fullWidth
                       helperText={
-                        hasError('title_en')
-                          ? formState.errors.title_en[0]
-                          : null
+                        hasError('title') ? formState.errors.title[0] : null
                       }
                       label="title (en)"
-                      name="title_en"
+                      name="title"
                       onChange={handleChange}
-                      value={formState.values.title_en || ''}
+                      value={formState.values.title || ''}
                       variant="outlined"
                     />
                   </Grid>
