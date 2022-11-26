@@ -84,26 +84,21 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function CategoryItem({
-  handleExpand,
-  handleClick,
-  handleClose,
-  handleOpenDeleteCatModal,
-  handleOpenDeleteSubModal,
-  handleOpenEditCategoryModal,
-  handleOpenEditSubcategoryModal,
-  handleAddNewSubCategory,
-  handleAddExistingSubCategory,
-  handleOpenAddProductModal,
-  expanded,
-  anchorEl,
-  subExpanded,
-  productExpanded,
-  category,
-  index
-}) {
+function CategoryItem(props) {
   const classes = useStyles();
-
+  const {
+    handleExpand,
+    handleClick,
+    handleClose,
+    handleOpenDeleteCatModal,
+    handleOpenEditCategoryModal,
+    handleAddNewSubCategory,
+    handleAddExistingSubCategory,
+    expanded,
+    anchorEl,
+    category,
+    index
+  } = props;
   return (
     <Accordion
       key={index}
@@ -164,15 +159,7 @@ function CategoryItem({
           />
         </Button>
       </AccordionSummary>
-      <SubcategoriesList
-        category={category}
-        subExpanded={subExpanded}
-        productExpanded={productExpanded}
-        handleExpand={handleExpand}
-        handleOpenDeleteSubModal={handleOpenDeleteSubModal}
-        handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
-        handleOpenAddProductModal={handleOpenAddProductModal}
-      />
+      <SubcategoriesList {...props} />
     </Accordion>
   );
 }

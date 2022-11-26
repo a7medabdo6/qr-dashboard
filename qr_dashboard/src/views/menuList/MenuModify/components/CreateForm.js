@@ -16,23 +16,30 @@ import {
   FormControl,
   Button,
   Modal,
-  Avatar
+  Avatar,
+  CircularProgress
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import LoaderButton from 'components/Buttons';
 import InsertPhoto from '@material-ui/icons/InsertPhoto';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useParams } from 'react-router-dom';
+import { useGetOneMenuHook, useModifyMenuHook } from 'hooks/apis/Menus';
+
 import {
-  useCreateMenuHook,
-  useGetOneMenuHook,
-  useModifyMenuHook
-} from 'hooks/apis/Menus';
+  useGetProductHook,
+  useUpdateProductHook,
+  useUpdateProductImageHook
+} from 'hooks/apis/Products';
 import {
   useGetMainCategoryHook,
   useGetSubcategoryHook
 } from 'hooks/apis/Category';
 import Header from './components/Header';
+
 import CategoryList from './components/CategoryList';
+import moment from 'moment';
+import { Fragment } from 'react';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -53,7 +60,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%'
   },
   icon: {
-    backgroundImage: gradients.orange,
+    backgroundImage: gradients.grey,
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
@@ -61,6 +68,19 @@ const useStyles = makeStyles(theme => ({
     height: 44,
     width: 44,
     fontSize: 32
+  },
+  smIcon: {
+    backgroundImage: gradients.grey,
+    color: theme.palette.white,
+    borderRadius: theme.shape.borderRadius,
+    height: 22,
+    width: 22,
+    fontSize: 32
+  },
+  addIcon: {
+    margin: '0px 13px',
+    padding: '0px',
+    minWidth: 'auto'
   },
   avatar: {
     color: theme.palette.white,
@@ -81,6 +101,12 @@ const schema = {
   }
 };
 
+const productSchema = {
+  title: {
+    presence: { allowEmpty: false, message: 'is required' }
+  }
+};
+
 const ModalStyle = {
   position: 'absolute',
   top: '50%',
@@ -93,7 +119,10 @@ const ModalStyle = {
   pt: 2,
   px: 4,
   pb: 3,
-  width: '65%'
+  width: '65%',
+  textAlign: 'center',
+  maxHeight: '95vh',
+  overflow: 'auto'
 };
 const smModalStyle = {
   position: 'absolute',
@@ -140,6 +169,7 @@ function getStyles(name, personName, theme) {
 const CreateFrom = props => {
   let { id } = useParams();
   const { data, isLoading: isLoadingData } = useGetOneMenuHook(id);
+
   const {
     data: Categories,
     isLoading: isLoadingCategories
@@ -175,16 +205,24 @@ const CreateFrom = props => {
     openAddExistingSubCategoryModal,
     setOpenAddExistingSubCategoryModal
   ] = useState(false);
-
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
+  const [openUpdateProductModal, setOpenUpdateProductModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const [categoryId, setCategoryId] = useState(false);
   const [subcategoryId, setSubcategoryId] = useState(false);
+  const [productId, setProductId] = useState(false);
+
+  const { data: product } = useGetProductHook(productId);
+  const { mutate: UpdateProductImage } = useUpdateProductImageHook();
+  const { mutate: UpdateProduct } = useUpdateProductHook();
+
+  const [modifiers, setModifiers] = useState([]);
+  const [variants, setVariants] = useState([]);
 
   const [logo, setLogo] = useState(false);
-  const [selectedFile, setSelectedFile] = React.useState(false);
+  const [selectedFile, setSelectedFile] = useState(false);
 
   const {
     mutate: UpdateMenuRequest,
@@ -209,6 +247,21 @@ const CreateFrom = props => {
       errors: errors || {}
     }));
   }, [formState.values]);
+
+  useEffect(() => {
+    if (product?.data && product?.data?.id !== formState.values.id) {
+      console.log('product: ', product?.data);
+      const errors = validate(product?.data, productSchema);
+      setModifiers(product.data.modifiers);
+      setVariants(product.data.varients);
+      setFormState({
+        values: { ...product?.data },
+        isValid: errors ? false : true,
+        errors: errors || {},
+        touched: {}
+      });
+    }
+  }, [product]);
 
   const handleClick = (event, categoryId) => {
     setCategoryId(categoryId);
@@ -306,8 +359,10 @@ const CreateFrom = props => {
     setOpenDeleteCategoryModal(false);
     setOpenDeleteSubcategoryModal(false);
     setOpenAddProductModal(false);
+    setOpenUpdateProductModal(false);
     setMultiFormState(false);
     setLogo(false);
+    setProductId(false);
     setSelectedFile(false);
     setSelectedCategories([]);
     setFormState({
@@ -316,6 +371,8 @@ const CreateFrom = props => {
       touched: {},
       errors: {}
     });
+    setModifiers([]);
+    setVariants([]);
   };
 
   const handleAddNewCategory = async event => {
@@ -504,6 +561,11 @@ const CreateFrom = props => {
     setOpenAddProductModal(true);
   };
 
+  const handleOpenUpdateProductModal = productId => {
+    setProductId(productId);
+    setOpenUpdateProductModal(true);
+  };
+
   const handleAddProduct = async event => {
     event.preventDefault();
     let Menu = { ...data?.data };
@@ -537,6 +599,23 @@ const CreateFrom = props => {
     handleCloseModal();
   };
 
+  const handleEditProduct = async event => {
+    event.preventDefault();
+    if (logo) {
+      handleUpdateImage();
+    }
+    const product = {
+      id: formState.values.id,
+      price: formState.values.price,
+      title_en: formState.values.title_en,
+      title_ar: formState.values.title_ar,
+      modifiers,
+      varients: variants
+    };
+    await UpdateProduct(product);
+    handleCloseModal();
+  };
+
   const handleChange = event => {
     event.persist();
     setFormState(formState => ({
@@ -553,6 +632,26 @@ const CreateFrom = props => {
         [event.target.name]: true
       }
     }));
+  };
+
+  const handleChangeModifier = (event, index) => {
+    event.persist();
+    let newModifiers = [...modifiers];
+    newModifiers[index][event.target.name] =
+      event.target.type === 'checkbox'
+        ? event.target.checked
+        : event.target.value;
+    setModifiers(newModifiers);
+  };
+
+  const handleChangeVariant = (event, index) => {
+    event.persist();
+    let newVariants = [...variants];
+    newVariants[index][event.target.name] =
+      event.target.type === 'checkbox'
+        ? event.target.checked
+        : event.target.value;
+    setVariants(newVariants);
   };
 
   const handleChangeMulti = event => {
@@ -574,6 +673,35 @@ const CreateFrom = props => {
         setSelectedFile(reader.result);
       };
     }
+  };
+
+  const handleAddModifier = () => {
+    let newModifiers = [...modifiers];
+    newModifiers.push({
+      title_en: '',
+      title_ar: '',
+      price: '',
+      active: true
+    });
+    setModifiers(newModifiers);
+  };
+
+  const handleAddVariant = () => {
+    let newVariants = [...variants];
+    newVariants.push({
+      title_en: '',
+      title_ar: '',
+      price: '',
+      active: true
+    });
+    setVariants(newVariants);
+  };
+
+  const handleUpdateImage = async () => {
+    const formData = new FormData();
+    formData.append('image', logo);
+    formData.append('id', productId);
+    await UpdateProductImage(formData);
   };
 
   const hasError = field =>
@@ -604,6 +732,7 @@ const CreateFrom = props => {
         handleAddNewSubCategory={handleAddNewSubCategory}
         handleAddExistingSubCategory={handleAddExistingSubCategory}
         handleOpenAddProductModal={handleOpenAddProductModal}
+        handleOpenUpdateProductModal={handleOpenUpdateProductModal}
       />
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={{ ...ModalStyle }}>
@@ -959,49 +1088,18 @@ const CreateFrom = props => {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    error={hasError('price')}
+                    error={hasError('title_en')}
                     fullWidth
                     helperText={
-                      hasError('price') ? formState.errors.price[0] : null
+                      hasError('title_en') ? formState.errors.title_en[0] : null
                     }
-                    label="Price"
-                    name="price"
+                    label="title (en)"
+                    name="title_en"
                     onChange={handleChange}
-                    value={formState.values.price || ''}
-                    variant="outlined"
-                  />
-                </Grid>{' '}
-                <Grid item xs={12} style={{ display: 'flex' }} md={6}>
-                  {logo ? (
-                    <Avatar
-                      alt="avatar"
-                      src={selectedFile}
-                      className={classes.avatar}
-                    />
-                  ) : (
-                    <InsertPhoto className={classes.icon} />
-                  )}
-                  <TextField
-                    type="file"
-                    onChange={handleFileSelect}
-                    // value={formState.values.name || ''}
+                    value={formState.values.title_en || ''}
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    error={hasError('title')}
-                    fullWidth
-                    helperText={
-                      hasError('title') ? formState.errors.title[0] : null
-                    }
-                    label="title (en)"
-                    name="title"
-                    onChange={handleChange}
-                    value={formState.values.title || ''}
-                    variant="outlined"
-                  />
-                </Grid>{' '}
                 <Grid item xs={12} md={6}>
                   <TextField
                     error={hasError('title_ar')}
@@ -1016,6 +1114,20 @@ const CreateFrom = props => {
                     variant="outlined"
                   />
                 </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    error={hasError('price')}
+                    fullWidth
+                    helperText={
+                      hasError('price') ? formState.errors.price[0] : null
+                    }
+                    label="Price"
+                    name="price"
+                    onChange={handleChange}
+                    value={formState.values.price || ''}
+                    variant="outlined"
+                  />
+                </Grid>
               </Grid>
             </div>
             <LoaderButton
@@ -1025,6 +1137,208 @@ const CreateFrom = props => {
               title={'Add'}
             />
           </form>
+        </Box>
+      </Modal>
+      <Modal open={openUpdateProductModal} onClose={handleCloseModal}>
+        <Box sx={{ ...ModalStyle }}>
+          {product?.data ? (
+            <form onSubmit={handleEditProduct}>
+              <Typography variant="h4" style={{ textAlign: 'initial' }}>
+                Edit Product
+              </Typography>
+              <Typography variant="subtitle2" style={{ textAlign: 'initial' }}>
+                Last Updated:{' '}
+                {moment(formState.values.update_at).format(
+                  'DD/MM/YYYY hh:mm a'
+                )}
+              </Typography>
+              <div className={classes.fields}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      error={hasError('title_en')}
+                      fullWidth
+                      helperText={
+                        hasError('title_en')
+                          ? formState.errors.title_en[0]
+                          : null
+                      }
+                      label="title (en)"
+                      name="title_en"
+                      onChange={handleChange}
+                      value={formState.values.title_en || ''}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      error={hasError('title_ar')}
+                      fullWidth
+                      helperText={
+                        hasError('title_ar')
+                          ? formState.errors.title_ar[0]
+                          : null
+                      }
+                      label="title (ar)"
+                      name="title_ar"
+                      onChange={handleChange}
+                      value={formState.values.title_ar || ''}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      error={hasError('price')}
+                      fullWidth
+                      helperText={
+                        hasError('price') ? formState.errors.price[0] : null
+                      }
+                      label="Price"
+                      name="price"
+                      onChange={handleChange}
+                      value={formState.values.price || ''}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} style={{ display: 'flex' }} md={6}>
+                    {logo || formState.values.image ? (
+                      <Avatar
+                        alt="avatar"
+                        src={selectedFile || formState.values.image}
+                        className={classes.avatar}
+                      />
+                    ) : (
+                      <InsertPhoto className={classes.icon} />
+                    )}
+                    <TextField
+                      type="file"
+                      onChange={handleFileSelect}
+                      // value={formState.values.name || ''}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid container item spacing={2} xs={12} md={6}>
+                    <Grid item xs={12} md={12}>
+                      <Typography
+                        variant={'caption'}
+                        style={{ textAlign: 'initial' }}
+                        fontSize={11}>
+                        Modifiers
+                      </Typography>
+                      <Button
+                        color="primary"
+                        className={classes.addIcon}
+                        onClick={handleAddModifier}
+                        size="small"
+                        variant="text">
+                        <AddCircleIcon className={classes.smIcon} />
+                      </Button>
+                    </Grid>
+                    {modifiers?.map((modifier, index) => (
+                      <Fragment key={index}>
+                        <Grid item xs={4} md={4}>
+                          <TextField
+                            error={hasError('title_en')}
+                            fullWidth
+                            label="title (en)"
+                            name="title_en"
+                            onChange={e => handleChangeModifier(e, index)}
+                            value={modifier.title_en || ''}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={4} md={4}>
+                          <TextField
+                            error={hasError('title_ar')}
+                            fullWidth
+                            label="title (ar)"
+                            name="title_ar"
+                            onChange={e => handleChangeModifier(e, index)}
+                            value={modifier.title_ar || ''}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={4} md={4}>
+                          <TextField
+                            error={hasError('price')}
+                            fullWidth
+                            label="Price"
+                            name="price"
+                            onChange={e => handleChangeModifier(e, index)}
+                            value={modifier.price || ''}
+                            variant="outlined"
+                          />
+                        </Grid>
+                      </Fragment>
+                    ))}
+                  </Grid>
+                  <Grid container item spacing={2} xs={12} md={6}>
+                    <Grid item xs={12} md={12}>
+                      <Typography
+                        variant={'caption'}
+                        style={{ textAlign: 'initial' }}
+                        fontSize={11}>
+                        Variants
+                      </Typography>
+                      <Button
+                        color="primary"
+                        className={classes.addIcon}
+                        onClick={handleAddVariant}
+                        size="small"
+                        variant="text">
+                        <AddCircleIcon className={classes.smIcon} />
+                      </Button>
+                    </Grid>
+                    {variants?.map((variant, index) => (
+                      <Fragment key={index}>
+                        <Grid item xs={4} md={4}>
+                          <TextField
+                            error={hasError('title_en')}
+                            fullWidth
+                            label="title (en)"
+                            name="title_en"
+                            onChange={e => handleChangeVariant(e, index)}
+                            value={variant.title_en || ''}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={4} md={4}>
+                          <TextField
+                            error={hasError('title_ar')}
+                            fullWidth
+                            label="title (ar)"
+                            name="title_ar"
+                            onChange={e => handleChangeVariant(e, index)}
+                            value={variant.title_ar || ''}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={4} md={4}>
+                          <TextField
+                            error={hasError('price')}
+                            fullWidth
+                            label="Price"
+                            name="price"
+                            onChange={e => handleChangeVariant(e, index)}
+                            value={variant.price || ''}
+                            variant="outlined"
+                          />
+                        </Grid>
+                      </Fragment>
+                    ))}
+                  </Grid>
+                </Grid>
+              </div>
+              <LoaderButton
+                className={classes.submitButton}
+                formState={formState}
+                isLoading={isLoadingUpdate}
+                title={'Update'}
+              />
+            </form>
+          ) : (
+            <CircularProgress color="primary" />
+          )}
         </Box>
       </Modal>
     </>

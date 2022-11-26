@@ -3,23 +3,8 @@ import '../style.css';
 import EmptySection from 'components/EmptySection';
 import CategoryItem from './CategoryItem';
 
-function Category({
-  handleExpand,
-  handleClick,
-  handleClose,
-  handleOpenDeleteCatModal,
-  handleOpenDeleteSubModal,
-  handleOpenEditCategoryModal,
-  handleOpenEditSubcategoryModal,
-  handleAddNewSubCategory,
-  handleAddExistingSubCategory,
-  handleOpenAddProductModal,
-  data,
-  expanded,
-  anchorEl,
-  subExpanded,
-  productExpanded
-}) {
+function Category(props) {
+  const { data } = props;
   return (
     <div>
       {data?.data?.categories?.length > 0 ? (
@@ -28,20 +13,7 @@ function Category({
             key={index}
             category={category}
             index={index}
-            handleExpand={handleExpand}
-            handleClick={handleClick}
-            handleClose={handleClose}
-            handleOpenDeleteCatModal={handleOpenDeleteCatModal}
-            handleOpenDeleteSubModal={handleOpenDeleteSubModal}
-            handleOpenEditCategoryModal={handleOpenEditCategoryModal}
-            handleOpenEditSubcategoryModal={handleOpenEditSubcategoryModal}
-            handleAddNewSubCategory={handleAddNewSubCategory}
-            handleAddExistingSubCategory={handleAddExistingSubCategory}
-            handleOpenAddProductModal={handleOpenAddProductModal}
-            expanded={expanded}
-            anchorEl={anchorEl}
-            subExpanded={subExpanded}
-            productExpanded={productExpanded}
+            {...props}
           />
         ))
       ) : (

@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import BuildCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import Grid from '@material-ui/core/Grid';
+import { Fragment } from 'react';
 
 const useStyles = makeStyles(theme => ({
   accordion: {
@@ -146,17 +147,17 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
-function SubcategoriesList({
-  category,
-  subExpanded,
-  handleExpand,
-  productExpanded,
-  handleOpenDeleteSubModal,
-  handleOpenEditSubcategoryModal,
-  handleOpenAddProductModal
-}) {
+function SubcategoriesList(props) {
   const classes = useStyles();
-
+  const {
+    category,
+    subExpanded,
+    handleExpand,
+    handleOpenDeleteSubModal,
+    handleOpenEditSubcategoryModal,
+    handleOpenAddProductModal,
+    handleOpenUpdateProductModal
+  } = props;
   return (
     <AccordionDetails className={classes.flexColumn}>
       {category?.subcategories?.map((subCategory, index) => (
@@ -217,10 +218,14 @@ function SubcategoriesList({
           <AccordionDetails className={classes.flexColumn}>
             <Grid container spacing={3}>
               {subCategory?.products?.map((product, index) => (
-                <>
-                  <Grid key={index} item xs={12} md={3}>
+                <Fragment key={index}>
+                  <Grid item xs={12} md={3}>
                     <a href="#">
-                      <div className="product-card">
+                      <div
+                        className="product-card"
+                        onClick={() =>
+                          handleOpenUpdateProductModal(product?.id)
+                        }>
                         <img src={product?.image} />
                         <Typography
                           variant="h5"
@@ -232,188 +237,7 @@ function SubcategoriesList({
                       </div>
                     </a>
                   </Grid>
-
-                  {/* <Accordion key={index} expanded={productExpanded === index}>
-                  <AccordionSummary
-                    expandIcon={
-                      <ExpandMoreIcon
-                        onClick={() => handleExpand('product', index)}
-                      />
-                    }
-                    aria-controls="panel2bh-content"
-                    className={classes.secondaryLevel}
-                    id="panel2bh-header">
-                    <Typography
-                      variant="h5"
-                      className={classes.autoMargin + ' product-h5-menu-editor'}
-                      onClick={() => handleExpand('product', index)}>
-                      <img
-                        src={product.image}
-                        className="product-thumb-menu-editor"
-                      />
-                      {product?.title}
-                    </Typography>
-                    <Divider className={classes.dividerHidden} />
-                    <Button
-                      color="default"
-                      onClick={() => console.log(product?.id)}
-                      className={classes.darkIcon}
-                      size="large"
-                      variant="text">
-                      <RemoveCircleIcon className={classes.icon} />
-                    </Button>
-                    <Button
-                      color="default"
-                      className={classes.darkIcon}
-                      onClick={() => console.log(product?.id)}
-                      size="large"
-                      variant="text">
-                      <BuildCircleIcon className={classes.icon} />
-                      <EditIcon
-                        className={clsx(
-                          classes.secIcon,
-                          classes.child,
-                          classes.child2
-                        )}
-                      />
-                    </Button>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
-                        <div className={classes.subHeader}>
-                          <Typography variant="h6" className={classes.orange}>
-                            VARIANTS
-                          </Typography>
-                          <Button
-                            className={classes.editIcon}
-                            onClick={() => console.log('Add')}
-                            size="large"
-                            variant="text">
-                            <AddCircleIcon className={classes.smIcon} />
-                          </Button>
-                        </div>
-                        <div className={classes.subData}>
-                          <Typography
-                            variant="subtitle1"
-                            className={classes.subDataSubTitle}>
-                            Small
-                          </Typography>
-                          <span>
-                            <Button
-                              className={classes.darkIcon}
-                              onClick={() => console.log('Add')}
-                              size="large"
-                              variant="text">
-                              <RemoveCircleOutlineIcon
-                                className={classes.smIcon}
-                              />
-                            </Button>
-                            <Button
-                              color="default"
-                              className={classes.darkIcon}
-                              size="large"
-                              variant="text">
-                              <BuildCircleIcon
-                                className={clsx(classes.smIcon, classes.child)}
-                              />
-                              <EditIcon
-                                className={clsx(
-                                  classes.smSecIcon,
-                                  classes.child,
-                                  classes.child3
-                                )}
-                              />
-                            </Button>
-                          </span>
-                        </div>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <div className={classes.subHeader}>
-                          <Typography variant="h6" className={classes.orange}>
-                            MODIFIERS
-                          </Typography>
-                          <Button
-                            className={classes.editIcon}
-                            onClick={() => console.log('Add')}
-                            size="large"
-                            variant="text">
-                            <AddCircleIcon className={classes.smIcon} />
-                          </Button>
-                        </div>
-                        <div className={classes.subData}>
-                          <Typography
-                            variant="subtitle1"
-                            className={classes.subDataSubTitle}>
-                            Extra Cheese
-                          </Typography>
-                          <span>
-                            <Button
-                              className={classes.darkIcon}
-                              onClick={() => console.log('Add')}
-                              size="large"
-                              variant="text">
-                              <RemoveCircleOutlineIcon
-                                className={classes.smIcon}
-                              />
-                            </Button>
-                            <Button
-                              color="default"
-                              className={classes.darkIcon}
-                              size="large"
-                              variant="text">
-                              <BuildCircleIcon
-                                className={clsx(classes.smIcon, classes.child)}
-                              />
-                              <EditIcon
-                                className={clsx(
-                                  classes.smSecIcon,
-                                  classes.child,
-                                  classes.child3
-                                )}
-                              />
-                            </Button>
-                          </span>
-                        </div>
-                        <div className={classes.subData}>
-                          <Typography
-                            variant="subtitle1"
-                            className={classes.subDataSubTitle}>
-                            No Olive
-                          </Typography>
-                          <span>
-                            <Button
-                              className={classes.darkIcon}
-                              onClick={() => console.log('Add')}
-                              size="large"
-                              variant="text">
-                              <RemoveCircleOutlineIcon
-                                className={classes.smIcon}
-                              />
-                            </Button>
-                            <Button
-                              color="default"
-                              className={classes.darkIcon}
-                              size="large"
-                              variant="text">
-                              <BuildCircleIcon
-                                className={clsx(classes.smIcon, classes.child)}
-                              />
-                              <EditIcon
-                                className={clsx(
-                                  classes.smSecIcon,
-                                  classes.child,
-                                  classes.child3
-                                )}
-                              />
-                            </Button>
-                          </span>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion> */}
-                </>
+                </Fragment>
               ))}
             </Grid>
           </AccordionDetails>
