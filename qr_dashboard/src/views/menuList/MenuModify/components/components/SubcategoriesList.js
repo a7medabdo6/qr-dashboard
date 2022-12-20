@@ -67,6 +67,11 @@ const useStyles = makeStyles(theme => ({
     padding: '0px',
     minWidth: 'auto'
   },
+  productRemove: {
+    padding: '0px',
+    minWidth: 'auto',
+    top: 16
+  },
   icon: {
     width: '30px',
     height: '30px'
@@ -156,7 +161,8 @@ function SubcategoriesList(props) {
     handleOpenDeleteSubModal,
     handleOpenEditSubcategoryModal,
     handleOpenAddProductModal,
-    handleOpenUpdateProductModal
+    handleOpenUpdateProductModal,
+    handleOpenDeleteProductModal
   } = props;
   return (
     <AccordionDetails className={classes.flexColumn}>
@@ -221,6 +227,20 @@ function SubcategoriesList(props) {
                 <Fragment key={index}>
                   <Grid item xs={12} md={3}>
                     <a href="#">
+                      <Button
+                        color="secondary"
+                        className={classes.productRemove}
+                        onClick={() =>
+                          handleOpenDeleteProductModal(
+                            category?.id,
+                            subCategory?.id,
+                            product?.id
+                          )
+                        }
+                        size="large"
+                        variant="text">
+                        <RemoveCircleIcon className={classes.icon} />
+                      </Button>
                       <div
                         style={{marginTop:'20px'}}
                         className="product-card"

@@ -23,6 +23,7 @@ import Grid from '@material-ui/core/Grid';
 import LoaderButton from 'components/Buttons';
 import InsertPhoto from '@material-ui/icons/InsertPhoto';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { useParams } from 'react-router-dom';
 import { useGetOneMenuHook, useModifyMenuHook } from 'hooks/apis/Menus';
 
@@ -207,6 +208,7 @@ const CreateFrom = props => {
   ] = useState(false);
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [openUpdateProductModal, setOpenUpdateProductModal] = useState(false);
+  const [openDeleteProductModal, setOpenDeleteProductModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -239,7 +241,7 @@ const CreateFrom = props => {
   const [selectedCategory, setSelectedCategories] = useState([]);
 
   useEffect(() => {
-    const errors = validate(formState.values, schema);
+    const errors = validate(formState.values, schema || productSchema);
 
     setFormState(formState => ({
       ...formState,
@@ -250,7 +252,6 @@ const CreateFrom = props => {
 
   useEffect(() => {
     if (product?.data && product?.data?.id !== formState.values.id) {
-      console.log('product: ', product?.data);
       const errors = validate(product?.data, productSchema);
       setModifiers(product.data.modifiers);
       setVariants(product.data.varients);
@@ -360,6 +361,7 @@ const CreateFrom = props => {
     setOpenDeleteSubcategoryModal(false);
     setOpenAddProductModal(false);
     setOpenUpdateProductModal(false);
+    setOpenDeleteProductModal(false);
     setMultiFormState(false);
     setLogo(false);
     setProductId(false);
@@ -561,6 +563,17 @@ const CreateFrom = props => {
     setOpenAddProductModal(true);
   };
 
+  const handleOpenDeleteProductModal = (
+    categoryId,
+    subcategoryId,
+    productId
+  ) => {
+    setCategoryId(categoryId);
+    setSubcategoryId(subcategoryId);
+    setProductId(productId);
+    setOpenDeleteProductModal(true);
+  };
+
   const handleOpenUpdateProductModal = productId => {
     setProductId(productId);
     setOpenUpdateProductModal(true);
@@ -613,6 +626,41 @@ const CreateFrom = props => {
       varients: variants
     };
     await UpdateProduct(product);
+    handleCloseModal();
+  };
+
+  const handleDeleteProduct = async event => {
+    event.preventDefault();
+    let Menu = { ...data?.data };
+    Menu.id = id;
+    let catIndex;
+    Menu.categories = Menu.categories.map((cat, index) => {
+      if (cat.id === categoryId) {
+        catIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+    let subCatIndex;
+    Menu.categories[catIndex].subcategories = Menu.categories[
+      catIndex
+    ].subcategories.map((cat, index) => {
+      if (cat.id === subcategoryId) {
+        subCatIndex = index;
+        return cat;
+      } else return { id: cat.id };
+    });
+
+    Menu.categories[catIndex].subcategories[
+      subCatIndex
+    ].products = Menu.categories[catIndex].subcategories[
+      subCatIndex
+    ].products.filter(product => product?.id !== productId);
+    Menu.categories[catIndex].subcategories[subCatIndex].products.forEach(
+      product => {
+        delete product.image;
+      }
+    );
+    await UpdateMenuRequest(Menu);
     handleCloseModal();
   };
 
@@ -704,6 +752,18 @@ const CreateFrom = props => {
     await UpdateProductImage(formData);
   };
 
+  const handleRemoveModifier = index => {
+    let newModifiers = [...modifiers];
+    newModifiers.splice(index, 1);
+    setModifiers(newModifiers);
+  };
+
+  const handleRemoveVariant = index => {
+    let newVariants = [...variants];
+    newVariants.splice(index, 1);
+    setVariants(newVariants);
+  };
+
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
@@ -733,6 +793,7 @@ const CreateFrom = props => {
         handleAddExistingSubCategory={handleAddExistingSubCategory}
         handleOpenAddProductModal={handleOpenAddProductModal}
         handleOpenUpdateProductModal={handleOpenUpdateProductModal}
+        handleOpenDeleteProductModal={handleOpenDeleteProductModal}
       />
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={{ ...ModalStyle }}>
@@ -1088,15 +1149,15 @@ const CreateFrom = props => {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    error={hasError('title_en')}
+                    error={hasError('title')}
                     fullWidth
                     helperText={
-                      hasError('title_en') ? formState.errors.title_en[0] : null
+                      hasError('title') ? formState.errors.title[0] : null
                     }
                     label="title (en)"
-                    name="title_en"
+                    name="title"
                     onChange={handleChange}
-                    value={formState.values.title_en || ''}
+                    value={formState.values.title || ''}
                     variant="outlined"
                   />
                 </Grid>
@@ -1156,17 +1217,15 @@ const CreateFrom = props => {
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      error={hasError('title_en')}
+                      error={hasError('title')}
                       fullWidth
                       helperText={
-                        hasError('title_en')
-                          ? formState.errors.title_en[0]
-                          : null
+                        hasError('title') ? formState.errors.title[0] : null
                       }
                       label="title (en)"
-                      name="title_en"
+                      name="title"
                       onChange={handleChange}
-                      value={formState.values.title_en || ''}
+                      value={formState.values.title || ''}
                       variant="outlined"
                     />
                   </Grid>
@@ -1236,7 +1295,17 @@ const CreateFrom = props => {
                     </Grid>
                     {modifiers?.map((modifier, index) => (
                       <Fragment key={index}>
-                        <Grid item xs={4} md={4}>
+                        <Grid item xs={12} md={3}>
+                          <Button
+                            color="primary"
+                            className={classes.addIcon}
+                            onClick={() => handleRemoveModifier(index)}
+                            size="small"
+                            variant="text">
+                            <RemoveCircleIcon className={classes.smIcon} />
+                          </Button>
+                        </Grid>
+                        <Grid item xs={12} md={3}>
                           <TextField
                             error={hasError('title_en')}
                             fullWidth
@@ -1247,7 +1316,7 @@ const CreateFrom = props => {
                             variant="outlined"
                           />
                         </Grid>
-                        <Grid item xs={4} md={4}>
+                        <Grid item xs={12} md={3}>
                           <TextField
                             error={hasError('title_ar')}
                             fullWidth
@@ -1258,7 +1327,7 @@ const CreateFrom = props => {
                             variant="outlined"
                           />
                         </Grid>
-                        <Grid item xs={4} md={4}>
+                        <Grid item xs={12} md={3}>
                           <TextField
                             error={hasError('price')}
                             fullWidth
@@ -1291,7 +1360,17 @@ const CreateFrom = props => {
                     </Grid>
                     {variants?.map((variant, index) => (
                       <Fragment key={index}>
-                        <Grid item xs={4} md={4}>
+                        <Grid item xs={12} md={3}>
+                          <Button
+                            color="primary"
+                            className={classes.addIcon}
+                            onClick={() => handleRemoveVariant(index)}
+                            size="small"
+                            variant="text">
+                            <RemoveCircleIcon className={classes.smIcon} />
+                          </Button>
+                        </Grid>
+                        <Grid item xs={12} md={3}>
                           <TextField
                             error={hasError('title_en')}
                             fullWidth
@@ -1302,7 +1381,7 @@ const CreateFrom = props => {
                             variant="outlined"
                           />
                         </Grid>
-                        <Grid item xs={4} md={4}>
+                        <Grid item xs={12} md={3}>
                           <TextField
                             error={hasError('title_ar')}
                             fullWidth
@@ -1313,7 +1392,7 @@ const CreateFrom = props => {
                             variant="outlined"
                           />
                         </Grid>
-                        <Grid item xs={4} md={4}>
+                        <Grid item xs={12} md={3}>
                           <TextField
                             error={hasError('price')}
                             fullWidth
@@ -1339,6 +1418,23 @@ const CreateFrom = props => {
           ) : (
             <CircularProgress color="primary" />
           )}
+        </Box>
+      </Modal>
+      <Modal open={openDeleteProductModal} onClose={handleCloseModal}>
+        <Box sx={{ ...smModalStyle }}>
+          <form onSubmit={handleDeleteProduct}>
+            <Typography variant="h4">Remove Product</Typography>
+            <Typography variant="subtitle1" style={{ marginTop: '5px' }}>
+              Are you sure you want to remove this Product?
+            </Typography>
+            <Button
+              type="submit"
+              variant={'contained'}
+              color={'secondary'}
+              className={classes.submitButton}>
+              Remove
+            </Button>
+          </form>
         </Box>
       </Modal>
     </>
