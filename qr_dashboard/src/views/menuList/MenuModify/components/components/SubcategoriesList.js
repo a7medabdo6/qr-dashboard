@@ -222,6 +222,7 @@ function SubcategoriesList(props) {
                   <Grid item xs={12} md={3}>
                     <a href="#">
                       <div
+                        style={{marginTop:'20px'}}
                         className="product-card"
                         onClick={() =>
                           handleOpenUpdateProductModal(product?.id)
