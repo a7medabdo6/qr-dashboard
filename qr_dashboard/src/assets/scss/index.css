@@ -46,3 +46,15 @@ a {
 body iframe {
   display: none !important;
 }
+
+.product-thumb-menu-editor{
+  height: 32px;
+  width: 32px;
+  object-fit: cover;
+  border-radius: 100%;
+  margin: 0 5px;
+}
+.product-h5-menu-editor{
+  display: flex;
+  align-items: center;
+}

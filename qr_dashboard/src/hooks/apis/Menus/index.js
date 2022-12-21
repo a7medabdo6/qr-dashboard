@@ -117,6 +117,23 @@ const useUpdateMenuHook = () => {
     }
   });
 };
+const useModifyMenuHook = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const QueryClient = useQueryClient();
+  return useMutation(patchMenuRequest, {
+    onSuccess: res => {
+      QueryClient.invalidateQueries('allMenus');
+      dispatch(ToastShow('Menu Updated Successfully'));
+      // router.history.push('/menu');
+      return res;
+    },
+    onError: err => {
+      console.log(err, 'err');
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
+    }
+  });
+};
 const useActivateMenuHook = () => {
   const dispatch = useDispatch();
   const QueryClient = useQueryClient();
@@ -163,5 +180,6 @@ export {
   useGetOneMenuHook,
   useUpdateMenuHook,
   useActivateMenuHook,
-  useDeleteMenuHook
+  useDeleteMenuHook,
+  useModifyMenuHook
 };

@@ -1,0 +1,24 @@
+.MuiAccordion-root:before{
+    display: none;
+}
+
+
+.product-card {
+    width: 100%;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-card img{
+    margin-top: -40px;
+    height: 70px;
+    width: 70px;
+    border-radius: 100%;
+    object-fit: cover;
+    border: 3px solid #fff;
+}

@@ -2,8 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Button } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +26,7 @@ export default function CircularIndeterminate({ formState, title, isLoading }) {
       size="large"
       type="submit"
       variant="contained">
-      {console.log(isLoading, 'isLoading')}
+      {/* {console.log(isLoading, 'isLoading')} */}
       {isLoading ? <CircularProgress color="secondary" /> : title}
     </Button>
   );

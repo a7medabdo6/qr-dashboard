@@ -17,5 +17,9 @@ if (user && user?.tenant?.busisness_name && user?.role != 1) {
 export const api = axios.create({
   baseURL: 'https://onpixie.net/',
   headers: { ...headers }
-  // .. other options
 });
+
+// export const api = axios.create({
+//   baseURL: 'http://localhost:8000/',
+//   headers: { ...headers }
+// });
