@@ -18,6 +18,7 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useActivateMenuHook, useDeleteMenuHook } from 'hooks/apis/Menus';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,6 +72,7 @@ const useStyles = makeStyles(theme => ({
 const MenuCard = props => {
   const { Menu, className, ...rest } = props;
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
 
   const statusColors = {
     'In progress': colors.orange[600],
@@ -107,13 +109,13 @@ const MenuCard = props => {
               {`, `}
             </Typography>
           ))}
-          <Typography variant="body2">Branches Name</Typography>
+          <Typography variant="body2">{t('Branches_name')} </Typography>
         </div>
         <div className={classes.stats}>
           <Typography variant="h6">
             {moment(Menu?.create_at).format('DD MMMM YYYY')}
           </Typography>
-          <Typography variant="body2"> started</Typography>
+          <Typography variant="body2"> {t('started')}</Typography>
         </div>
         <div className={classes.stats}>
           <Typography
@@ -123,9 +125,9 @@ const MenuCard = props => {
                 : statusColors['In progress']
             }}
             variant="h6">
-            {Menu?.active ? 'Active' : 'In progress'}
+            {Menu?.active ? t('Active') : t('Disable')}
           </Typography>
-          <Typography variant="body2"> Status</Typography>
+          <Typography variant="body2"> {t('status')} </Typography>
         </div>
         <div className={classes.actions}>
           <Link component={RouterLink} to={`/menu/modify/${Menu?.id}`}>
@@ -143,7 +145,7 @@ const MenuCard = props => {
               color="primary"
               size="small"
               variant="outlined">
-              Edit
+              {t('Edit')}
             </Button>
           </Link>
 
@@ -154,7 +156,7 @@ const MenuCard = props => {
               variant="outlined"
               onClick={onActivateHandle}
               color="primary">
-              Disable
+              {t('Disable')}
               <BlockIcon />
             </Button>
           )}
@@ -165,7 +167,7 @@ const MenuCard = props => {
               variant="contained"
               onClick={onActivateHandle}
               color="primary">
-              Activate
+              {t('Activate')}
               <DoneAllIcon />
             </Button>
           )}
@@ -175,7 +177,7 @@ const MenuCard = props => {
             variant="contained"
             color="secondary"
             onClick={onDeleteHandle}>
-            delete
+            {t('delete')}
             <DeleteForeverIcon />
           </Button>
         </div>

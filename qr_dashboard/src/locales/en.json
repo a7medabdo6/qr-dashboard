@@ -3,10 +3,12 @@
   "DashBoard": "DashBoard",
   "Groups": "Groups",
   "Branches": "Branches",
+  "Branches_name": "Branches name",
   "Menus": "Menus",
+  "Add_menu": " Add Menu",
   "Setting": "Setting",
   "Users": "Users",
-  "Signout": "Signout",
+  "Signout": "Sign out",
   "add_group": "Add group",
   "Group_Name": "Group Name",
   "started": "started",
@@ -21,6 +23,5 @@
   "title": "title (en)",
   "title_ar": "title {ar)",
   "add_branch": "Add Branch",
-  "Management":"Management"
-
+  "Management": "Management"
 }
