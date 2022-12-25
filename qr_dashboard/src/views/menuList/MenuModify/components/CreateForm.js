@@ -233,7 +233,7 @@ const CreateFrom = props => {
 
   const [formState, setFormState] = useState({
     isValid: false,
-    values: { active: true },
+    values: { active: true, order: 1 },
     touched: {},
     errors: {}
   });
@@ -369,7 +369,7 @@ const CreateFrom = props => {
     setSelectedCategories([]);
     setFormState({
       isValid: false,
-      values: { active: true },
+      values: { active: true, order: 1 },
       touched: {},
       errors: {}
     });
@@ -397,13 +397,14 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map((cat, index) => {
       if (cat.id === categoryId) {
         catIndex = index;
+        delete cat.image;
         return cat;
-      } else return { id: cat.id };
+      } else return { id: cat.id, order: cat.order };
     });
     Menu.categories[catIndex].subcategories = Menu.categories[
       catIndex
     ].subcategories.map(cat => {
-      return { id: cat.id };
+      return { id: cat.id, order: cat.order };
     });
     Menu.categories[catIndex].subcategories.push({
       ...formState.values
@@ -420,6 +421,7 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map((cat, index) => {
       if (cat.id === categoryId) {
         catIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
@@ -493,6 +495,7 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map((cat, index) => {
       if (cat.id === categoryId) {
         catIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
@@ -526,6 +529,7 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map((cat, index) => {
       if (cat.id === categoryId) {
         catIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
@@ -587,6 +591,7 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map((cat, index) => {
       if (cat.id === categoryId) {
         catIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
@@ -596,6 +601,7 @@ const CreateFrom = props => {
     ].subcategories.map((cat, index) => {
       if (cat.id === subcategoryId) {
         subCatIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
@@ -637,6 +643,7 @@ const CreateFrom = props => {
     Menu.categories = Menu.categories.map((cat, index) => {
       if (cat.id === categoryId) {
         catIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
@@ -646,6 +653,7 @@ const CreateFrom = props => {
     ].subcategories.map((cat, index) => {
       if (cat.id === subcategoryId) {
         subCatIndex = index;
+        delete cat.image;
         return cat;
       } else return { id: cat.id };
     });
