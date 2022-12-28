@@ -6,6 +6,7 @@ import groupReducer from 'store/Groups/Slice';
 import branchReducer from 'store/Branches/Slice';
 import menusReducer from 'store/Menus/Slice';
 import categoryReducer from 'store/Category/Slice';
+import IngredientReducer from 'store/Ingredient/Slice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     Groups: groupReducer,
     Branches: branchReducer,
     Menus: menusReducer,
-    Category: categoryReducer
+    Category: categoryReducer,
+    Ingredient: IngredientReducer
   }
 });

@@ -607,8 +607,8 @@ export const DashboardManager = [
         path: '/menu/modify/:id',
         exact: true,
         component: lazy(() => import('views/menuList/MenuModify'))
-        },
-{
+      },
+      {
         path: '/category',
         exact: true,
         component: lazy(() => import('views/CategoryList'))
@@ -660,6 +660,21 @@ export const DashboardManager = [
       //   exact: true,
       //   component: lazy(() => import('views/ProjectList'))
       // },
+      {
+        path: '/ingredients',
+        exact: true,
+        component: lazy(() => import('views/IngredientList'))
+      },
+      {
+        path: '/ingredients/create',
+        exact: true,
+        component: lazy(() => import('views/IngredientList/IngredientCreate'))
+      },
+      {
+        path: '/ingredients/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/IngredientList/IngredientCreate'))
+      },
       {
         path: '/settings',
         exact: true,
