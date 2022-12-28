@@ -3,32 +3,21 @@ import validate from 'validate.js';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import {
-  TextField,
-  Checkbox,
-  Typography,
-  Box,
-  Avatar
-} from '@material-ui/core';
+import { TextField, Checkbox, Typography, Box } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import LoaderButton from 'components/Buttons';
 import { useParams } from 'react-router-dom';
 import {
-  useCreateIngredientHook,
-  useGetOneIngredientHook,
-  useUpdateIngredientHook
-} from 'hooks/apis/Ingredients';
-import { InsertPhoto } from '@material-ui/icons';
-import gradients from 'utils/gradients';
+  useCreateNutrientHook,
+  useGetOneNutrientHook,
+  useUpdateNutrientHook
+} from 'hooks/apis/Nutrients/Units';
 
 const schema = {
   name_en: {
     presence: { allowEmpty: false, message: 'is required' }
   },
   name_ar: {
-    presence: { allowEmpty: false, message: 'is required' }
-  },
-  color: {
     presence: { allowEmpty: false, message: 'is required' }
   },
   active: {
@@ -55,38 +44,17 @@ const useStyles = makeStyles(theme => ({
   submitButton: {
     marginTop: theme.spacing(4),
     width: '100%'
-  },
-  icon: {
-    backgroundImage: gradients.grey,
-    color: theme.palette.white,
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
-    margin: '0 10px',
-    height: 44,
-    width: 44,
-    fontSize: 32
-  },
-  avatar: {
-    color: theme.palette.white,
-    borderRadius: theme.shape.borderRadius,
-    margin: '0 10px',
-    height: 44,
-    width: 44,
-    fontSize: 32
   }
 }));
 
 const CreateFrom = props => {
   let { id } = useParams();
-  const { data, isLoading: isLoadingData } = useGetOneIngredientHook(id);
+  const { data, isLoading: isLoadingData } = useGetOneNutrientHook(id);
+  const { mutate: CreateRequest, isLoading } = useCreateNutrientHook();
   const {
-    mutate: CreateIngredientRequest,
-    isLoading
-  } = useCreateIngredientHook();
-  const {
-    mutate: UpdateIngredientRequest,
+    mutate: UpdateRequest,
     isLoading: isLoadingUpdate
-  } = useUpdateIngredientHook();
+  } = useUpdateNutrientHook();
 
   const { className, ...rest } = props;
 
@@ -98,19 +66,6 @@ const CreateFrom = props => {
     touched: {},
     errors: {}
   });
-
-  const [logo, setLogo] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(false);
-  const handleFileSelect = event => {
-    if (event.target.files[0]) {
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      setLogo(event.target.files[0]);
-      reader.onload = function() {
-        setSelectedFile(reader.result);
-      };
-    }
-  };
 
   useEffect(() => {
     if (data?.data?.id !== formState?.values?.id) {
@@ -154,16 +109,10 @@ const CreateFrom = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const formData = new FormData();
-    delete formState.values.image;
-    for (var key in formState.values) {
-      formData.append(key, formState.values[key]);
-    }
-    logo && formData.append('image', logo);
     if (id) {
-      UpdateIngredientRequest(formData);
+      UpdateRequest(formState.values);
     } else {
-      CreateIngredientRequest(formData);
+      CreateRequest(formState.values);
     }
   };
 
@@ -205,43 +154,6 @@ const CreateFrom = props => {
               name="name_ar"
               onChange={handleChange}
               value={formState.values.name_ar || ''}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-              <TextField
-                error={hasError('color')}
-                fullWidth
-                helperText={
-                  hasError('color') ? formState.errors.color[0] : null
-                }
-                label="Color"
-                name="color"
-                onChange={handleChange}
-                value={formState.values.color || ''}
-                variant="outlined"></TextField>
-              <Box
-                bgcolor={formState.values.color}
-                width={40}
-                height={40}
-                className="m-2"
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={6} style={{ display: 'flex' }}>
-            {logo || formState.values.image ? (
-              <Avatar
-                alt="avatar"
-                src={selectedFile || formState.values.image}
-                className={classes.avatar}
-              />
-            ) : (
-              <InsertPhoto className={classes.icon} />
-            )}
-            <TextField
-              type="file"
-              onChange={handleFileSelect}
               variant="outlined"
             />
           </Grid>
