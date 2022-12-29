@@ -14,7 +14,8 @@ import {
   Select,
   Chip,
   OutlinedInput,
-  MenuItem
+  MenuItem,
+  Checkbox
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import validate from 'validate.js';
@@ -459,6 +460,30 @@ function EditProduct({
                         type="file"
                         onChange={handleFileSelect}
                         variant="outlined"
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      md={6}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                      <Typography
+                        color="textSecondary"
+                        style={{ marginInline: '10px' }}
+                        variant="body1">
+                        Active
+                      </Typography>
+                      <Checkbox
+                        checked={formState.values.active || false}
+                        className={classes.policyCheckbox}
+                        color="primary"
+                        name="active"
+                        type="checkbox"
+                        onChange={handleChange}
                       />
                     </Grid>
                   </Grid>

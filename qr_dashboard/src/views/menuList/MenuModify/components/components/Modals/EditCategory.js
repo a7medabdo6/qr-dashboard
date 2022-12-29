@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Typography, Box, Modal } from '@material-ui/core';
+import {
+  TextField,
+  Typography,
+  Box,
+  Modal,
+  Avatar,
+  Checkbox
+} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { useParams } from 'react-router';
 import validate from 'validate.js';
 import LoaderButton from 'components/Buttons';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
+
+import { useUpdateCategoryImageHook } from 'hooks/apis/Category';
+
+import { InsertPhoto } from '@material-ui/icons';
 
 const schema = {
   title: {
@@ -46,6 +57,20 @@ function EditCategory({
     touched: {},
     errors: {}
   });
+
+  const { mutate: UpdateCategoryImage } = useUpdateCategoryImageHook();
+  const [logo, setLogo] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(false);
+  const handleFileSelect = event => {
+    if (event.target.files[0]) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      setLogo(event.target.files[0]);
+      reader.onload = function() {
+        setSelectedFile(reader.result);
+      };
+    }
+  };
 
   let { id } = useParams();
 
@@ -105,6 +130,10 @@ function EditCategory({
 
   const handleUpdateCategory = async event => {
     event.preventDefault();
+    if (logo) {
+      handleUpdateImage();
+    }
+
     let Menu = menu;
     Menu.id = id;
     let modifyIndex = Menu.categories.findIndex(
@@ -129,6 +158,13 @@ function EditCategory({
       errors: {}
     });
     handleCloseModal();
+  };
+
+  const handleUpdateImage = async () => {
+    const formData = new FormData();
+    formData.append('image', logo);
+    formData.append('id', categoryId);
+    await UpdateCategoryImage(formData);
   };
 
   return (
@@ -163,6 +199,60 @@ function EditCategory({
                   name="title_ar"
                   onChange={handleChange}
                   value={formState.values.title_ar || ''}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                <Typography
+                  color="textSecondary"
+                  style={{ marginInline: '10px' }}
+                  variant="body1">
+                  Active
+                </Typography>
+                <Checkbox
+                  checked={formState.values.active || false}
+                  className={classes.policyCheckbox}
+                  color="primary"
+                  name="active"
+                  type="checkbox"
+                  onChange={handleChange}
+                />
+                <Typography
+                  color="textSecondary"
+                  style={{ marginInline: '10px' }}
+                  variant="body1">
+                  Show Subcategories
+                </Typography>
+                <Checkbox
+                  checked={formState.values.show_subcategories || false}
+                  className={classes.policyCheckbox}
+                  color="primary"
+                  name="active"
+                  type="checkbox"
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={6} style={{ display: 'flex' }}>
+                {logo || formState.values.image ? (
+                  <Avatar
+                    alt="avatar"
+                    src={selectedFile || formState.values.image}
+                    className={classes.avatar}
+                  />
+                ) : (
+                  <InsertPhoto className={classes.icon} />
+                )}
+                <TextField
+                  type="file"
+                  onChange={handleFileSelect}
                   variant="outlined"
                 />
               </Grid>

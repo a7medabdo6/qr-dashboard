@@ -50,6 +50,10 @@ const ActivateCategory = async data => {
 const DeleteCategory = async data => {
   return await api.delete(`menus/categories/${data.id}`);
 };
+const UpdateCategoryImage = async data => {
+  const id = data.get('id');
+  return await api.patch(`/menus/categories/${id}/`, data);
+};
 
 const useCreateCategoryHook = () => {
   const QueryClient = useQueryClient();
@@ -197,6 +201,25 @@ const useGetSubcategoryHook = () => {
     }
   });
 };
+
+const useUpdateCategoryImageHook = () => {
+  const dispatch = useDispatch();
+  return useMutation(UpdateCategoryImage, {
+    onSuccess: res => {
+      const result = {
+        status: res.status + '-' + res.statusText,
+        headers: res.headers,
+        data: res.data
+      };
+      return result.data;
+    },
+    onError: err => {
+      console.log(err, 'err');
+      dispatch(ToastShow({ message: 'Something Went Wrong', type: 'error' }));
+    }
+  });
+};
+
 export {
   useCreateCategoryHook,
   useGetAllCategoryHook,
@@ -205,5 +228,6 @@ export {
   useActivateCategoryHook,
   useDeleteCategoryHook,
   useGetMainCategoryHook,
-  useGetSubcategoryHook
+  useGetSubcategoryHook,
+  useUpdateCategoryImageHook
 };

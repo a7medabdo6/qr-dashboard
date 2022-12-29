@@ -260,7 +260,7 @@ const CreateFrom = props => {
               type="checkbox"
               onChange={handleChange}
             />
-          </Grid>{' '}
+          </Grid>
         </Grid>
       </div>
       <LoaderButton
