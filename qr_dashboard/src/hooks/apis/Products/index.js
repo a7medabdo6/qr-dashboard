@@ -1,10 +1,8 @@
 import { useDispatch } from 'react-redux';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { api } from '../../../axios';
-import useRouter from 'utils/useRouter';
 import { ToastShow } from 'store/Global/Slice';
 import { setProduct } from 'store/Products/Slice';
-import { useTranslation } from 'react-i18next';
 
 const getProduct = async ({ queryKey }) => {
   if (queryKey[1]) return await api.get(`/menus/products/${queryKey[1]}`);
@@ -47,7 +45,6 @@ const useUpdateProductImageHook = () => {
         data: res.data
       };
       setProduct(result.data);
-      dispatch(ToastShow('Product Updated Successfully'));
       return result.data;
     },
     onError: err => {
@@ -66,6 +63,7 @@ const useUpdateProductHook = () => {
         headers: res.headers,
         data: res.data
       };
+      dispatch(ToastShow('Product Updated Successfully'));
       return result.data;
     },
     onError: err => {

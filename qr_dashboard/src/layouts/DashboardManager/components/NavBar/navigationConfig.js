@@ -165,6 +165,32 @@ export default [
         href: '/category',
         icon: FolderIcon
       },
+      {
+        title: 'Ingredients',
+        title_ar: 'المكونات',
+
+        href: '/ingredients',
+        icon: FolderIcon
+      },
+      {
+        title: 'Nutrients',
+        title_ar: 'المغذيات',
+        icon: FolderIcon,
+        children: [
+          {
+            title: 'Types',
+            title_ar: 'الأنواع',
+
+            href: '/nutrients/types'
+          },
+          {
+            title: 'Units',
+            title_ar: 'الوحدات',
+
+            href: '/nutrients/units'
+          }
+        ]
+      },
       // {
       //   title: 'Category',
       //   href: '/category',
