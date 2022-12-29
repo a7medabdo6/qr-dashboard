@@ -227,131 +227,153 @@ const CreateFrom = () => {
         handleOpenDeleteProductModal={handleOpenDeleteProductModal}
       />
 
-      <AddCategory
-        menu={data?.data}
-        openModal={openModal}
-        handleCloseModal={() => setOpenModal(false)}
-        classes={classes}
-      />
+      {openModal && (
+        <AddCategory
+          menu={data?.data}
+          openModal={openModal}
+          handleCloseModal={() => setOpenModal(false)}
+          classes={classes}
+        />
+      )}
 
-      <AddExistingCategory
-        menu={data?.data}
-        openAddExistingCategoryModal={openAddExistingCategoryModal}
-        handleCloseModal={() => setOpenAddExistingCategoryModal(false)}
-        classes={classes}
-      />
+      {openAddExistingCategoryModal && (
+        <AddExistingCategory
+          menu={data?.data}
+          openAddExistingCategoryModal={openAddExistingCategoryModal}
+          handleCloseModal={() => setOpenAddExistingCategoryModal(false)}
+          classes={classes}
+        />
+      )}
 
-      <EditCategory
-        menu={data?.data}
-        categoryId={categoryId}
-        openEditCategoryModal={openEditCategoryModal}
-        handleCloseModal={() => {
-          setOpenEditCategoryModal(false);
-          setCategoryId(false);
-        }}
-        classes={classes}
-      />
+      {openEditCategoryModal && (
+        <EditCategory
+          menu={data?.data}
+          categoryId={categoryId}
+          openEditCategoryModal={openEditCategoryModal}
+          handleCloseModal={() => {
+            setOpenEditCategoryModal(false);
+            setCategoryId(false);
+          }}
+          classes={classes}
+        />
+      )}
 
-      <DeleteCategory
-        menu={data?.data}
-        categoryId={categoryId}
-        openDeleteCategoryModal={openDeleteCategoryModal}
-        handleCloseModal={() => {
-          setOpenDeleteCategoryModal(false);
-          setCategoryId(false);
-        }}
-        setIsLoading={setIsLoading}
-        classes={classes}
-      />
+      {openDeleteCategoryModal && (
+        <DeleteCategory
+          menu={data?.data}
+          categoryId={categoryId}
+          openDeleteCategoryModal={openDeleteCategoryModal}
+          handleCloseModal={() => {
+            setOpenDeleteCategoryModal(false);
+            setCategoryId(false);
+          }}
+          setIsLoading={setIsLoading}
+          classes={classes}
+        />
+      )}
 
-      <AddSubCategory
-        menu={data?.data}
-        categoryId={categoryId}
-        openAddSubCategoryModal={openAddSubCategoryModal}
-        handleCloseModal={() => {
-          setOpenAddSubCategoryModal(false);
-          setCategoryId(false);
-        }}
-        classes={classes}
-      />
+      {openAddSubCategoryModal && (
+        <AddSubCategory
+          menu={data?.data}
+          categoryId={categoryId}
+          openAddSubCategoryModal={openAddSubCategoryModal}
+          handleCloseModal={() => {
+            setOpenAddSubCategoryModal(false);
+            setCategoryId(false);
+          }}
+          classes={classes}
+        />
+      )}
 
-      <AddExistingSubCategory
-        menu={data?.data}
-        categoryId={categoryId}
-        openAddExistingSubCategoryModal={openAddExistingSubCategoryModal}
-        handleCloseModal={() => {
-          setOpenAddExistingSubCategoryModal(false);
-          setCategoryId(false);
-        }}
-        classes={classes}
-      />
+      {openAddExistingSubCategoryModal && (
+        <AddExistingSubCategory
+          menu={data?.data}
+          categoryId={categoryId}
+          openAddExistingSubCategoryModal={openAddExistingSubCategoryModal}
+          handleCloseModal={() => {
+            setOpenAddExistingSubCategoryModal(false);
+            setCategoryId(false);
+          }}
+          classes={classes}
+        />
+      )}
 
-      <EditSubCategory
-        menu={data?.data}
-        categoryId={categoryId}
-        subcategoryId={subcategoryId}
-        openEditSubcategoryModal={openEditSubcategoryModal}
-        handleCloseModal={() => {
-          setOpenEditSubcategoryModal(false);
-          setCategoryId(false);
-          setSubcategoryId(false);
-        }}
-        classes={classes}
-      />
+      {openEditSubcategoryModal && (
+        <EditSubCategory
+          menu={data?.data}
+          categoryId={categoryId}
+          subcategoryId={subcategoryId}
+          openEditSubcategoryModal={openEditSubcategoryModal}
+          handleCloseModal={() => {
+            setOpenEditSubcategoryModal(false);
+            setCategoryId(false);
+            setSubcategoryId(false);
+          }}
+          classes={classes}
+        />
+      )}
 
-      <DeleteSubCategory
-        menu={data?.data}
-        categoryId={categoryId}
-        subcategoryId={subcategoryId}
-        openDeleteSubcategoryModal={openDeleteSubcategoryModal}
-        handleCloseModal={() => {
-          setOpenDeleteSubcategoryModal(false);
-          setCategoryId(false);
-          setSubcategoryId(false);
-        }}
-        setIsLoading={setIsLoading}
-        classes={classes}
-      />
+      {openDeleteSubcategoryModal && (
+        <DeleteSubCategory
+          menu={data?.data}
+          categoryId={categoryId}
+          subcategoryId={subcategoryId}
+          openDeleteSubcategoryModal={openDeleteSubcategoryModal}
+          handleCloseModal={() => {
+            setOpenDeleteSubcategoryModal(false);
+            setCategoryId(false);
+            setSubcategoryId(false);
+          }}
+          setIsLoading={setIsLoading}
+          classes={classes}
+        />
+      )}
 
-      <AddProduct
-        menu={data?.data}
-        categoryId={categoryId}
-        subcategoryId={subcategoryId}
-        openAddProductModal={openAddProductModal}
-        handleCloseModal={() => {
-          setOpenAddProductModal(false);
-          setCategoryId(false);
-          setSubcategoryId(false);
-        }}
-        classes={classes}
-      />
+      {openAddProductModal && (
+        <AddProduct
+          menu={data?.data}
+          categoryId={categoryId}
+          subcategoryId={subcategoryId}
+          openAddProductModal={openAddProductModal}
+          handleCloseModal={() => {
+            setOpenAddProductModal(false);
+            setCategoryId(false);
+            setSubcategoryId(false);
+          }}
+          classes={classes}
+        />
+      )}
 
-      <EditProduct
-        productId={productId}
-        openUpdateProductModal={openUpdateProductModal}
-        handleCloseModal={() => {
-          setOpenUpdateProductModal(false);
-          setCategoryId(false);
-          setSubcategoryId(false);
-          setProductId(false);
-        }}
-        classes={classes}
-      />
+      {openUpdateProductModal && (
+        <EditProduct
+          productId={productId}
+          openUpdateProductModal={openUpdateProductModal}
+          handleCloseModal={() => {
+            setOpenUpdateProductModal(false);
+            setCategoryId(false);
+            setSubcategoryId(false);
+            setProductId(false);
+          }}
+          classes={classes}
+        />
+      )}
 
-      <DeleteProduct
-        menu={data?.data}
-        categoryId={categoryId}
-        subcategoryId={subcategoryId}
-        productId={productId}
-        openDeleteProductModal={openDeleteProductModal}
-        handleCloseModal={() => {
-          setOpenDeleteProductModal(false);
-          setCategoryId(false);
-          setSubcategoryId(false);
-          setProductId(false);
-        }}
-        classes={classes}
-      />
+      {openDeleteProductModal && (
+        <DeleteProduct
+          menu={data?.data}
+          categoryId={categoryId}
+          subcategoryId={subcategoryId}
+          productId={productId}
+          openDeleteProductModal={openDeleteProductModal}
+          handleCloseModal={() => {
+            setOpenDeleteProductModal(false);
+            setCategoryId(false);
+            setSubcategoryId(false);
+            setProductId(false);
+          }}
+          classes={classes}
+        />
+      )}
     </>
   );
 };

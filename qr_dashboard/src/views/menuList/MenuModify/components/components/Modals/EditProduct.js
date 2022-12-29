@@ -8,7 +8,13 @@ import {
   Avatar,
   CircularProgress,
   Tabs,
-  Tab
+  Tab,
+  FormControl,
+  InputLabel,
+  Select,
+  Chip,
+  OutlinedInput,
+  MenuItem
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import validate from 'validate.js';
@@ -16,14 +22,47 @@ import moment from 'moment';
 
 import LoaderButton from 'components/Buttons';
 import InsertPhoto from '@material-ui/icons/InsertPhoto';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import PropTypes from 'prop-types';
 import {
   useGetProductHook,
   useUpdateProductHook,
   useUpdateProductImageHook
 } from 'hooks/apis/Products';
+import { useGetAllIngredientsHook } from 'hooks/apis/Ingredients';
+import { useGetAllNutrientsHook } from 'hooks/apis/Nutrients/Types';
+import { useGetAllNutrientsHook as useGetAllNutrientsUnitsHook } from 'hooks/apis/Nutrients/Units';
+import { useSelector } from 'react-redux';
+import { useTheme } from '@material-ui/styles';
+
+const ITEM_HEIGHT = 100;
+const ITEM_PADDING_TOP = 80;
+const MenuProps = {
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left'
+  },
+  transformOrigin: {
+    vertical: 'top',
+    horizontal: 'left'
+  },
+  getContentAnchorEl: null,
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 40
+    }
+  }
+};
+
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium
+  };
+}
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,11 +74,7 @@ function TabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}>
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -51,7 +86,7 @@ TabPanel.propTypes = {
 };
 
 const productSchema = {
-  title: {
+  title_en: {
     presence: { allowEmpty: false, message: 'is required' }
   }
 };
@@ -79,6 +114,8 @@ function EditProduct({
   classes,
   productId
 }) {
+  const theme = useTheme();
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: { active: true, order: 1 },
@@ -90,6 +127,8 @@ function EditProduct({
   const { mutate: UpdateProductImage } = useUpdateProductImageHook();
   const { mutate: UpdateProduct } = useUpdateProductHook();
 
+  const [Product, setProduct] = useState(false);
+
   const [modifiers, setModifiers] = useState([]);
   const [variants, setVariants] = useState([]);
   const [ingredients, setIngredients] = useState([]);
@@ -97,6 +136,15 @@ function EditProduct({
 
   const [logo, setLogo] = useState(false);
   const [selectedFile, setSelectedFile] = useState(false);
+
+  useGetAllIngredientsHook();
+  const { Ingredients } = useSelector(state => state.Ingredient);
+
+  useGetAllNutrientsHook();
+  const { Types } = useSelector(state => state.Nutrients);
+
+  useGetAllNutrientsUnitsHook();
+  const { Units } = useSelector(state => state.Nutrients);
 
   useEffect(() => {
     const errors = validate(formState.values, productSchema);
@@ -109,20 +157,38 @@ function EditProduct({
   }, [formState.values]);
 
   useEffect(() => {
-    if (product?.data && product?.data?.id !== formState?.values?.id) {
-      const errors = validate(product?.data, productSchema);
-      setModifiers(product.data.modifiers);
-      setVariants(product.data.varients);
-      setIngredients(product.data.ingredients);
-      setNutrients(product.data.nutrients);
+    if (product?.data) {
+      setProduct(product?.data);
+    }
+  }, [product?.data]);
+
+  useEffect(() => {
+    if (Product) {
+      const errors = validate(Product, productSchema);
+      setModifiers(Product.modifiers);
+      setVariants(Product.varients);
+      setIngredients(
+        Ingredients?.filter(ingredient =>
+          Product.ingredients.map(ing => ing.id).includes(ingredient.id)
+        )
+      );
+      setNutrients(
+        Product.nutrients.map(nutrient => {
+          return {
+            ...nutrient,
+            type: nutrient.type.id,
+            unit: nutrient.unit.id
+          };
+        })
+      );
       setFormState({
-        values: { ...product?.data },
+        values: { ...Product },
         isValid: errors ? false : true,
         errors: errors || {},
         touched: {}
       });
     }
-  }, [product]);
+  }, [Product]);
 
   const handleChange = event => {
     event.persist();
@@ -160,16 +226,6 @@ function EditProduct({
         ? event.target.checked
         : event.target.value;
     setVariants(newVariants);
-  };
-
-  const handleChangeIngredient = (event, index) => {
-    event.persist();
-    let newIngredients = [...ingredients];
-    newIngredients[index][event.target.name] =
-      event.target.type === 'checkbox'
-        ? event.target.checked
-        : event.target.value;
-    setIngredients(newIngredients);
   };
 
   const handleChangeNutrient = (event, index) => {
@@ -215,23 +271,12 @@ function EditProduct({
     setVariants(newVariants);
   };
 
-  const handleAddIngredient = () => {
-    let newIngredients = [...ingredients];
-    newIngredients.push({
-      title_en: '',
-      title_ar: '',
-      price: '',
-      active: true
-    });
-    setIngredients(newIngredients);
-  };
-
   const handleAddNutrient = () => {
     let newNutrients = [...nutrients];
     newNutrients.push({
-      title_en: '',
-      title_ar: '',
-      price: '',
+      type: '',
+      unit: '',
+      value: '',
       active: true
     });
     setNutrients(newNutrients);
@@ -256,12 +301,6 @@ function EditProduct({
     setVariants(newVariants);
   };
 
-  const handleRemoveIngredient = index => {
-    let newIngredients = [...ingredients];
-    newIngredients.splice(index, 1);
-    setIngredients(newIngredients);
-  };
-
   const handleRemoveNutrient = index => {
     let newNutrients = [...nutrients];
     newNutrients.splice(index, 1);
@@ -276,13 +315,18 @@ function EditProduct({
     if (logo) {
       handleUpdateImage();
     }
+
     const product = {
       id: formState.values.id,
       price: formState.values.price,
       title_en: formState.values.title_en,
       title_ar: formState.values.title_ar,
       modifiers,
-      varients: variants
+      varients: variants,
+      ingredients: ingredients.map(ingredient => {
+        return { id: ingredient.id };
+      }),
+      nutrients
     };
     await UpdateProduct(product);
     closeModal();
@@ -296,6 +340,7 @@ function EditProduct({
       touched: {},
       errors: {}
     });
+    setProduct(false);
     setModifiers([]);
     setVariants([]);
     setIngredients([]);
@@ -309,10 +354,21 @@ function EditProduct({
     setTab(newValue);
   };
 
+  const handleChangeMulti = event => {
+    const {
+      target: { value }
+    } = event;
+    const ingredients =
+      (event.target.type === typeof value) === 'string'
+        ? value.split(',')
+        : value;
+    setIngredients(ingredients);
+  };
+
   return (
     <Modal open={openUpdateProductModal} onClose={closeModal}>
       <Box sx={{ ...ModalStyle }}>
-        {product?.data ? (
+        {Product ? (
           <form onSubmit={handleEditProduct}>
             <Typography variant="h4" style={{ textAlign: 'initial' }}>
               Edit Product
@@ -345,15 +401,17 @@ function EditProduct({
                   <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
                       <TextField
-                        error={hasError('title')}
+                        error={hasError('title_en')}
                         fullWidth
                         helperText={
-                          hasError('title') ? formState.errors.title[0] : null
+                          hasError('title_en')
+                            ? formState.errors.title_en[0]
+                            : null
                         }
                         label="title (en)"
-                        name="title"
+                        name="title_en"
                         onChange={handleChange}
-                        value={formState.values.title || ''}
+                        value={formState.values.title_en || ''}
                         variant="outlined"
                       />
                     </Grid>
@@ -410,33 +468,15 @@ function EditProduct({
               <TabPanel value={tab} index={1}>
                 <Grid container item spacing={2} xs={12} md={12}>
                   <Grid item xs={12} md={12}>
-                    <Typography
-                      variant={'caption'}
-                      style={{ textAlign: 'initial' }}
-                      fontSize={11}>
-                      Modifiers
-                    </Typography>
                     <Button
                       color="primary"
-                      className={classes.addIcon}
                       onClick={handleAddModifier}
-                      size="small"
-                      variant="text">
-                      <AddCircleIcon className={classes.smIcon} />
+                      variant="contained">
+                      Add Modifier
                     </Button>
                   </Grid>
                   {modifiers?.map((modifier, index) => (
                     <Fragment key={index}>
-                      <Grid item xs={12} md={3}>
-                        <Button
-                          color="primary"
-                          className={classes.addIcon}
-                          onClick={() => handleRemoveModifier(index)}
-                          size="small"
-                          variant="text">
-                          <RemoveCircleIcon className={classes.smIcon} />
-                        </Button>
-                      </Grid>
                       <Grid item xs={12} md={3}>
                         <TextField
                           error={hasError('title_en')}
@@ -470,6 +510,17 @@ function EditProduct({
                           variant="outlined"
                         />
                       </Grid>
+                      <Grid item xs={12} md={3}>
+                        <Button
+                          style={{ marginInline: '5px' }}
+                          size="small"
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => handleRemoveModifier(index)}>
+                          delete
+                          <DeleteForeverIcon />
+                        </Button>
+                      </Grid>
                     </Fragment>
                   ))}
                 </Grid>
@@ -477,33 +528,15 @@ function EditProduct({
               <TabPanel value={tab} index={2}>
                 <Grid container item spacing={2} xs={12} md={12}>
                   <Grid item xs={12} md={12}>
-                    <Typography
-                      variant={'caption'}
-                      style={{ textAlign: 'initial' }}
-                      fontSize={11}>
-                      Variants
-                    </Typography>
                     <Button
                       color="primary"
-                      className={classes.addIcon}
                       onClick={handleAddVariant}
-                      size="small"
-                      variant="text">
-                      <AddCircleIcon className={classes.smIcon} />
+                      variant="contained">
+                      Add Variant
                     </Button>
                   </Grid>
                   {variants?.map((variant, index) => (
                     <Fragment key={index}>
-                      <Grid item xs={12} md={3}>
-                        <Button
-                          color="primary"
-                          className={classes.addIcon}
-                          onClick={() => handleRemoveVariant(index)}
-                          size="small"
-                          variant="text">
-                          <RemoveCircleIcon className={classes.smIcon} />
-                        </Button>
-                      </Grid>
                       <Grid item xs={12} md={3}>
                         <TextField
                           error={hasError('title_en')}
@@ -536,6 +569,17 @@ function EditProduct({
                           value={variant.price || ''}
                           variant="outlined"
                         />
+                      </Grid>
+                      <Grid item xs={12} md={3}>
+                        <Button
+                          style={{ marginInline: '5px' }}
+                          size="small"
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => handleRemoveVariant(index)}>
+                          delete
+                          <DeleteForeverIcon />
+                        </Button>
                       </Grid>
                     </Fragment>
                   ))}
@@ -544,132 +588,122 @@ function EditProduct({
               <TabPanel value={tab} index={3}>
                 <Grid container item spacing={2} xs={12} md={12}>
                   <Grid item xs={12} md={12}>
-                    <Typography
-                      variant={'caption'}
-                      style={{ textAlign: 'initial' }}
-                      fontSize={11}>
-                      Ingredients
-                    </Typography>
-                    <Button
-                      color="primary"
-                      className={classes.addIcon}
-                      onClick={handleAddIngredient}
-                      size="small"
-                      variant="text">
-                      <AddCircleIcon className={classes.smIcon} />
-                    </Button>
+                    <FormControl fullWidth>
+                      <InputLabel
+                        id="multiple-Ingredient-label"
+                        className={classes.label}>
+                        {`Ingredient(s)`}
+                      </InputLabel>
+                      <Select
+                        name="Ingredients"
+                        labelId="multiple-Ingredient-label"
+                        id="Ingredient-label"
+                        multiple
+                        value={ingredients || []}
+                        onChange={handleChangeMulti}
+                        input={
+                          <OutlinedInput
+                            id="Ingredient-label"
+                            label="Ingredient(s)"
+                          />
+                        }
+                        renderValue={selected => (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexWrap: 'wrap',
+                              gap: 0.5
+                            }}>
+                            {selected.map(Ingredient => (
+                              <Chip
+                                key={Ingredient.id}
+                                label={Ingredient.name}
+                              />
+                            ))}
+                          </Box>
+                        )}
+                        MenuProps={MenuProps}>
+                        {Ingredients?.map(Ingredient => (
+                          <MenuItem
+                            key={Ingredient.id}
+                            value={Ingredient}
+                            style={getStyles(
+                              Ingredient,
+                              formState.values.Ingredient || '',
+                              theme
+                            )}>
+                            {Ingredient.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
-                  {ingredients?.map((variant, index) => (
-                    <Fragment key={index}>
-                      <Grid item xs={12} md={3}>
-                        <Button
-                          color="primary"
-                          className={classes.addIcon}
-                          onClick={() => handleRemoveIngredient(index)}
-                          size="small"
-                          variant="text">
-                          <RemoveCircleIcon className={classes.smIcon} />
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          error={hasError('title_en')}
-                          fullWidth
-                          label="title (en)"
-                          name="title_en"
-                          onChange={e => handleChangeIngredient(e, index)}
-                          value={variant.title_en || ''}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          error={hasError('title_ar')}
-                          fullWidth
-                          label="title (ar)"
-                          name="title_ar"
-                          onChange={e => handleChangeIngredient(e, index)}
-                          value={variant.title_ar || ''}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          error={hasError('price')}
-                          fullWidth
-                          label="Price"
-                          name="price"
-                          onChange={e => handleChangeIngredient(e, index)}
-                          value={variant.price || ''}
-                          variant="outlined"
-                        />
-                      </Grid>
-                    </Fragment>
-                  ))}
                 </Grid>
               </TabPanel>
               <TabPanel value={tab} index={4}>
                 <Grid container item spacing={2} xs={12} md={12}>
                   <Grid item xs={12} md={12}>
-                    <Typography
-                      variant={'caption'}
-                      style={{ textAlign: 'initial' }}
-                      fontSize={11}>
-                      Nutrients
-                    </Typography>
                     <Button
                       color="primary"
-                      className={classes.addIcon}
                       onClick={handleAddNutrient}
-                      size="small"
-                      variant="text">
-                      <AddCircleIcon className={classes.smIcon} />
+                      variant="contained">
+                      Add Nutrients
                     </Button>
                   </Grid>
                   {nutrients?.map((variant, index) => (
                     <Fragment key={index}>
                       <Grid item xs={12} md={3}>
+                        <TextField
+                          fullWidth
+                          label="Value"
+                          name="value"
+                          onChange={e => handleChangeNutrient(e, index)}
+                          value={variant.value || ''}
+                          variant="outlined"
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={3}>
+                        <FormControl fullWidth variant="outlined">
+                          <InputLabel>Type</InputLabel>
+                          <Select
+                            name="type"
+                            value={variant.type}
+                            onChange={e => handleChangeNutrient(e, index)}
+                            MenuProps={MenuProps}>
+                            {Types?.map(type => (
+                              <MenuItem key={type.id} value={type.id}>
+                                {type.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} md={3}>
+                        <FormControl fullWidth variant="outlined">
+                          <InputLabel>Unit</InputLabel>
+                          <Select
+                            name="unit"
+                            value={variant.unit}
+                            onChange={e => handleChangeNutrient(e, index)}
+                            MenuProps={MenuProps}>
+                            {Units?.map(unit => (
+                              <MenuItem key={unit.id} value={unit.id}>
+                                {unit.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} md={3}>
                         <Button
-                          color="primary"
-                          className={classes.addIcon}
-                          onClick={() => handleRemoveNutrient(index)}
+                          style={{ marginInline: '5px' }}
                           size="small"
-                          variant="text">
-                          <RemoveCircleIcon className={classes.smIcon} />
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => handleRemoveNutrient(index)}>
+                          delete
+                          <DeleteForeverIcon />
                         </Button>
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          error={hasError('title_en')}
-                          fullWidth
-                          label="title (en)"
-                          name="title_en"
-                          onChange={e => handleChangeNutrient(e, index)}
-                          value={variant.title_en || ''}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          error={hasError('title_ar')}
-                          fullWidth
-                          label="title (ar)"
-                          name="title_ar"
-                          onChange={e => handleChangeNutrient(e, index)}
-                          value={variant.title_ar || ''}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField
-                          error={hasError('price')}
-                          fullWidth
-                          label="Price"
-                          name="price"
-                          onChange={e => handleChangeNutrient(e, index)}
-                          value={variant.price || ''}
-                          variant="outlined"
-                        />
                       </Grid>
                     </Fragment>
                   ))}

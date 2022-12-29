@@ -10,7 +10,8 @@ import {
   Accordion,
   AccordionSummary,
   Divider,
-  Button
+  Button,
+  Box
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -106,7 +107,9 @@ function CategoryItem(props) {
       expanded={expanded === index}>
       <AccordionSummary
         expandIcon={
-          <ExpandMoreIcon onClick={() => handleExpand('category', index)} />
+          <Box onClick={() => handleExpand('category', index)}>
+            <ExpandMoreIcon />
+          </Box>
         }
         aria-controls="panel1bh-content"
         id="panel1bh-header">
