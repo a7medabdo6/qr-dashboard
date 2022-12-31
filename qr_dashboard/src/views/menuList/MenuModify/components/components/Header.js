@@ -21,7 +21,11 @@ function Header({ handleOpenModal, handleAddExistingCategoryModal }) {
 
   return (
     <div className={classes.headerRoot}>
-      <Grid alignItems="flex-end" container justify="space-between" spacing={3}>
+      <Grid
+        alignItems="flex-end"
+        container
+        justifyContent="space-between"
+        spacing={3}>
         <Grid item>
           <Typography
             component="h2"

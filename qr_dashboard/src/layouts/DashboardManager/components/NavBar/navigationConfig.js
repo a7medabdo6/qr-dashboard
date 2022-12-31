@@ -33,6 +33,8 @@ export default [
       // },
       {
         title: 'Dashboards',
+        title_ar: 'لوحة التحكم',
+
         href: '/dashboards',
         icon: DashboardIcon,
         children: [
@@ -118,6 +120,7 @@ export default [
       // },
       {
         title: 'Groups',
+        title_ar: 'الانشطة',
         href: '/groups',
         icon: FolderIcon
         // children: [
@@ -133,6 +136,8 @@ export default [
       },
       {
         title: 'Branches',
+        title_ar: 'الأفرع',
+
         href: '/branches',
         icon: FolderIcon
         // children: [
@@ -148,13 +153,43 @@ export default [
       },
       {
         title: 'Menus',
+        title_ar: 'القوائم',
+
         href: '/menu',
         icon: FolderIcon
       },
       {
         title: 'Categories',
+        title_ar: 'التصنيفات',
+
         href: '/category',
         icon: FolderIcon
+      },
+      {
+        title: 'Ingredients',
+        title_ar: 'المكونات',
+
+        href: '/ingredients',
+        icon: FolderIcon
+      },
+      {
+        title: 'Nutrients',
+        title_ar: 'المغذيات',
+        icon: FolderIcon,
+        children: [
+          {
+            title: 'Types',
+            title_ar: 'الأنواع',
+
+            href: '/nutrients/types'
+          },
+          {
+            title: 'Units',
+            title_ar: 'الوحدات',
+
+            href: '/nutrients/units'
+          }
+        ]
       },
       // {
       //   title: 'Category',
@@ -256,11 +291,15 @@ export default [
       // },
       {
         title: 'Settings',
+        title_ar: 'الاعدادات',
+
         href: '/settings',
         icon: SettingsIcon,
         children: [
           {
             title: 'users',
+            title_ar: 'المستخدمين',
+
             href: '/users'
           }
           // {

@@ -272,7 +272,7 @@ const TopBar = props => {
             color="inherit"
             onClick={handleLogout}>
             <InputIcon className={classes.logoutIcon} />
-            Sign out
+            {t('Signout')}
           </Button>
         </Hidden>
         <Hidden lgUp>

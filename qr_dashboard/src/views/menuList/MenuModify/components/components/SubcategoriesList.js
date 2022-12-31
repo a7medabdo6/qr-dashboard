@@ -7,6 +7,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Button,
   Divider,
   Typography
@@ -173,9 +174,9 @@ function SubcategoriesList(props) {
           expanded={subExpanded === index}>
           <AccordionSummary
             expandIcon={
-              <ExpandMoreIcon
-                onClick={() => handleExpand('subcategory', index)}
-              />
+              <Box onClick={() => handleExpand('subcategory', index)}>
+                <ExpandMoreIcon />
+              </Box>
             }
             aria-controls="panel1bh-content"
             id="panel1bh-header">

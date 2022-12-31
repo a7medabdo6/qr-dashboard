@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/styles';
 import { ListItem, Button, Collapse, colors } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { useTranslation } from 'react-i18next';
 
 const CustomRouterLink = forwardRef((props, ref) => (
   <div ref={ref} style={{ flexGrow: 1 }}>
@@ -73,8 +74,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavigationListItem = props => {
+  const { t, i18n } = useTranslation();
+
   const {
     title,
+    title_ar,
     href,
     depth,
     children,
@@ -110,7 +114,7 @@ const NavigationListItem = props => {
         disableGutters>
         <Button className={classes.button} onClick={handleToggle} style={style}>
           {Icon && <Icon className={classes.icon} />}
-          {title}
+          {i18n.language == 'en' ? title : title_ar}
           {open ? (
             <ExpandLessIcon
               className={`${classes.expandIcon} m-rtl`}
@@ -140,7 +144,8 @@ const NavigationListItem = props => {
           style={style}
           to={href}>
           {Icon && <Icon className={classes.icon} />}
-          {title}
+
+          {i18n.language == 'en' ? title : title_ar}
           {Label && (
             <span className={classes.label}>
               <Label />
@@ -160,7 +165,8 @@ NavigationListItem.propTypes = {
   icon: PropTypes.any,
   label: PropTypes.any,
   open: PropTypes.bool,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  title_ar: PropTypes.string.isRequired
 };
 
 NavigationListItem.defaultProps = {

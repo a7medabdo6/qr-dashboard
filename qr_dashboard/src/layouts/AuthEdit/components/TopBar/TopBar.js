@@ -5,6 +5,8 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
+import { useTranslation } from 'react-i18next';
+
 import {
   AppBar,
   Badge,
@@ -105,6 +107,7 @@ const TopBar = props => {
   const [searchValue, setSearchValue] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [openNotifications, setOpenNotifications] = useState(false);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     let mounted = true;
@@ -226,7 +229,8 @@ const TopBar = props => {
             color="inherit"
             onClick={handleLogout}>
             <InputIcon className={classes.logoutIcon} />
-            Sign out
+          
+            {t("Signout")}
           </Button>
         </Hidden>
         <Hidden lgUp>
