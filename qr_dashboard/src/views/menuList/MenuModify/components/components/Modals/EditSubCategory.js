@@ -13,6 +13,7 @@ import validate from 'validate.js';
 import LoaderButton from 'components/Buttons';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
 import { useUpdateCategoryImageHook } from 'hooks/apis/Category';
+import moment from 'moment';
 
 import { InsertPhoto } from '@material-ui/icons';
 const schema = {
@@ -38,7 +39,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%',
   textAlign: 'center',
-  maxHeight: '95vh',
+  maxHeight: '80vh',
   overflow: 'auto'
 };
 
@@ -192,7 +193,17 @@ function EditSubCategory({
     <Modal open={openEditSubcategoryModal} onClose={handleCloseModal}>
       <Box sx={{ ...ModalStyle }}>
         <form onSubmit={handleUpdateSubcategory}>
-          <Typography variant="h4">Update Subcategory</Typography>
+
+          <Typography variant="h4" style={{ textAlign: 'initial' }}>
+            {formState?.values?.title}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{ textAlign: 'initial', marginBottom: '20px' }}>
+            Last Updated:{' '}
+            {moment(formState.values.update_at).format('DD/MM/YYYY hh:mm a')}
+          </Typography>
+
           <div className={classes.fields}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -269,7 +280,7 @@ function EditSubCategory({
             className={classes.submitButton}
             formState={formState}
             isLoading={isLoadingUpdate}
-            title={'Edit'}
+            title={'Save'}
           />
         </form>
       </Box>

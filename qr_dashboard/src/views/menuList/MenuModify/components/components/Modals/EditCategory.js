@@ -12,6 +12,7 @@ import { useParams } from 'react-router';
 import validate from 'validate.js';
 import LoaderButton from 'components/Buttons';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
+import moment from 'moment';
 
 import { useUpdateCategoryImageHook } from 'hooks/apis/Category';
 
@@ -40,7 +41,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%',
   textAlign: 'center',
-  maxHeight: '95vh',
+  maxHeight: '80vh',
   overflow: 'auto'
 };
 
@@ -171,7 +172,16 @@ function EditCategory({
     <Modal open={openEditCategoryModal} onClose={handleCloseModal}>
       <Box sx={{ ...ModalStyle }}>
         <form onSubmit={handleUpdateCategory}>
-          <Typography variant="h4">Update Category</Typography>
+          <Typography variant="h4" style={{ textAlign: 'initial' }}>
+            {formState?.values?.title}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{ textAlign: 'initial', marginBottom: '20px' }}>
+            Last Updated:{' '}
+            {moment(formState.values.update_at).format('DD/MM/YYYY hh:mm a')}
+          </Typography>
+
           <div className={classes.fields}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -235,7 +245,7 @@ function EditCategory({
                   checked={formState.values.show_subcategories || false}
                   className={classes.policyCheckbox}
                   color="primary"
-                  name="active"
+                  name="show_subcategories"
                   type="checkbox"
                   onChange={handleChange}
                 />
@@ -262,7 +272,7 @@ function EditCategory({
             className={classes.submitButton}
             formState={formState}
             isLoading={isLoadingUpdate}
-            title={'Edit'}
+            title={'Save'}
           />
         </form>
       </Box>

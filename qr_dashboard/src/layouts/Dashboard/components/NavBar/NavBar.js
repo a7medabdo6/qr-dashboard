@@ -88,10 +88,10 @@ const NavBar = props => {
           className={classes.name}
           style={{ color: 'white' }}
           variant="h4">
-          {userInfo?.name || userData.name || 'no name'}
+          {userInfo?.name || userData.name || 'No Name'}
         </Typography>
         <Typography style={{ color: 'white' }} variant="body2">
-          {userInfo?.role || userData.role || 'no role'}
+          {userInfo?.role_text || userData.role_text || 'No Role'}
         </Typography>
       </div>
       <Divider className={classes.divider} />

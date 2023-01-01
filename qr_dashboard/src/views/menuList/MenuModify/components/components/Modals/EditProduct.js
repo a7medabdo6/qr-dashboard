@@ -104,8 +104,9 @@ const ModalStyle = {
   px: 4,
   pb: 3,
   width: '65%',
+
   textAlign: 'center',
-  maxHeight: '95vh',
+  maxHeight: '80vh',
   overflow: 'auto'
 };
 
@@ -372,13 +373,13 @@ function EditProduct({
         {Product ? (
           <form onSubmit={handleEditProduct}>
             <Typography variant="h4" style={{ textAlign: 'initial' }}>
-              Edit Product
+              {formState?.values?.title}
             </Typography>
-            <Typography variant="subtitle2" style={{ textAlign: 'initial' }}>
+            <Typography variant="subtitle2" style={{ textAlign: 'initial', marginBottom: '20px' }}>
               Last Updated:{' '}
               {moment(formState.values.update_at).format('DD/MM/YYYY hh:mm a')}
             </Typography>
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%'}}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                   value={tab}
@@ -739,7 +740,7 @@ function EditProduct({
               className={classes.submitButton}
               formState={formState}
               isLoading={false}
-              title={'Update'}
+              title={'Save'}
             />
           </form>
         ) : (

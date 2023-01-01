@@ -29,7 +29,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%',
   textAlign: 'center',
-  maxHeight: '95vh',
+  maxHeight: '80vh',
   overflow: 'auto'
 };
 
@@ -101,7 +101,12 @@ function AddCategory({ menu, openModal, handleCloseModal, classes }) {
     <Modal open={openModal} onClose={handleCloseModal}>
       <Box sx={{ ...ModalStyle }}>
         <form onSubmit={handleAddNewCategory}>
-          <Typography variant="h4">Add New Category</Typography>
+          <Typography
+            variant="h4"
+            style={{ textAlign: 'initial', marginBottom: '20px' }}>
+            Add Category
+          </Typography>
+
           <div className={classes.fields}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
