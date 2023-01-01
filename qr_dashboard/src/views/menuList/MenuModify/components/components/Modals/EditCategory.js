@@ -19,7 +19,7 @@ import { useUpdateCategoryImageHook } from 'hooks/apis/Category';
 import { InsertPhoto } from '@material-ui/icons';
 
 const schema = {
-  title: {
+  title_en: {
     presence: { allowEmpty: false, message: 'is required' }
   },
   title_ar: {
@@ -102,7 +102,7 @@ function EditCategory({
       },
       touched: {
         ...formState.touched,
-        title: true,
+        title_en: true,
         title_ar: true
       }
     }));
@@ -143,10 +143,10 @@ function EditCategory({
     Menu.categories[modifyIndex] = { ...formState.values };
     Menu.categories = Menu.categories.map(cat => {
       if (cat.id === formState.values.id) {
+        delete formState.values.image;
+        delete formState.values.subcategories;
         return {
-          id: cat.id,
-          title: cat.title,
-          title_ar: cat.title_ar
+          ...formState.values
         };
       } else return { id: cat.id };
     });
@@ -186,15 +186,15 @@ function EditCategory({
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
-                  error={hasError('title')}
+                  error={hasError('title_en')}
                   fullWidth
                   helperText={
-                    hasError('title') ? formState.errors.title[0] : null
+                    hasError('title_en') ? formState.errors.title_en[0] : null
                   }
                   label="title (en)"
-                  name="title"
+                  name="title_en"
                   onChange={handleChange}
-                  value={formState.values.title || ''}
+                  value={formState.values.title_en || ''}
                   variant="outlined"
                 />
               </Grid>{' '}

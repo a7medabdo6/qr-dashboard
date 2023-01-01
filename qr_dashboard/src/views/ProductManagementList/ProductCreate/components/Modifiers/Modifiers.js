@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 
 import axios from 'utils/axios';
-import { ProfileDetails, GeneralSettings } from './components';
+import { GeneralSettings } from './components';
 
 const useStyles = makeStyles(() => ({
   root: {}

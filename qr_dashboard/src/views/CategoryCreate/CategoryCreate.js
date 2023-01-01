@@ -3,14 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
 import { Page } from 'components';
-import {
-  Header,
-  AboutAuthor,
-  AboutProject,
-  Preferences,
-  ProjectCover,
-  ProjectDetails
-} from './components';
+import { Header, AboutProject, Preferences } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,18 +36,12 @@ const ProjectCreate = () => {
   const classes = useStyles();
 
   return (
-    <Page
-      className={classes.root}
-      title="Category Create"
-    >
+    <Page className={classes.root} title="Category Create">
       <Header />
       <AboutProject className={classes.aboutProject} />
       <Preferences className={classes.preferences} />
       <div className={classes.actions}>
-        <Button
-          color="primary"
-          variant="contained"
-        >
+        <Button color="primary" variant="contained">
           Create Category
         </Button>
       </div>

@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Avatar,
   Button,
   Card,
   CardContent,
@@ -72,7 +71,7 @@ const useStyles = makeStyles(theme => ({
 const MenuCard = props => {
   const { Menu, className, ...rest } = props;
   const classes = useStyles();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const statusColors = {
     'In progress': colors.orange[600],

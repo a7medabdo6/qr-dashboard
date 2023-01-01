@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Button, TextField } from '@material-ui/core';
-import gradients from 'utils/gradients';
 import { useChangePasswordHook } from 'hooks/apis/Auth';
 
 const schema = {
