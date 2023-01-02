@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -26,31 +28,19 @@ const Header = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const userInfo = useSelector(state => state.UserInfo.user);
 
-  const data = {
-    name: 'Shen Zhi'
-  };
+  const { t } = useTranslation();
 
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Typography
-        component="h2"
-        gutterBottom
-        variant="overline"
-      >
-        Home
+    <div {...rest} className={clsx(classes.root, className)}>
+      <Typography component="h2" gutterBottom variant="overline">
+        {t('Home')}
       </Typography>
-      <Typography
-        component="h1"
-        gutterBottom
-        variant="h3"
-      >
-        Good Morning, {data.name}
+      <Typography component="h1" gutterBottom variant="h3">
+      {t('GoodMorning')} {userInfo?.name}
       </Typography>
-      <Typography variant="subtitle1">Here's what's happening</Typography>
+      <Typography variant="subtitle1">{t('WhatsHappening')}</Typography>
     </div>
   );
 };

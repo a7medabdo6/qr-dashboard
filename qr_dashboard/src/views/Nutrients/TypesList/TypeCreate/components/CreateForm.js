@@ -47,6 +47,11 @@ const useStyles = makeStyles(theme => ({
   submitButton: {
     marginTop: theme.spacing(4),
     width: '100%'
+  },
+  colorBox: {
+    margin: 'auto 10px',
+    height: 44,
+    width: 44
   }
 }));
 
@@ -170,14 +175,13 @@ const CreateFrom = props => {
                 }
                 label="Color"
                 name="color"
+                type="color"
                 onChange={handleChange}
                 value={formState.values.color || ''}
                 variant="outlined"></TextField>
               <Box
                 bgcolor={formState.values.color}
-                width={40}
-                height={40}
-                className="m-2"
+                className={classes.colorBox}
               />
             </Box>
           </Grid>

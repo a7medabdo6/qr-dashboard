@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
-    margin: '0 10px',
+    margin: 'auto 10px',
     height: 44,
     width: 44,
     fontSize: 32

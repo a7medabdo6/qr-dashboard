@@ -249,7 +249,8 @@ const TopBar = props => {
               style={{
                 width: '50px',
                 backgroundColor: 'white',
-                borderRadius: '5px'
+                borderRadius: '5px',
+                textAlign: 'center'
               }}
               onChange={handleLangChnage}>
               <MenuItem value={'en'}>en</MenuItem>
@@ -274,8 +275,7 @@ const TopBar = props => {
             color="inherit"
             onClick={handleLogout}>
             <InputIcon className={classes.logoutIcon} />
-            {t("Signout")}
-
+            {t('Signout')}
           </Button>
         </Hidden>
         <Hidden lgUp>
