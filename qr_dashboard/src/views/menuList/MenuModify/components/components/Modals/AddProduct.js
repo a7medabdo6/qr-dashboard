@@ -29,7 +29,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%',
   textAlign: 'center',
-  maxHeight: '80vh',
+  height: '80vh',
   overflow: 'auto'
 };
 

@@ -262,11 +262,11 @@ function UpdateTimetables({
               {Timetables?.map((timetable, index) => (
                 <TabPanel key={index} value={tab} index={index}>
                   <div className={classes.fields}>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={1}>
                       <Grid
                         item
                         xs={12}
-                        md={6}
+                        md={2}
                         style={{
                           display: 'flex',
                           justifyContent: 'space-between',
@@ -275,20 +275,13 @@ function UpdateTimetables({
                         <Typography
                           color="textSecondary"
                           style={{ marginInline: '10px' }}
-                          variant="body1">
-                          Active
+                          variant="h4">
+                          Branch
                         </Typography>
-                        <Checkbox
-                          checked={timetable?.active || false}
-                          color="primary"
-                          name="active"
-                          type="checkbox"
-                          onChange={e => handleChangeTimetable(e, index)}
-                        />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} md={5}>
                         <FormControl fullWidth variant="outlined">
-                          <InputLabel>Branch</InputLabel>
+                          {/* <InputLabel>Branch</InputLabel> */}
                           <Select
                             name="branch"
                             value={timetable?.branch}
@@ -302,75 +295,94 @@ function UpdateTimetables({
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Fragment>
-                        <Grid item xs={12} md={3}>
-                          <Typography
-                            color="textSecondary"
-                            style={{ marginInline: '10px' }}
-                            variant="h5">
-                            day
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                          <Typography
-                            color="textSecondary"
-                            style={{ marginInline: '10px' }}
-                            variant="h5">
-                            Active
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                          <Typography
-                            color="textSecondary"
-                            style={{ marginInline: '10px' }}
-                            variant="h5">
-                            Start
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                          <Typography
-                            color="textSecondary"
-                            style={{ marginInline: '10px' }}
-                            variant="h5">
-                            End
-                          </Typography>
-                        </Grid>
-                      </Fragment>
+                      <Grid
+                        item
+                        xs={12}
+                        md={5}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                        <Typography
+                          color="textSecondary"
+                          style={{ marginInline: '10px' }}
+                          variant="h4">
+                          Active
+                        </Typography>
+                        <Checkbox
+                          checked={timetable?.active || false}
+                          color="primary"
+                          name="active"
+                          type="checkbox"
+                          onChange={e => handleChangeTimetable(e, index)}
+                        />
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        md={12}
+                        style={{
+                          height: '20px',
+                        }}>
+                      </Grid>
+
+
                       {days?.map((day, indexD) => (
                         <Fragment key={indexD}>
-                          <Grid item xs={12} md={3}>
-                            <Typography
-                              color="textSecondary"
-                              style={{ marginInline: '10px' }}
-                              variant="subtitle1">
-                              {day}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} md={3}>
+                          <Grid
+                            item
+                            xs={12}
+                            md={2}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              backgroundColor: timetable[`${day}_active`]
+                                ? '#caead2'
+                                : 'rgb(239 239 239)',
+                              
+                            }}>
                             <Checkbox
                               checked={timetable[`${day}_active`] || false}
                               color="primary"
                               name={`${day}_active`}
+                              id={`${day}_active`}
                               type="checkbox"
                               onChange={e => handleChangeTimetable(e, index)}
                             />
+                            <label
+                              for={`${day}_active`}
+                              style={{
+                                color: timetable[`${day}_active`]
+                                  ? '#fff'
+                                  : '#000'
+                              }}>
+                              <Typography color="textSecondary" variant="h6">
+                                {day.toUpperCase()}
+                              </Typography>
+                            </label>
                           </Grid>
-                          <Grid item xs={12} md={3}>
+                          <Grid item xs={12} md={5}>
                             <TextField
                               fullWidth
-                              label="Value"
                               type="time"
+                              disabled={
+                                timetable[`${day}_active`] ? false : true
+                              }
                               name={`${day}_from`}
                               onChange={e => handleChangeTimetable(e, index)}
                               value={timetable[`${day}_from`] || false}
                               variant="outlined"
                             />
                           </Grid>
-                          <Grid item xs={12} md={3}>
+                          <Grid item xs={12} md={5}>
                             <TextField
                               fullWidth
-                              label="Value"
                               type="time"
+                              disabled={
+                                timetable[`${day}_active`] ? false : true
+                              }
                               name={`${day}_to`}
                               onChange={e => handleChangeTimetable(e, index)}
                               value={timetable[`${day}_to`] || false}
