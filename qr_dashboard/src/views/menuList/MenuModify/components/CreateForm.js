@@ -20,6 +20,7 @@ import DeleteSubCategory from './components/Modals/DeleteSubCategory';
 import AddProduct from './components/Modals/AddProduct';
 import DeleteProduct from './components/Modals/DeleteProduct';
 import EditProduct from './components/Modals/EditProduct';
+import UpdateTimetables from './components/Modals/UpdateTimetables';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -103,6 +104,10 @@ const CreateFrom = () => {
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [openUpdateProductModal, setOpenUpdateProductModal] = useState(false);
   const [openDeleteProductModal, setOpenDeleteProductModal] = useState(false);
+
+  const [openUpdateTimetablesModal, setOpenUpdateTimetablesModal] = useState(
+    false
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -205,8 +210,8 @@ const CreateFrom = () => {
       <Header
         handleOpenModal={handleOpenModal}
         handleAddExistingCategoryModal={handleAddExistingCategoryModal}
+        setOpenUpdateTimetablesModal={setOpenUpdateTimetablesModal}
       />
-
       <CategoryList
         data={data}
         expanded={expanded}
@@ -226,7 +231,6 @@ const CreateFrom = () => {
         handleOpenUpdateProductModal={handleOpenUpdateProductModal}
         handleOpenDeleteProductModal={handleOpenDeleteProductModal}
       />
-
       {openModal && (
         <AddCategory
           menu={data?.data}
@@ -235,7 +239,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddExistingCategoryModal && (
         <AddExistingCategory
           menu={data?.data}
@@ -244,7 +247,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openEditCategoryModal && (
         <EditCategory
           menu={data?.data}
@@ -257,7 +259,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openDeleteCategoryModal && (
         <DeleteCategory
           menu={data?.data}
@@ -271,7 +272,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddSubCategoryModal && (
         <AddSubCategory
           menu={data?.data}
@@ -284,7 +284,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddExistingSubCategoryModal && (
         <AddExistingSubCategory
           menu={data?.data}
@@ -297,7 +296,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openEditSubcategoryModal && (
         <EditSubCategory
           menu={data?.data}
@@ -312,7 +310,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openDeleteSubcategoryModal && (
         <DeleteSubCategory
           menu={data?.data}
@@ -328,7 +325,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddProductModal && (
         <AddProduct
           menu={data?.data}
@@ -343,7 +339,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openUpdateProductModal && (
         <EditProduct
           productId={productId}
@@ -357,7 +352,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openDeleteProductModal && (
         <DeleteProduct
           menu={data?.data}
@@ -370,6 +364,16 @@ const CreateFrom = () => {
             setCategoryId(false);
             setSubcategoryId(false);
             setProductId(false);
+          }}
+          classes={classes}
+        />
+      )}
+      {openUpdateTimetablesModal && (
+        <UpdateTimetables
+          Menu={data?.data}
+          openUpdateTimetablesModal={openUpdateTimetablesModal}
+          handleCloseModal={() => {
+            setOpenUpdateTimetablesModal(false);
           }}
           classes={classes}
         />

@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Button } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/styles';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 
 const useStyles = makeStyles(theme => ({
   headerRoot: {
@@ -16,7 +17,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function Header({ handleOpenModal, handleAddExistingCategoryModal }) {
+function Header({
+  handleOpenModal,
+  handleAddExistingCategoryModal,
+  setOpenUpdateTimetablesModal
+}) {
   const classes = useStyles();
 
   return (
@@ -36,6 +41,13 @@ function Header({ handleOpenModal, handleAddExistingCategoryModal }) {
           </Typography>
         </Grid>
         <Grid item>
+          <Button
+            color="primary"
+            size="small"
+            variant="text"
+            onClick={() => setOpenUpdateTimetablesModal(true)}>
+            <AccessTimeIcon />
+          </Button>
           <Button
             color="default"
             className={classes.btnWhite}
