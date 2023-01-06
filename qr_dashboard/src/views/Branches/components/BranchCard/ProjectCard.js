@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -21,6 +21,9 @@ import {
   useDeleteBranchHook
 } from 'hooks/apis/Branches';
 import { useTranslation } from 'react-i18next';
+import CropFreeIcon from '@material-ui/icons/CropFree';
+
+import QrCode from './QrCode';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -89,6 +92,8 @@ const ProjectCard = props => {
   const onActivateHandle = () => {
     ActivateBranch({ id: project.id, active: !project.active });
   };
+  const [openQRModal, setOpenQRModal] = useState(false);
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
@@ -158,6 +163,13 @@ const ProjectCard = props => {
           <Typography variant="body2">{t('Status')} </Typography>
         </div>
         <div className={classes.actions}>
+          <Button
+            color="primary"
+            size="small"
+            variant="text"
+            onClick={() => setOpenQRModal(true)}>
+            <CropFreeIcon />
+          </Button>
           <Link component={RouterLink} to={`/branches/edit/${project?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
@@ -167,7 +179,6 @@ const ProjectCard = props => {
               {t('Edit')}
             </Button>
           </Link>
-
           {project?.active && (
             <Button
               style={{ marginInline: '5px', width: '100px' }}
@@ -202,6 +213,15 @@ const ProjectCard = props => {
           </Button>
         </div>
       </CardContent>
+      {openQRModal && (
+        <QrCode
+          qrCode={project?.qr_code}
+          openQRModal={openQRModal}
+          handleCloseModal={() => {
+            setOpenQRModal(false);
+          }}
+        />
+      )}
     </Card>
   );
 };

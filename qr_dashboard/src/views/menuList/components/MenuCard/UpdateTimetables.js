@@ -5,38 +5,20 @@ import {
   Box,
   Button,
   Modal,
-  Avatar,
   CircularProgress,
   Tabs,
   Tab,
   FormControl,
-  InputLabel,
   Select,
-  Chip,
-  OutlinedInput,
   MenuItem,
   Checkbox
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import validate from 'validate.js';
-import moment from 'moment';
 
 import LoaderButton from 'components/Buttons';
-import InsertPhoto from '@material-ui/icons/InsertPhoto';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import PropTypes from 'prop-types';
-import {
-  useGetProductHook,
-  useUpdateProductHook,
-  useUpdateProductImageHook
-} from 'hooks/apis/Products';
-import { useGetAllIngredientsHook } from 'hooks/apis/Ingredients';
-import { useGetAllNutrientsHook } from 'hooks/apis/Nutrients/Types';
-import { useGetAllNutrientsHook as useGetAllNutrientsUnitsHook } from 'hooks/apis/Nutrients/Units';
-import { useSelector } from 'react-redux';
-import { useTheme } from '@material-ui/styles';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
-import { useParams } from 'react-router';
 
 const ITEM_HEIGHT = 100;
 const ITEM_PADDING_TOP = 80;
@@ -57,15 +39,6 @@ const MenuProps = {
     }
   }
 };
-
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium
-  };
-}
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -118,8 +91,6 @@ function UpdateTimetables({
   classes,
   Menu
 }) {
-  const theme = useTheme();
-
   const [formState, setFormState] = useState({
     isValid: false,
     values: { active: true, order: 1 },
@@ -133,7 +104,6 @@ function UpdateTimetables({
     mutate: UpdateMenuRequest,
     isLoading: isLoadingUpdate
   } = useModifyMenuHook();
-  let { id } = useParams();
 
   const days = [
     'sunday',
@@ -154,24 +124,6 @@ function UpdateTimetables({
     }));
   }, [formState.values]);
 
-  const handleChange = event => {
-    event.persist();
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        [event.target.name]:
-          event.target.type === 'checkbox'
-            ? event.target.checked
-            : event.target.value
-      },
-      touched: {
-        ...formState.touched,
-        [event.target.name]: true
-      }
-    }));
-  };
-
   useEffect(() => {
     if (Menu) {
       const errors = validate(Menu, schema);
@@ -187,9 +139,6 @@ function UpdateTimetables({
     }
   }, [Menu]);
 
-  const hasError = field =>
-    formState.touched[field] && formState.errors[field] ? true : false;
-
   const [tab, setTab] = useState(0);
   const handleChangeTab = (event, newValue) => {
     setTab(newValue);
@@ -198,10 +147,13 @@ function UpdateTimetables({
   const handleChangeTimetable = (event, index) => {
     event.persist();
     let newTimetables = [...Timetables];
-    newTimetables[index][event.target.name] =
-      event.target.type === 'checkbox'
-        ? event.target.checked
-        : event.target.value;
+    newTimetables[index] = {
+      ...newTimetables[index],
+      [event.target.name]:
+        event.target.type === 'checkbox'
+          ? event.target.checked
+          : event.target.value
+    };
     setTimetables(newTimetables);
   };
 
@@ -212,12 +164,11 @@ function UpdateTimetables({
 
   const handleEditTimetables = async event => {
     event.preventDefault();
-    let menu = Menu;
-    delete menu.categories;
-    delete menu.branch;
-    menu.id = id;
-    menu.timetables = Timetables;
-    await UpdateMenuRequest(Menu);
+    const menu = {
+      id: Menu.id,
+      timetables: Timetables
+    };
+    await UpdateMenuRequest(menu);
     handleCloseModal();
   };
 
@@ -324,10 +275,8 @@ function UpdateTimetables({
                         xs={12}
                         md={12}
                         style={{
-                          height: '20px',
-                        }}>
-                      </Grid>
-
+                          height: '20px'
+                        }}></Grid>
 
                       {days?.map((day, indexD) => (
                         <Fragment key={indexD}>
@@ -340,8 +289,7 @@ function UpdateTimetables({
                               alignItems: 'center',
                               backgroundColor: timetable[`${day}_active`]
                                 ? '#caead2'
-                                : 'rgb(239 239 239)',
-                              
+                                : 'rgb(239 239 239)'
                             }}>
                             <Checkbox
                               checked={timetable[`${day}_active`] || false}
@@ -352,7 +300,7 @@ function UpdateTimetables({
                               onChange={e => handleChangeTimetable(e, index)}
                             />
                             <label
-                              for={`${day}_active`}
+                              htmlFor={`${day}_active`}
                               style={{
                                 color: timetable[`${day}_active`]
                                   ? '#fff'

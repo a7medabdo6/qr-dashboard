@@ -20,7 +20,6 @@ import DeleteSubCategory from './components/Modals/DeleteSubCategory';
 import AddProduct from './components/Modals/AddProduct';
 import DeleteProduct from './components/Modals/DeleteProduct';
 import EditProduct from './components/Modals/EditProduct';
-import UpdateTimetables from './components/Modals/UpdateTimetables';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -104,10 +103,6 @@ const CreateFrom = () => {
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [openUpdateProductModal, setOpenUpdateProductModal] = useState(false);
   const [openDeleteProductModal, setOpenDeleteProductModal] = useState(false);
-
-  const [openUpdateTimetablesModal, setOpenUpdateTimetablesModal] = useState(
-    false
-  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -210,7 +205,6 @@ const CreateFrom = () => {
       <Header
         handleOpenModal={handleOpenModal}
         handleAddExistingCategoryModal={handleAddExistingCategoryModal}
-        setOpenUpdateTimetablesModal={setOpenUpdateTimetablesModal}
       />
       <CategoryList
         data={data}
@@ -364,16 +358,6 @@ const CreateFrom = () => {
             setCategoryId(false);
             setSubcategoryId(false);
             setProductId(false);
-          }}
-          classes={classes}
-        />
-      )}
-      {openUpdateTimetablesModal && (
-        <UpdateTimetables
-          Menu={data?.data}
-          openUpdateTimetablesModal={openUpdateTimetablesModal}
-          handleCloseModal={() => {
-            setOpenUpdateTimetablesModal(false);
           }}
           classes={classes}
         />
