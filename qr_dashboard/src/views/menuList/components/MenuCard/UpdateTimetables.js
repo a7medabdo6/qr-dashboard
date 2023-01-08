@@ -17,8 +17,9 @@ import Grid from '@material-ui/core/Grid';
 import validate from 'validate.js';
 
 import LoaderButton from 'components/Buttons';
-import PropTypes from 'prop-types';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
+
+import TabPanel from 'components/TabPanel';
 
 const ITEM_HEIGHT = 100;
 const ITEM_PADDING_TOP = 80;
@@ -38,27 +39,6 @@ const MenuProps = {
       width: 40
     }
   }
-};
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired
 };
 
 const schema = {

@@ -24,7 +24,6 @@ import moment from 'moment';
 import LoaderButton from 'components/Buttons';
 import InsertPhoto from '@material-ui/icons/InsertPhoto';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import PropTypes from 'prop-types';
 import {
   useGetProductHook,
   useUpdateProductHook,
@@ -35,6 +34,8 @@ import { useGetAllNutrientsHook } from 'hooks/apis/Nutrients/Types';
 import { useGetAllNutrientsHook as useGetAllNutrientsUnitsHook } from 'hooks/apis/Nutrients/Units';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@material-ui/styles';
+
+import TabPanel from 'components/TabPanel';
 
 const ITEM_HEIGHT = 100;
 const ITEM_PADDING_TOP = 80;
@@ -64,27 +65,6 @@ function getStyles(name, personName, theme) {
         : theme.typography.fontWeightMedium
   };
 }
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired
-};
 
 const productSchema = {
   title_en: {
@@ -375,18 +355,19 @@ function EditProduct({
             <Typography variant="h4" style={{ textAlign: 'initial' }}>
               {formState?.values?.title}
             </Typography>
-            <Typography variant="subtitle2" style={{ textAlign: 'initial', marginBottom: '20px' }}>
+            <Typography
+              variant="subtitle2"
+              style={{ textAlign: 'initial', marginBottom: '20px' }}>
               Last Updated:{' '}
               {moment(formState.values.update_at).format('DD/MM/YYYY hh:mm a')}
             </Typography>
-            <Box sx={{ width: '100%'}}>
+            <Box sx={{ width: '100%' }}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                   value={tab}
                   onChange={handleChangeTab}
                   aria-label="Product Tabs"
-                  variant="scrollable"
-                  className={classes.tabs}>
+                  variant="scrollable">
                   <Tab label={'Basic Info'} />
                   <Tab label={`modifiers (${modifiers?.length})`} />
                   <Tab label={`variants (${variants?.length})`} />

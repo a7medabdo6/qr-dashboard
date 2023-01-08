@@ -22,7 +22,7 @@ const ModalStyle = {
   overflow: 'auto'
 };
 
-function QrCode({ qrCode, handleCloseModal, openQRModal }) {
+function QrCode({ title, qrCode, handleCloseModal, openQRModal }) {
   const downloadCode = () => {
     const canvas = document.getElementById('QR');
     if (canvas) {
@@ -31,7 +31,7 @@ function QrCode({ qrCode, handleCloseModal, openQRModal }) {
         .replace('image/png', 'image/octet-stream');
       let downloadLink = document.createElement('a');
       downloadLink.href = pngUrl;
-      downloadLink.download = `QR.png`;
+      downloadLink.download = `${title}-QR.png`;
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);

@@ -216,6 +216,7 @@ const ProjectCard = props => {
       {openQRModal && (
         <QrCode
           qrCode={project?.qr_code}
+          title={project?.title}
           openQRModal={openQRModal}
           handleCloseModal={() => {
             setOpenQRModal(false);
