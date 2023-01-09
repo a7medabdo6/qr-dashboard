@@ -247,11 +247,12 @@ const TopBar = props => {
               style={{
                 width: '50px',
                 backgroundColor: 'white',
-                borderRadius: '5px'
+                borderRadius: '5px',
+                textAlign: 'center'
               }}
               onChange={handleLangChnage}>
               <MenuItem value={'en'}>en</MenuItem>
-              <MenuItem value={'ar'}>ar</MenuItem>
+              <MenuItem value={'ar'}>ع</MenuItem>
             </Select>
           </FormControl>
           <IconButton

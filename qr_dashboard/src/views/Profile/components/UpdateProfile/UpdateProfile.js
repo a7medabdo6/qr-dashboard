@@ -3,15 +3,7 @@ import validate from 'validate.js';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import {
-  Button,
-  Checkbox,
-  FormHelperText,
-  TextField,
-  Typography,
-  Link,
-  Avatar
-} from '@material-ui/core';
+import { Button, TextField, Avatar } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
 import gradients from 'utils/gradients';
 import { useSelector } from 'react-redux';

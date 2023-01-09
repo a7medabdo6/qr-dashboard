@@ -159,11 +159,11 @@ const Header = props => {
           src={userData?.avatar}
         />
         <div className={classes.details}>
-          <Typography component="h2" gutterBottom variant="overline">
-            {userData?.role || 'role'}
-          </Typography>
           <Typography component="h1" variant="h4">
             {userData?.name || 'name'}
+          </Typography>
+          <Typography component="p" gutterBottom variant="overline">
+            {userData?.role_text || 'role'}
           </Typography>
         </div>
         <Hidden smDown>

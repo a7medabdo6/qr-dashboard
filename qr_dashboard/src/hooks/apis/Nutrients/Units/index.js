@@ -62,7 +62,7 @@ const useCreateNutrientHook = () => {
 
 const useGetAllNutrientsHook = (search, filters) => {
   const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   return useQuery(
     ['Units', i18n.language, search, filters],
     () => getAllNutrients(i18n.language, search, filters),

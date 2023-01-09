@@ -327,6 +327,55 @@ export const DashboardUser = [
         exact: true,
         component: lazy(() => import('views/ProjectList'))
       },
+
+      {
+        path: '/ingredients',
+        exact: true,
+        component: lazy(() => import('views/IngredientList'))
+      },
+      {
+        path: '/ingredients/create',
+        exact: true,
+        component: lazy(() => import('views/IngredientList/IngredientCreate'))
+      },
+      {
+        path: '/ingredients/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/IngredientList/IngredientCreate'))
+      },
+
+      {
+        path: '/nutrients/types',
+        exact: true,
+        component: lazy(() => import('views/Nutrients/TypesList'))
+      },
+      {
+        path: '/nutrients/types/create',
+        exact: true,
+        component: lazy(() => import('views/Nutrients/TypesList/TypeCreate'))
+      },
+      {
+        path: '/nutrients/types/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/Nutrients/TypesList/TypeCreate'))
+      },
+
+      {
+        path: '/nutrients/units',
+        exact: true,
+        component: lazy(() => import('views/Nutrients/UnitsList'))
+      },
+      {
+        path: '/nutrients/units/create',
+        exact: true,
+        component: lazy(() => import('views/Nutrients/UnitsList/UnitCreate'))
+      },
+      {
+        path: '/nutrients/units/edit/:id',
+        exact: true,
+        component: lazy(() => import('views/Nutrients/UnitsList/UnitCreate'))
+      },
+
       {
         path: '/settings',
         exact: true,

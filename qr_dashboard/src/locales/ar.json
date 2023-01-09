@@ -5,7 +5,7 @@
   "Branches": "الأفرع",
   "Branches_name": "اسم الفرع ",
   "Menus": "القوائم ",
-  "Add_menu":" اضافة قائمة ",
+  "Add_menu": " اضافة قائمة ",
 
   "Setting": "الاعدادات",
   "Users": "المستخدمين  ",
@@ -19,10 +19,13 @@
   "Active": "فعال",
   "Status": "الحالة ",
   "Edit": "تعديل ",
-  "Disable": "غير فعال",
+  "Disable": "خامل",
   "delete": "حذف ",
   "title": "الاسم بالانجليزية",
   "title_ar": "الاسم بالعربي",
   "add_branch": "اضافة فرع  ",
-  "Management": "ادارة"
+  "Management": "ادارة",
+  "Home": "الرئيسية",
+  "GoodMorning": "صباح الخير،",
+  "WhatsHappening": "إليكم ما يحدث"
 }

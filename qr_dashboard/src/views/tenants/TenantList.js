@@ -4,7 +4,6 @@ import { Typography } from '@material-ui/core';
 import EmptySection from 'components/EmptySection';
 import SkeletonChildren from 'components/Skeleton/table';
 
-import axios from 'utils/axios';
 import { Page, Paginate, SearchBar } from 'components';
 import { Header, ProjectCard } from './components';
 import { useGetTenantHook } from 'hooks/apis/Tenants/index';
@@ -35,7 +34,6 @@ const ProjectManagementList = () => {
   const classes = useStyles();
   const [rowsPerPage] = useState(10);
   const [page] = useState(0);
-  const [projects, setProjects] = useState([]);
   const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
 

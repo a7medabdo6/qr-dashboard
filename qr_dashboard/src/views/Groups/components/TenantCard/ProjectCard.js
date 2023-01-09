@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Avatar,
   Button,
   Card,
   CardContent,
@@ -14,7 +13,6 @@ import {
   colors
 } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import getInitials from 'utils/getInitials';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import BlockIcon from '@material-ui/icons/Block';
 import { useDeleteGroupHook } from 'hooks/apis/Groups';
@@ -73,7 +71,7 @@ const useStyles = makeStyles(theme => ({
 const ProjectCard = props => {
   const { project, className, ...rest } = props;
   const classes = useStyles();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const statusColors = {
     'In progress': colors.orange[600],
@@ -163,7 +161,6 @@ const ProjectCard = props => {
               color="primary"
               size="small"
               variant="outlined">
-              
               {t('Edit')}
             </Button>
           </Link>
@@ -175,7 +172,6 @@ const ProjectCard = props => {
               variant="outlined"
               onClick={onActivateHandle}
               color="primary">
-              
               {t('Disable')}
               <BlockIcon />
             </Button>
@@ -187,7 +183,6 @@ const ProjectCard = props => {
               variant="contained"
               onClick={onActivateHandle}
               color="primary">
-              
               {t('Activate')}
               <DoneAllIcon />
             </Button>
@@ -198,7 +193,6 @@ const ProjectCard = props => {
             variant="contained"
             color="secondary"
             onClick={onDeleteHandle}>
-            
             {t('delete')}
 
             <DeleteForeverIcon />

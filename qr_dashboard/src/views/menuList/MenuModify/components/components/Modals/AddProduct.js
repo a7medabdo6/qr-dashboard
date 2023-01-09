@@ -7,7 +7,7 @@ import LoaderButton from 'components/Buttons';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
 
 const schema = {
-  title: {
+  title_en: {
     presence: { allowEmpty: false, message: 'is required' }
   },
   title_ar: {
@@ -29,7 +29,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%',
   textAlign: 'center',
-  maxHeight: '95vh',
+  height: '80vh',
   overflow: 'auto'
 };
 
@@ -131,20 +131,25 @@ function AddProduct({
     <Modal open={openAddProductModal} onClose={handleCloseModal}>
       <Box sx={{ ...ModalStyle }}>
         <form onSubmit={handleAddProduct}>
-          <Typography variant="h4">Add New Product</Typography>
+          <Typography
+            variant="h4"
+            style={{ textAlign: 'initial', marginBottom: '20px' }}>
+            Add Product
+          </Typography>
+
           <div className={classes.fields}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
-                  error={hasError('title')}
+                  error={hasError('title_en')}
                   fullWidth
                   helperText={
-                    hasError('title') ? formState.errors.title[0] : null
+                    hasError('title_en') ? formState.errors.title_en[0] : null
                   }
                   label="title (en)"
-                  name="title"
+                  name="title_en"
                   onChange={handleChange}
-                  value={formState.values.title || ''}
+                  value={formState.values.title_en || ''}
                   variant="outlined"
                 />
               </Grid>

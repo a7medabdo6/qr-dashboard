@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
-    margin: '0 10px',
+    margin: 'auto 10px',
     height: 44,
     width: 44,
     fontSize: 32
@@ -69,10 +69,15 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
-    margin: '0 10px',
+    margin: 'auto 10px',
     height: 44,
     width: 44,
     fontSize: 32
+  },
+  colorBox: {
+    margin: 'auto 10px',
+    height: 44,
+    width: 44
   }
 }));
 
@@ -217,15 +222,14 @@ const CreateFrom = props => {
                   hasError('color') ? formState.errors.color[0] : null
                 }
                 label="Color"
+                type="color"
                 name="color"
                 onChange={handleChange}
                 value={formState.values.color || ''}
                 variant="outlined"></TextField>
               <Box
                 bgcolor={formState.values.color}
-                width={40}
-                height={40}
-                className="m-2"
+                className={classes.colorBox}
               />
             </Box>
           </Grid>

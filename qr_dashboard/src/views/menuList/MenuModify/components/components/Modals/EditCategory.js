@@ -12,13 +12,14 @@ import { useParams } from 'react-router';
 import validate from 'validate.js';
 import LoaderButton from 'components/Buttons';
 import { useModifyMenuHook } from 'hooks/apis/Menus';
+import moment from 'moment';
 
 import { useUpdateCategoryImageHook } from 'hooks/apis/Category';
 
 import { InsertPhoto } from '@material-ui/icons';
 
 const schema = {
-  title: {
+  title_en: {
     presence: { allowEmpty: false, message: 'is required' }
   },
   title_ar: {
@@ -40,7 +41,7 @@ const ModalStyle = {
   pb: 3,
   width: '65%',
   textAlign: 'center',
-  maxHeight: '95vh',
+  maxHeight: '80vh',
   overflow: 'auto'
 };
 
@@ -101,7 +102,7 @@ function EditCategory({
       },
       touched: {
         ...formState.touched,
-        title: true,
+        title_en: true,
         title_ar: true
       }
     }));
@@ -142,10 +143,10 @@ function EditCategory({
     Menu.categories[modifyIndex] = { ...formState.values };
     Menu.categories = Menu.categories.map(cat => {
       if (cat.id === formState.values.id) {
+        delete formState.values.image;
+        delete formState.values.subcategories;
         return {
-          id: cat.id,
-          title: cat.title,
-          title_ar: cat.title_ar
+          ...formState.values
         };
       } else return { id: cat.id };
     });
@@ -171,20 +172,29 @@ function EditCategory({
     <Modal open={openEditCategoryModal} onClose={handleCloseModal}>
       <Box sx={{ ...ModalStyle }}>
         <form onSubmit={handleUpdateCategory}>
-          <Typography variant="h4">Update Category</Typography>
+          <Typography variant="h4" style={{ textAlign: 'initial' }}>
+            {formState?.values?.title}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{ textAlign: 'initial', marginBottom: '20px' }}>
+            Last Updated:{' '}
+            {moment(formState.values.update_at).format('DD/MM/YYYY hh:mm a')}
+          </Typography>
+
           <div className={classes.fields}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
-                  error={hasError('title')}
+                  error={hasError('title_en')}
                   fullWidth
                   helperText={
-                    hasError('title') ? formState.errors.title[0] : null
+                    hasError('title_en') ? formState.errors.title_en[0] : null
                   }
                   label="title (en)"
-                  name="title"
+                  name="title_en"
                   onChange={handleChange}
-                  value={formState.values.title || ''}
+                  value={formState.values.title_en || ''}
                   variant="outlined"
                 />
               </Grid>{' '}
@@ -235,7 +245,7 @@ function EditCategory({
                   checked={formState.values.show_subcategories || false}
                   className={classes.policyCheckbox}
                   color="primary"
-                  name="active"
+                  name="show_subcategories"
                   type="checkbox"
                   onChange={handleChange}
                 />
@@ -262,7 +272,7 @@ function EditCategory({
             className={classes.submitButton}
             formState={formState}
             isLoading={isLoadingUpdate}
-            title={'Edit'}
+            title={'Save'}
           />
         </form>
       </Box>

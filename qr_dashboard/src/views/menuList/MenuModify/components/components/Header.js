@@ -16,7 +16,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function Header({ handleOpenModal, handleAddExistingCategoryModal }) {
+function Header({
+  handleOpenModal,
+  handleAddExistingCategoryModal,
+  setOpenUpdateTimetablesModal
+}) {
   const classes = useStyles();
 
   return (

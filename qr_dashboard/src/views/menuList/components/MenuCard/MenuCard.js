@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import {
-  Avatar,
   Button,
   Card,
   CardContent,
@@ -19,6 +19,7 @@ import BlockIcon from '@material-ui/icons/Block';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useActivateMenuHook, useDeleteMenuHook } from 'hooks/apis/Menus';
 import { useTranslation } from 'react-i18next';
+import UpdateTimetables from './UpdateTimetables';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,7 +73,7 @@ const useStyles = makeStyles(theme => ({
 const MenuCard = props => {
   const { Menu, className, ...rest } = props;
   const classes = useStyles();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const statusColors = {
     'In progress': colors.orange[600],
@@ -87,6 +88,11 @@ const MenuCard = props => {
   const onActivateHandle = () => {
     ActivateMenu({ id: Menu.id, active: !Menu.active });
   };
+
+  const [openUpdateTimetablesModal, setOpenUpdateTimetablesModal] = useState(
+    false
+  );
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
@@ -130,6 +136,13 @@ const MenuCard = props => {
           <Typography variant="body2"> {t('status')} </Typography>
         </div>
         <div className={classes.actions}>
+          <Button
+            color="primary"
+            size="small"
+            variant="text"
+            onClick={() => setOpenUpdateTimetablesModal(true)}>
+            <AccessTimeIcon />
+          </Button>
           <Link component={RouterLink} to={`/menu/modify/${Menu?.id}`}>
             <Button
               style={{ marginInline: '5px' }}
@@ -182,6 +195,16 @@ const MenuCard = props => {
           </Button>
         </div>
       </CardContent>
+      {openUpdateTimetablesModal && (
+        <UpdateTimetables
+          Menu={Menu}
+          openUpdateTimetablesModal={openUpdateTimetablesModal}
+          handleCloseModal={() => {
+            setOpenUpdateTimetablesModal(false);
+          }}
+          classes={classes}
+        />
+      )}
     </Card>
   );
 };

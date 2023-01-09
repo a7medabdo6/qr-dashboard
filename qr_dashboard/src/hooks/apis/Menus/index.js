@@ -11,7 +11,7 @@ const getAllMenus = async (data, search, filters) => {
   console.log('search: ', search);
   console.log('filters: ', filters);
   return await api.get(
-    `menus/?expand=branch&`.concat(
+    `menus/?expand=branch,timetables&`.concat(
       search ? `find=${search}&` : ``,
       filters?.create_at_before
         ? `create_at_before=${filters?.create_at_before}&`

@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Page } from 'components';
 
-import { Header } from './components';
 import CreateMenu from './components/CreateForm';
 
 const useStyles = makeStyles(theme => ({

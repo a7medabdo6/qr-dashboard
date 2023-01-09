@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Avatar,
   Button,
   Card,
   CardContent,

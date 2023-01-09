@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     color: theme.palette.white,
     borderRadius: theme.shape.borderRadius,
-    margin: '0 10px',
+    margin: 'auto 10px',
     height: 44,
     width: 44,
     fontSize: 32
@@ -206,7 +206,6 @@ const CreateFrom = () => {
         handleOpenModal={handleOpenModal}
         handleAddExistingCategoryModal={handleAddExistingCategoryModal}
       />
-
       <CategoryList
         data={data}
         expanded={expanded}
@@ -226,7 +225,6 @@ const CreateFrom = () => {
         handleOpenUpdateProductModal={handleOpenUpdateProductModal}
         handleOpenDeleteProductModal={handleOpenDeleteProductModal}
       />
-
       {openModal && (
         <AddCategory
           menu={data?.data}
@@ -235,7 +233,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddExistingCategoryModal && (
         <AddExistingCategory
           menu={data?.data}
@@ -244,7 +241,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openEditCategoryModal && (
         <EditCategory
           menu={data?.data}
@@ -257,7 +253,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openDeleteCategoryModal && (
         <DeleteCategory
           menu={data?.data}
@@ -271,7 +266,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddSubCategoryModal && (
         <AddSubCategory
           menu={data?.data}
@@ -284,7 +278,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddExistingSubCategoryModal && (
         <AddExistingSubCategory
           menu={data?.data}
@@ -297,7 +290,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openEditSubcategoryModal && (
         <EditSubCategory
           menu={data?.data}
@@ -312,7 +304,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openDeleteSubcategoryModal && (
         <DeleteSubCategory
           menu={data?.data}
@@ -328,7 +319,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openAddProductModal && (
         <AddProduct
           menu={data?.data}
@@ -343,7 +333,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openUpdateProductModal && (
         <EditProduct
           productId={productId}
@@ -357,7 +346,6 @@ const CreateFrom = () => {
           classes={classes}
         />
       )}
-
       {openDeleteProductModal && (
         <DeleteProduct
           menu={data?.data}

@@ -243,6 +243,7 @@ function SubcategoriesList(props) {
                         <RemoveCircleIcon className={classes.icon} />
                       </Button>
                       <div
+                        style={{marginTop:'20px'}}
                         className="product-card"
                         onClick={() =>
                           handleOpenUpdateProductModal(product?.id)
